@@ -1,0 +1,88 @@
+:root{
+  --primary:#0077b6; --secondary:#00b4d8; --accent:#caf0f8;
+  --danger:#e11d48; --ok:#059669; --ink:#111827; --muted:#6b7280; --bg:#f3f4f6;
+  --card:#ffffff; --border:#e5e7eb;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:16px/1.4 system-ui,Segoe UI,Roboto,Inter,sans-serif;}
+a{text-decoration:none;color:inherit}
+.bg{background:var(--bg)}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--border)}
+.brand{display:flex;gap:10px;align-items:center}
+.logo{height:40px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.narrow{max-width:420px;margin:8vh auto}
+.title{margin:0 0 10px;font-size:28px;color:var(--primary)}
+.subtitle{margin:0 0 10px;color:var(--primary)}
+.stack{display:flex;flex-direction:column;gap:10px}
+input,select,textarea{padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.btn{padding:10px 14px;border-radius:10px;border:0;background:#e5e7eb}
+.btn.primary{background:var(--primary);color:#fff}
+.btn.success{background:var(--ok);color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;padding:18px;max-width:900px;margin:30px auto}
+.action{display:flex;align-items:center;justify-content:center;min-height:120px;font-size:20px;background:linear-gradient(135deg,var(--accent),#fff)}
+.wrap{max-width:980px;margin:24px auto;padding:0 14px}
+.section{padding:10px;border:1px dashed var(--border);border-radius:10px;background:#fff}
+.hidden{display:none}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.col{flex:1;min-width:200px}
+.gap{gap:10px}
+.ok{color:var(--ok)}
+.error{color:var(--danger)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+
+.card.contract{display:flex;flex-direction:column;gap:8px}
+.card .meta{color:var(--muted);font-size:14px}
+.card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+.pdf-a4{width:794px;background:#fff;color:#000}
+.pdf-inner{padding:28px 40px}
+.pdf-logo{height:52px;margin-bottom:10px}
+.pdf-title{text-align:center;margin:8px 0 12px}
+.pdf-p{margin:8px 0}
+.pdf-ul{margin:6px 0 10px 18px}
+.firmas{display:flex;justify-content:space-between;gap:18px;margin-top:36px}
+.firma{width:23%;text-align:center}
+.firma img{height:60px;object-fit:contain}
+.firma .linea{height:2px;background:#000;margin:40px 0 6px}
+
+.contract-page {
+  width: 210mm;        /* Tamaño A4 */
+  height: 297mm;
+  background-image: url("./img/fondo-contrato.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 40mm 25mm 30mm 25mm; /* Margen interno para no tapar decoraciones */
+  box-sizing: border-box;
+  position: relative;
+  font-family: 'Times New Roman', serif;
+}
+
+/* ====== UI moderna para Redactar ====== */
+.wrap { max-width: 1100px; margin: 0 auto; }
+.card { border-radius: 14px; padding: 20px; background: #fff; box-shadow: 0 6px 30px rgba(0,0,0,.08); }
+.subtitle { font-size: 1.25rem; margin: 0 0 10px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > label { font-weight: 600; color: #222; }
+.input, .select { border: 1px solid #e5e7eb; padding: 10px 12px; border-radius: 10px; font-size: 15px; }
+.input:focus, .select:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.15); }
+
+.section { border: 1px dashed #e5e7eb; border-radius: 14px; padding: 14px; margin: 10px 0; }
+.section h3 { margin: 0 0 8px; font-size: 1.05rem; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips label { background: #f3f4f6; padding: 6px 10px; border-radius: 999px; cursor: pointer; user-select: none; }
+.chips input { margin-right: 6px; }
+
+.time-12 { display: inline-flex; align-items: center; gap: 8px; }
+.time-12 input[type="number"] { width: 64px; text-align: center; }
+.time-12 select { min-width: 78px; }
+
+.muted { color: #6b7280; font-size: .95rem; margin-top: 6px; }
+.row.gap { gap: 10px; }

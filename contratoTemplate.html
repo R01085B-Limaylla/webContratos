@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contrato — La Marquesina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./style.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body { margin: 0; font-family: "Times New Roman", serif; background: #eee; }
+    .hidden { display: none !important; }
+    .page {
+      width: 210mm; height: 297mm; margin: auto;
+      background-image: url("./img/fondo-contrato.png");
+      background-size: cover; background-repeat: no-repeat; background-position: center;
+      position: relative; box-sizing: border-box; padding: 40mm 25mm 30mm 25mm;
+    }
+    h2 { text-align: center; text-transform: uppercase; margin-top: 0; }
+    p, ul { font-size: 14px; line-height: 1.5; text-align: justify; }
+    ul { margin-top: 4px; margin-bottom: 4px; padding-left: 20px; }
+    .firmas { display: flex; justify-content: space-between; margin-top: 50px; gap: 16px; }
+    .firma { text-align: center; width: 31%; }
+    .firma img { width: 150px; height: auto; }
+    .linea { width: 160px; border-top: 1px solid #000; margin: 0 auto 4px; }
+  </style>
+</head>
+<body>
+  <div id="contrato" class="page">
+  <h2 id="titulo"></h2>
+
+  <p id="textoPrincipal"></p>
+
+  <h3>Servicios:</h3>
+  <ul id="listaServicios"></ul>
+
+  <h3>Condiciones Económicas:</h3>
+  <ul>
+    <li><b id="rubrosLabel">Concepto:</b> <span id="rubros"></span></li>
+    <li><b>Movilidad:</b> <span id="movilidad"></span></li>
+    <li><b>Adelanto:</b> S/. <span id="adelanto"></span></li>
+    <li><b>Resta:</b> S/. <span id="resta"></span></li>
+  </ul>
+
+  <!-- === BLOQUE FINAL (siempre al pie) === -->
+  <div id="bloqueFinal">
+    <div id="detalleEvento"></div>
+
+    <div id="fechaActual"></div>
+
+    <p id="clausula">
+      CLÁUSULA: SI EL CONTRATANTE DESISTE DE FORMALIZAR EL CONTRATO, NO SE REALIZARÁ
+      EL REEMBOLSO DEL ADELANTO CONSIDERADO COMO SEPARACIÓN DE FECHA.
+    </p>
+
+    <div class="firmas">
+      <div id="firmaRosario" class="firma">
+        <img src="img/firma-rosario.png" alt="Rosario">
+        <div>Rosario Carhuallanqui <br> DNI: 20026242</div>
+      </div>
+      <div id="firmaSebastian" class="firma">
+        <img src="img/firma-sebastian.png" alt="Sebastián">
+        <div>Sebastián Limaylla <br> DNI: 76440595</div>
+      </div>
+      <div id="firmaSujey" class="firma hidden">
+        <img src="img/firma-sujey.png" alt="Sujey">
+        <div>Sujey Solorzano <br> DNI: 74874635</div>
+      </div>
+      <div id="firmaContratante" class="firma hidden">
+        <div class="linea"></div>
+        <div><span id="nombreContratante"></span><br>DNI: <span id="dniContratante"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    
+    // ---------- Handshake ----------
+    window.addEventListener("load", () => {
+      try { if (window.opener) window.opener.postMessage({ type: "template-ready" }, "*"); } catch {}
+    });
+    window.addEventListener("message", (e) => {
+      if (e?.data?.type === "ping") {
+        try { if (window.opener) window.opener.postMessage({ type: "template-ack" }, "*"); } catch {}
+      }
+    });
+
+    // ---------- Utilidades ----------
+    function n2(n){ return Number(n||0).toFixed(2); }
+    function buscarCantidadPlatos(contrato){
+        if (contrato.cantidadCatering && Number(contrato.cantidadCatering) > 0) {
+            return Number(contrato.cantidadCatering);
+        }
+        const hit = (contrato.servicios || []).find(s => /cantidad(?:\s+de\s+platos)?\s*:\s*\d+/i.test(s));
+        if (hit) {
+            const m = hit.match(/cantidad(?:\s+de\s+platos)?\s*:\s*(\d+)/i);
+            if (m) return Number(m[1]);
+        }
+        return null;
+        }
+
+
+    // === CANDADO para evitar múltiples descargas ===
+    let __alreadyProcessed = false;
+    
+    // ===== Helpers de formato (fecha/hora bonitas) =====
+    function formatearFechaISO(iso) {
+      if (!iso) return "";
+      const [Y, M, D] = iso.split("-").map(n => parseInt(n, 10));
+      const d = new Date(Y, M - 1, D);
+      return new Intl.DateTimeFormat("es-PE", {
+        weekday: "long", day: "numeric", month: "long", year: "numeric"
+      }).format(d);
+    }
+
+    function formatearHora24(hhmm) {
+      if (!hhmm) return "";
+      const [H, m] = hhmm.split(":").map(n => parseInt(n, 10));
+      const d = new Date(); d.setHours(H || 0, m || 0, 0, 0);
+      return new Intl.DateTimeFormat("es-PE", {
+        hour: "numeric", minute: "2-digit", hour12: true
+      }).format(d);
+    }
+
+function mayusInicial(txt) {
+  return txt ? txt.charAt(0).toUpperCase() + txt.slice(1) : "";
+}
+
+    
+    // ---------- Relleno y descarga ----------
+    window.addEventListener("message", async (e) => {
+      const data = e?.data;
+      if (data?.type !== "fill-contract") return;
+
+      // Evitar reprocesar
+      if (__alreadyProcessed) return;
+      __alreadyProcessed = true;
+
+      // Avisar al opener que ya consumimos el payload
+      try { if (window.opener) window.opener.postMessage({ type: "template-consumed" }, "*"); } catch {}
+
+      const c = data.payload;
+      if (!c) return;
+
+      // Título
+      document.getElementById("titulo").innerHTML =
+  `<br> <br> CONTRATO DE SERVICIO DE ${String(c.tipo || "").toUpperCase()}`;
+
+
+      // Intro según tipo
+      let introHTML = "";
+      if (c.tipo === "catering") {
+        const cantidadPlatos = buscarCantidadPlatos(c);
+        const cantidadTxt = (cantidadPlatos !== null) ? `${cantidadPlatos}` : "los";
+        introHTML = `
+          Yo, <b>Sujey Solorzano Vicharra</b> y <b>Rosario Carhuallanqui Ruiz</b>,
+          socios de <b>LA MARQUESINA CATERING</b> con RUC 20611125918,
+          recibo la suma de <b>S/. ${n2(c.adelanto)}</b> de
+          <b>${c.cliente}</b> identificado(a) con DNI <b>${c.dniCliente}</b>,
+          para la prestación de servicios para la <b>preparación de ${cantidadTxt} platos de comida</b>.
+        `;
+      } else if (c.tipo === "barman") {
+        introHTML = `
+          Yo, <b>ROSARIO CARHUALLANQUI RUIZ</b>, en representación de
+          <b>LA MARQUESINA CATERING</b> con RUC 20611125918, recibo la suma de
+          <b>S/. ${n2(c.adelanto)}</b> para la prestación de servicios de <b>${c.detallePrecio}</b>,
+          a cargo del Barman <b>SEBASTIÁN LIMAYLLA CARHUALLAQUI</b> (DNI 76440595),
+          de <b>${c.cliente}</b> (DNI <b>${c.dniCliente}</b>).
+        `;
+      } else {
+        introHTML = `
+          Yo, <b>ROSARIO CARHUALLANQUI RUIZ</b>, en representación de
+          <b>LA MARQUESINA CATERING</b> con RUC 20611125918, recibo la suma de
+          <b>S/. ${n2(c.adelanto)}</b> de <b>${c.cliente}</b> (DNI <b>${c.dniCliente}</b>)
+          para la prestación de servicios de <b>Catering y Barman</b>.
+        `;
+      }
+      document.getElementById("textoPrincipal").innerHTML = introHTML;
+
+      // Lista de servicios
+      const ul = document.getElementById("listaServicios");
+      ul.innerHTML = "";
+      (c.servicios || []).forEach(s => {
+        const li = document.createElement("li");
+        li.textContent = s;
+        ul.appendChild(li);
+      });
+
+      // Etiqueta Rubros dinámica y contenido (sin redundancias)
+        const rubrosLabel = document.getElementById("rubrosLabel");
+
+        // Normaliza base recibido desde redactar (ya viene como “Comida …” o “Comida y Cocteles …”)
+        let baseRubros = (c.rubrosTexto || "")
+        .replace(/^Platos\b/i, "Comida")
+        .replace(/^Cocteles y Platos\b/i, "Comida y Cocteles");
+
+        // Quita la categoría inicial para no repetirla en el contenido
+        function stripCategoria(str){
+        return str.replace(/^(Comida y Cocteles|Comida|Cocteles)\s*—\s*/i, "");
+        }
+        let contenidoRubros = stripCategoria(baseRubros);
+
+        // Sufijo de cocteles (si aplica Barman o Ambos)
+        let extraCocteles = "";
+        if (c.tipo === "barman" || c.tipo === "ambos") {
+        if (c.cocteles?.modo === "total" && c.cocteles?.total) {
+            extraCocteles = ` — Cocteles (${c.cocteles.tipoVajilla || "-"}) ${c.cocteles.total}`;
+        } else if (c.cocteles?.modo === "separado") {
+            const a = c.cocteles?.acrilico || 0;
+            const r = c.cocteles?.cristaleria || 0;
+            extraCocteles = ` — Cocteles: Acrílico ${a} | Cristalería ${r}`;
+        }
+        }
+        contenidoRubros += extraCocteles;
+
+        // Label visible
+        let labelText = "Detalle:";
+        if (c.tipo === "catering")      labelText = "Comida:";
+        else if (c.tipo === "barman")   labelText = "Cocteles:";
+        else                            labelText = "Comida + Cocteles:";
+
+        rubrosLabel.textContent = labelText;
+        document.getElementById("rubros").textContent = contenidoRubros;
+
+
+      // Totales / evento
+      document.getElementById("movilidad").textContent = c.movilidad ? "Sí" : "No";
+      document.getElementById("adelanto").textContent = n2(c.adelanto);
+      document.getElementById("resta").textContent   = n2(c.resta);
+      // Fecha/hora bonitas con fallback (usa c.fechaTexto / c.hora en AM/PM si vienen)
+      const fechaBonita = mayusInicial(c.fechaTexto || formatearFechaISO(c.fecha));
+      const horaBonita  = c.horaTexto || formatearHora24(c.hora);
+
+      document.getElementById("detalleEvento").innerHTML = `
+        <br>
+        Los <b>${
+          (c.tipo === "barman")
+            ? "cocteles"
+            : (c.tipo === "catering" ? "platos de comida" : "cocteles y platos de comida")
+        }</b>
+        se prepararán el día <b>${fechaBonita}</b> a las <b>${horaBonita}</b> en <b>${c.direccion}</b>
+        ${c.referencia ? "(Ref: " + c.referencia + ")" : ""}.
+      `;
+
+
+      
+
+      // Firmas
+      const elRos = document.getElementById("firmaRosario");
+      const elSeb = document.getElementById("firmaSebastian");
+      const elSuj = document.getElementById("firmaSujey");
+      const elCtr = document.getElementById("firmaContratante");
+      [elSeb, elSuj, elCtr].forEach(el => el?.classList.add("hidden"));
+      elRos?.classList.remove("hidden");
+
+      if (c.tipo === "barman") {
+        elSeb?.classList.remove("hidden");
+      } else if (c.tipo === "catering") {
+        if (c.firmaCatering === "Sujey") {
+          elSuj?.classList.remove("hidden");
+          elRos?.classList.add("hidden");
+        }
+      } else if (c.tipo === "ambos") {
+        elCtr?.classList.remove("hidden");
+        document.getElementById("nombreContratante").textContent = c.cliente;
+        document.getElementById("dniContratante").textContent = c.dniCliente;
+        // Si también quieres a Sebastián en "ambos", descomenta:
+        // elSeb?.classList.remove("hidden");
+      }
+
+      // Fecha de hoy (formato local es-PE)
+      const hoyStr = new Intl.DateTimeFormat('es-PE', { year:'numeric', month:'long', day:'numeric' })
+                      .format(new Date());
+      document.getElementById("fechaActual").textContent = `Huancayo: ${hoyStr}`;
+
+
+      // Descargar PDF
+      if (data.autoDownload) {
+        const element = document.getElementById("contrato");
+        const opt = {
+          margin: 0,
+          filename: c.filename || "Contrato.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        };
+        await html2pdf().set(opt).from(element).save();
+      }
+    });
+
+    
+  </script>
+  <style> 
+  #detalleEvento {
+    position: absolute;
+    bottom: 240px;     /* distancia desde el borde inferior del PDF */
+    left: 60px;       /* ajusta si quieres margen lateral */
+    right: 60px;
+    font-size: 14px;  /* ajusta el tamaño del texto */
+    line-height: 1.5;
+  }
+
+  .firmas {
+  position: absolute;
+  bottom: 100px;      /* justo debajo del detalle del evento */
+  left: 60px;
+  right: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.firma {
+  text-align: center;
+}
+
+.firma img {
+  width: 130px;
+  height: auto;
+}
+
+.firma .linea {
+  width: 160px;
+  border-top: 1px solid #000;
+  margin: 0 auto 5px;
+}
+  
+  /* Contenedor final fijo (todo el bloque al pie) */
+#bloqueFinal{
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  bottom: 80px;            /* distancia desde el borde inferior del PDF */
+}
+
+/* Texto del evento arriba del bloque final */
+#detalleEvento{
+  margin: 8px 0 10px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* Fecha del día, alineada a la derecha */
+#fechaActual{
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  text-align: right;
+}
+
+/* Cláusula */
+#clausula{
+  margin: 0 0 18px 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: justify;
+  letter-spacing: 0.2px;
+}
+
+/* Firmas en fila */
+.firmas{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.firma{
+  text-align: center;
+  width: 31%;
+}
+
+.firma img{
+  width: 130px;     /* ajusta si quieres más grande/pequeño */
+  height: auto;
+}
+
+.linea{
+  width: 160px;
+  border-top: 1px solid #000;
+  margin: 0 auto 5px;
+}
+</style>  
+</body>
+</html>

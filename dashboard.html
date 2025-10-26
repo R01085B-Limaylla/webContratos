@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel — La Marquesina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./style.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./script.js"></script>
+</head>
+<body class="bg" onload="protectPage()">
+  <header class="bar">
+    <div class="brand">
+      <img src="./img/logo.png" alt="La Marquesina" class="logo">
+      <h1>Panel La Marquesina</h1>
+    </div>
+    <button class="btn danger" onclick="logout()">Cerrar sesión</button>
+  </header>
+
+  <main class="grid2">
+    <a class="card action" href="./redactar.html">✍️ Redactar contrato</a>
+    <a class="card action" href="./ver.html">📄 Ver contratos</a>
+  </main>
+</body>
+</html>

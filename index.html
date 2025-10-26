@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iniciar sesión — La Marquesina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./style.css" rel="stylesheet" />
+  <!-- 1) Cargar Supabase ANTES que tu script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+</head>
+<body class="bg">
+  <div class="card narrow">
+    <h1 class="title">Iniciar sesión</h1>
+    <form id="loginForm" class="stack">
+      <label>Correo</label>
+      <input type="email" id="email" required />
+      <label>Contraseña</label>
+      <input type="password" id="password" required />
+      <button type="submit" class="btn primary">Entrar</button>
+      <p id="loginError" class="error"></p>
+    </form>
+  </div>
+
+  <!-- 2) Tu lógica (crea supabaseClient y define setupLogin/protectPage) -->
+  <script src="./script.js"></script>
+
+  <!-- 3) Ahora sí puedes usar las funciones/variables definidas en script.js -->
+  <script>
+    // Lista de administradores permitidos
+    window.ADMINS = [
+      "rosario@lamarquesina.pe",
+      "sebastian@lamarquesina.pe",
+      "sujey@lamarquesina.pe"
+    ];
+
+    // Inicializa el formulario de login
+    if (typeof setupLogin === "function") {
+      setupLogin();
+    }
+
+    // Si ya hay sesión activa, pasa directo al panel
+    (async () => {
+      try {
+        const { data } = await supabaseClient.auth.getSession();
+        if (data?.session) location.href = "dashboard.html";
+      } catch (e) {
+        console.warn("No se pudo verificar la sesión:", e);
+      }
+    })();
+  </script>
+</body>
+</html>

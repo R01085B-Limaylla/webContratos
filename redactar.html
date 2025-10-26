@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Redactar contrato — La Marquesina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./style.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./script.js"></script>
+  <style>
+    .hidden{display:none}
+  </style>
+</head>
+<body class="bg" onload="protectPage()">
+  <header class="bar">
+    <div class="brand">
+      <img src="./img/logo.png" alt="La Marquesina" class="logo">
+      <h1>Redactar contrato</h1>
+    </div>
+    <nav class="nav">
+      <a href="./dashboard.html" class="btn">Panel</a>
+      <a href="./ver.html" class="btn">Ver contratos</a>
+      <button class="btn danger" onclick="logout()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <form id="contractForm" class="card stack">
+      <h2 class="subtitle">Datos del contrato</h2>
+
+      <!-- Tipo -->
+      <label>Tipo de contrato</label>
+      <select id="tipo" required>
+        <option value="">Seleccionar...</option>
+        <option value="barman">Barman</option>
+        <option value="catering">Catering</option>
+        <option value="ambos">Ambos</option>
+      </select>
+
+      <!-- Servicios Barman -->
+      <div id="serviciosBarman" class="section">
+        <h3>Servicios (Barman)</h3>
+        <label><input type="checkbox" class="barmanCheck" value="Barman" checked> Barman</label>
+        <label><input type="checkbox" class="barmanCheck" value="Ayudante de barra"> Ayudante de barra</label>
+        <label><input type="checkbox" class="barmanCheck" value="Barra móvil"> Barra móvil</label>
+        <div class="row">
+          <div class="col">
+            <label>Cocteles</label>
+            <select id="coctelesTipo" required>
+              <option value="">Seleccionar...</option>
+              <option value="Acrílico">Acrílico</option>
+              <option value="Cristalería">Cristalería</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Variedades</label>
+            <div class="chips">
+              <label><input type="checkbox" class="varCoctel" value="Machu Picchu"> Machu Picchu</label>
+              <label><input type="checkbox" class="varCoctel" value="Piña Colada"> Piña Colada</label>
+              <label><input type="checkbox" class="varCoctel" value="Blue Long Island"> Blue Long Island</label>
+              <label><input type="checkbox" class="varCoctel" value="Tequila Sunrise"> Tequila Sunrise</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cantidades de cocteles -->
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label>¿Usar cantidades separadas?</label>
+            <select id="coctelesModo">
+              <option value="total">Una sola cantidad total</option>
+              <option value="separado">Separar por Acrílico / Cristalería</option>
+            </select>
+          </div>
+          <div class="col" id="coctelesTotalWrap">
+            <label>Cant. total de cocteles</label>
+            <input type="number" id="coctelesCantidadTotal" min="1" />
+          </div>
+          <div class="col hidden" id="coctelesSepWrap">
+            <div class="row" style="gap:10px">
+              <div class="col">
+                <label>Cant. Acrílico</label>
+                <input type="number" id="coctelesAcrilico" min="0" />
+              </div>
+              <div class="col">
+                <label>Cant. Cristalería</label>
+                <input type="number" id="coctelesCristaleria" min="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Servicios Catering -->
+      <div id="serviciosCatering" class="section hidden">
+        <h3>Servicios (Catering)</h3>
+
+        <!-- Platos de sitio + color condicionado -->
+        <label>
+          <input type="checkbox" id="chkPlatosSitio" class="cateringCheck" value="Platos de sitio">
+          Platos de sitio
+        </label>
+        <div id="wrapColorPlatos" class="row hidden">
+          <div class="col">
+            <label>Color platos de sitio</label>
+            <select id="colorPlatos">
+              <option value="">Seleccionar...</option>
+              <option value="Dorado">Dorado</option>
+              <option value="Rojo">Rojo</option>
+              <option value="Azul">Azul</option>
+              <option value="Plateado">Plateado</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Servilletas + color condicionado -->
+        <label>
+          <input type="checkbox" id="chkServilletas" class="cateringCheck" value="Servilletas">
+          Servilletas
+        </label>
+        <div id="wrapColorServilletas" class="row hidden">
+          <div class="col">
+            <label>Color servilletas</label>
+            <select id="colorServilletas">
+              <option value="">Seleccionar...</option>
+              <option value="Blanco">Blanco</option>
+              <option value="Rojo">Rojo</option>
+              <option value="Azul">Azul</option>
+              <option value="Negro">Negro</option>
+            </select>
+          </div>
+        </div>
+
+        <label><input type="checkbox" class="cateringCheck" value="Copas"> Copas</label>
+        <label><input type="checkbox" class="cateringCheck" value="Cubiertos dorados"> Cubiertos dorados</label>
+
+        <div class="row">
+          <div class="col">
+            <label>Cantidad de platos</label>
+            <input type="number" id="cantidadCatering" min="1" required />
+          </div>
+          <div class="col">
+            <label>Comida (describir)</label>
+            <input type="text" id="platosDescripcion" placeholder="Ej: fondo, postre..." required />
+          </div>
+        </div>
+      </div>
+
+      <!-- Totales -->
+      <div class="row">
+        <div class="col">
+          <label>Total (S/.)</label>
+          <input type="number" id="total" min="0" step="0.01" required />
+        </div>
+        <div class="col">
+          <label>Adelanto (S/.)</label>
+          <input type="number" id="adelanto" min="0" step="0.01" required />
+        </div>
+        <div class="col">
+          <label>Resta (S/.)</label>
+          <input type="number" id="resta" min="0" step="0.01" readonly />
+        </div>
+      </div>
+
+      <!-- Movilidad con monto -->
+      <div class="row" style="margin-top:8px">
+        <div class="col">
+          <label><input type="checkbox" id="movOn"> Incluir movilidad</label>
+        </div>
+        <div class="col hidden" id="movMontoWrap">
+          <label>Monto de movilidad (S/.)</label>
+          <input type="number" id="movilidadMonto" min="0" step="0.01" />
+        </div>
+      </div>
+
+      <!-- Evento -->
+      <label>Selecciona fecha y hora…</label>
+      <div class="grid-2">
+        <div class="field">
+          <label>Fecha del evento</label>
+          <input class="input" type="date" id="fecha" required />
+        </div>
+        <div class="field">
+          <label>Hora (AM/PM)</label>
+          <div class="time-12">
+            <input class="input" id="horaH" type="number" min="1" max="12" required />
+            <span>:</span>
+            <input class="input" id="horaM" type="number" min="0" max="59" step="1" required />
+            <select class="select" id="horaAP">
+              <option>AM</option>
+              <option>PM</option>
+            </select>
+          </div>
+          <input type="hidden" id="hora" />
+        </div>
+      </div>
+
+      <p class="muted" id="previewFechaHora">Selecciona fecha y hora…</p>
+
+      <!-- Ubicación -->
+      <div class="row">
+        <div class="col">
+          <label>Dirección</label>
+          <input type="text" id="direccion" required />
+        </div>
+        <div class="col">
+          <label>Referencia (opcional)</label>
+          <input type="text" id="referencia" />
+        </div>
+      </div>
+
+      <!-- Contratante -->
+      <div class="row">
+        <div class="col">
+          <label>Nombre del contratante</label>
+          <input type="text" id="contratante" required />
+        </div>
+        <div class="col">
+          <label>DNI</label>
+          <input type="text" id="dni" required pattern="[0-9]{8}" title="Debe tener 8 dígitos" />
+        </div>
+      </div>
+
+      <!-- Firmas -->
+      <div id="firmasSegunTipo" class="section">
+        <h3>Firmas</h3>
+        <div id="firmaCatering" class="hidden">
+          <label>Firma para Catering</label>
+          <select id="firmaCateringSelect" required>
+            <option value="">Seleccionar...</option>
+            <option value="Rosario">Rosario</option>
+            <option value="Sujey">Sujey</option>
+          </select>
+        </div>
+        <div id="firmaBarman">
+          <p>Para Barman: Rosario y Sebastián.</p>
+        </div>
+        <div id="firmaAmbos" class="hidden">
+          <p>Para Ambos: espacio para firma del contratante.</p>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="row gap">
+        <button type="submit" class="btn primary">📄 Generar PDF con plantilla</button>
+        <button type="button" class="btn success" onclick="saveContract()">💾 Guardar</button>
+      </div>
+
+      <p id="saveMsg" class="ok hidden">Guardado correctamente.</p>
+      <p id="saveErr" class="error"></p>
+    </form>
+  </main>
+
+  <!-- ======== Scripts de la página ======== -->
+  <script>
+    // Calcula "Resta"
+    (function(){
+      const total = document.getElementById('total');
+      const adelanto = document.getElementById('adelanto');
+      const resta = document.getElementById('resta');
+      function upd(){ const t=parseFloat(total.value||0), a=parseFloat(adelanto.value||0); resta.value=(t-a).toFixed(2); }
+      total.addEventListener('input', upd); adelanto.addEventListener('input', upd);
+    })();
+
+    // Mostrar/ocultar colores según checkbox
+    (function(){
+      const chkPlatos = document.getElementById('chkPlatosSitio');
+      const wrapPlatos = document.getElementById('wrapColorPlatos');
+      const selPlatos = document.getElementById('colorPlatos');
+
+      const chkServ = document.getElementById('chkServilletas');
+      const wrapServ = document.getElementById('wrapColorServilletas');
+      const selServ = document.getElementById('colorServilletas');
+
+      function toggleWrap(chk, wrap, sel){
+        wrap.classList.toggle('hidden', !chk.checked);
+        if (chk.checked) sel.setAttribute('required',''); else sel.removeAttribute('required');
+      }
+      chkPlatos.addEventListener('change', () => toggleWrap(chkPlatos, wrapPlatos, selPlatos));
+      chkServ.addEventListener('change', () => toggleWrap(chkServ, wrapServ, selServ));
+      toggleWrap(chkPlatos, wrapPlatos, selPlatos);
+      toggleWrap(chkServ, wrapServ, selServ);
+    })();
+
+    // Unifica secciones y required por tipo
+    (function(){
+      const tipoEl = document.getElementById("tipo");
+      const secBarman = document.getElementById("serviciosBarman");
+      const secCatering = document.getElementById("serviciosCatering");
+      const firmaBarman = document.getElementById("firmaBarman");
+      const firmaCatering = document.getElementById("firmaCatering");
+      const firmaAmbos = document.getElementById("firmaAmbos");
+
+      const coctelesTipo  = document.getElementById("coctelesTipo");
+      const coctelesModo  = document.getElementById("coctelesModo");
+      const totalWrap     = document.getElementById("coctelesTotalWrap");
+      const sepWrap       = document.getElementById("coctelesSepWrap");
+      const totalEl       = document.getElementById("coctelesCantidadTotal");
+      const acEl          = document.getElementById("coctelesAcrilico");
+      const crEl          = document.getElementById("coctelesCristaleria");
+
+      const cantidadCatering   = document.getElementById("cantidadCatering");
+      const platosDescripcion  = document.getElementById("platosDescripcion");
+      const firmaCateringSelect= document.getElementById("firmaCateringSelect");
+
+      function setReq(el,on){ if(!el) return; on ? el.setAttribute("required","") : el.removeAttribute("required"); }
+
+      function refreshCocteles(){
+        const sep = coctelesModo.value === "separado";
+        const barmanOn = (tipoEl.value === "barman" || tipoEl.value === "ambos");
+        sepWrap.classList.toggle("hidden", !sep);
+        totalWrap.classList.toggle("hidden", sep);
+        setReq(coctelesTipo, barmanOn);
+        setReq(totalEl, barmanOn && !sep);
+        setReq(acEl,     barmanOn &&  sep);
+        setReq(crEl,     barmanOn &&  sep);
+        if (!barmanOn) [coctelesTipo, totalEl, acEl, crEl].forEach(el => setReq(el, false));
+      }
+
+      function refreshTipo(){
+        const t = tipoEl.value;
+        const barmanOn   = (t === "barman" || t === "ambos");
+        const cateringOn = (t === "catering" || t === "ambos");
+        secBarman.classList.toggle("hidden", !barmanOn);
+        secCatering.classList.toggle("hidden", !cateringOn);
+        firmaBarman.classList.toggle("hidden", !barmanOn);
+        firmaCatering.classList.toggle("hidden", !cateringOn);
+        firmaAmbos.classList.toggle("hidden", t !== "ambos");
+        setReq(cantidadCatering,  cateringOn);
+        setReq(platosDescripcion, cateringOn);
+        setReq(firmaCateringSelect, t === "catering");
+        refreshCocteles();
+      }
+
+      coctelesModo.addEventListener("change", refreshCocteles);
+      tipoEl.addEventListener("change", refreshTipo);
+      refreshTipo();
+    })();
+
+    // Movilidad: mostrar monto si está activo
+    (function(){
+      const movOn = document.getElementById('movOn');
+      const movWrap = document.getElementById('movMontoWrap');
+      const movIn = document.getElementById('movilidadMonto');
+      function refresh(){
+        movWrap.classList.toggle('hidden', !movOn.checked);
+        if (movOn.checked) movIn.setAttribute('required',''); else movIn.removeAttribute('required');
+      }
+      movOn.addEventListener('change', refresh);
+      refresh();
+    })();
+
+    // Fecha & Hora (helpers)
+    (function(){
+      const fecha = document.getElementById('fecha');
+      const hH = document.getElementById('horaH');
+      const hM = document.getElementById('horaM');
+      const hAP = document.getElementById('horaAP');
+      const h24 = document.getElementById('hora');
+      const preview = document.getElementById('previewFechaHora');
+      if (!hH.value) hH.value = 7; if (!hM.value) hM.value = 0;
+      function to24(h12, m, ap){ let h=parseInt(h12||0,10); let mm=String(parseInt(m||0,10)).padStart(2,'0'); ap=(ap||'AM').toUpperCase(); if(ap==='AM'){if(h===12)h=0}else{if(h!==12)h+=12} return `${String(h).padStart(2,'0')}:${mm}`; }
+      function fFecha(iso){ if(!iso) return ""; const [Y,M,D]=iso.split('-').map(n=>parseInt(n,10)); return new Intl.DateTimeFormat('es-PE',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(new Date(Y,(M-1),D)); }
+      function fHora(hhmm){ if(!hhmm) return ""; const [H,M]=hhmm.split(':').map(n=>parseInt(n,10)); const d=new Date(); d.setHours(H||0,M||0,0,0); return new Intl.DateTimeFormat('es-PE',{hour:'numeric',minute:'2-digit',hour12:true}).format(d); }
+      function refresh(){ h24.value=to24(hH.value,hM.value,hAP.value); const ft=fFecha(fecha.value), ht=fHora(h24.value); preview.textContent=(ft&&ht)?`${ft} — ${ht}`:'Selecciona fecha y hora…'; }
+      [fecha,hH,hM,hAP].forEach(el=>el.addEventListener('input',refresh)); refresh();
+      window.__fechaHoraHelpers={horaTexto:()=>fHora(h24.value),fechaTexto:()=>fFecha(fecha.value)};
+    })();
+
+    // Submit y función global
+    document.getElementById('contractForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      window.generarContrato();
+    });
+
+    // ================= generarContrato =================
+    window.generarContrato = async function () {
+      const form = document.getElementById("contractForm");
+      if (!form.checkValidity()) { alert("Por favor, completa todos los campos obligatorios."); return; }
+
+      const tipo = document.getElementById("tipo").value;
+      const total = parseFloat(document.getElementById("total").value);
+      const adelanto = parseFloat(document.getElementById("adelanto").value);
+      const resta = total - adelanto;
+
+      // Movilidad (nuevo)
+      const movOn = document.getElementById('movOn').checked;
+      const movilidadMonto = movOn ? parseFloat(document.getElementById('movilidadMonto').value || '0') : 0;
+      const movilidadTexto = movOn ? `S/. ${movilidadMonto.toFixed(2)}` : "No aplica";
+
+      // Fechas/horas
+      const fecha = document.getElementById("fecha").value;
+      const hora  = document.getElementById("hora").value;
+      const horaTexto  = window.__fechaHoraHelpers.horaTexto();
+      const fechaTexto = window.__fechaHoraHelpers.fechaTexto();
+
+      const direccion = document.getElementById("direccion").value;
+      const referencia = document.getElementById("referencia").value;
+      const contratante = document.getElementById("contratante").value;
+      const dni = document.getElementById("dni").value;
+      const firmaCateringSelect = document.getElementById("firmaCateringSelect")?.value || "Rosario";
+
+      // Barman
+      const barmanChecks = [...document.querySelectorAll(".barmanCheck:checked")].map(x => x.value);
+      const varCoctel = [...document.querySelectorAll(".varCoctel:checked")].map(x => x.value);
+      const coctelesTipo = document.getElementById("coctelesTipo")?.value || "";
+      const coctelesModo = document.getElementById("coctelesModo")?.value || "total";
+      const coctelesCantidadTotal = parseInt(document.getElementById("coctelesCantidadTotal")?.value || "0", 10);
+      const coctelesAcrilico = parseInt(document.getElementById("coctelesAcrilico")?.value || "0", 10);
+      const coctelesCristaleria = parseInt(document.getElementById("coctelesCristaleria")?.value || "0", 10);
+
+      // Catering
+      const cateringChecks = [...document.querySelectorAll(".cateringCheck:checked")].map(x => x.value);
+      const colorPlatos = document.getElementById("colorPlatos")?.value || "";
+      const colorServilletas = document.getElementById("colorServilletas")?.value || "";
+      const cantidadCatering = document.getElementById("cantidadCatering")?.value || "";
+      const platosDescripcion = document.getElementById("platosDescripcion")?.value || "";
+
+      // Servicios
+      const servicios = [];
+      if (tipo === "barman" || tipo === "ambos") {
+        servicios.push(...barmanChecks);
+        let coctelTxt = "";
+        if (coctelesModo === "total") {
+          coctelTxt = `Cocteles (${coctelesTipo}) — Cant.: ${coctelesCantidadTotal}${varCoctel.length ? " — Variedades: " + varCoctel.join(", ") : ""}`;
+        } else {
+          coctelTxt = `Cocteles — Acrílico: ${coctelesAcrilico} | Cristalería: ${coctelesCristaleria}${varCoctel.length ? " — Variedades: " + varCoctel.join(", ") : ""}`;
+        }
+        servicios.push(coctelTxt);
+      }
+      if (tipo === "catering" || tipo === "ambos") {
+        servicios.push(...cateringChecks);
+        if (document.getElementById('chkPlatosSitio').checked && colorPlatos) servicios.push(`Platos de sitio (${colorPlatos})`);
+        if (document.getElementById('chkServilletas').checked && colorServilletas) servicios.push(`Servilletas (${colorServilletas})`);
+        if (cantidadCatering) servicios.push(`Cantidad de platos: ${cantidadCatering}`);
+        if (platosDescripcion) servicios.push(`Comida: ${platosDescripcion}`);
+      }
+
+      const rubrosBase = (tipo === "barman") ? "Cocteles" : (tipo === "catering") ? "Comida" : "Comida y Cocteles";
+      const detallePrecio = `${rubrosBase} S/. ${total.toFixed(2)}`;
+
+      // Archivo
+      const ahora = new Date();
+      const fechaNom = ahora.toISOString().slice(0, 10);
+      const horaNom = ahora.toTimeString().slice(0, 5).replace(":", "-");
+      const nombreArchivo = `Contrato_${tipo}_${fechaNom}_${horaNom}.pdf`;
+
+      // Abrir plantilla
+      const tpl = window.open("contratoTemplate.html", "_blank");
+      if (!tpl) { alert("Tu navegador bloqueó la ventana emergente. Habilítala para generar el PDF."); return; }
+
+      // Payload
+      const payload = {
+        tipo, adelanto, total, resta,
+        movilidad: movilidadMonto > 0,      // compatibilidad
+        movilidadMonto,
+        movilidadTexto,
+        rubrosTexto: `${rubrosBase} — Total S/. ${total.toFixed(2)}`,
+        detallePrecio,
+        cliente: contratante,
+        dniCliente: dni,
+        fecha, hora, fechaTexto, horaTexto,
+        direccion, referencia,
+        servicios,
+        firmaCatering: firmaCateringSelect,
+        filename: nombreArchivo,
+        cantidadCatering,
+        cocteles: {
+          modo: coctelesModo,
+          total: coctelesCantidadTotal,
+          acrilico: coctelesAcrilico,
+          cristaleria: coctelesCristaleria,
+          tipoVajilla: coctelesTipo
+        }
+      };
+
+      // Handshake
+      let sent=false, tries=0; const maxTries=20;
+      function sendOnce(){ if(sent) return; sent=true; try{ tpl.postMessage({type:"fill-contract",autoDownload:true,payload},"*"); }catch(e){ console.error(e); } }
+      function onMsg(ev){ const t=ev?.data?.type; if(t==="template-ready"||t==="template-ack") sendOnce(); if(t==="template-consumed"){ clearInterval(interval); window.removeEventListener("message",onMsg); } }
+      window.addEventListener("message", onMsg);
+      const interval=setInterval(()=>{ if(tpl.closed){ clearInterval(interval); window.removeEventListener("message",onMsg); return; } try{ tpl.postMessage({type:"ping"},"*"); }catch{} if(++tries>maxTries){ clearInterval(interval); window.removeEventListener("message",onMsg);} },500);
+      setTimeout(sendOnce,300);
+    };
+  </script>
+</body>
+</html>

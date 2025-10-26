@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ver contratos — La Marquesina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./style.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./script.js"></script>
+</head>
+<body class="bg" onload="protectPage(); loadContracts();">
+  <header class="bar">
+    <div class="brand">
+      <img src="./img/logo.png" alt="La Marquesina" class="logo">
+      <h1>Contratos</h1>
+    </div>
+    <nav class="nav">
+      <a href="./dashboard.html" class="btn">Panel</a>
+      <a href="./redactar.html" class="btn">Redactar</a>
+      <button class="btn danger" onclick="logout()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div id="list" class="grid">
+      <!-- Tarjetas cargadas desde Supabase -->
+    </div>
+    <p id="listErr" class="error"></p>
+  </main>
+</body>
+</html>
