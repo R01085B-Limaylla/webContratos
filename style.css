@@ -86,3 +86,318 @@ input,select,textarea{padding:10px;border:1px solid var(--border);border-radius:
 
 .muted { color: #6b7280; font-size: .95rem; margin-top: 6px; }
 .row.gap { gap: 10px; }
+
+/* =========================================================
+   UI Mobile-first + Temas Claros (Clásico / Arena)
+   ========================================================= */
+
+/* ------ Paleta base (tema: Clásico) ------ */
+:root{
+  --bg: #f6f8fb;           /* fondo app */
+  --card: #ffffff;         /* tarjetas */
+  --text: #1a2433;         /* texto principal */
+  --muted: #5a6b86;        /* texto suave */
+  --border: #dfe6ef;       /* bordes suaves */
+  --brand: #2563eb;        /* acento (azul) */
+  --brand-2: #10b981;      /* acento secundario (verde) */
+  --danger: #d64141;
+  --ok: #0f9d58;
+
+  --field-bg: #ffffff;     /* fondo del input */
+  --field-bd: #cbd5e1;     /* borde del input */
+  --field-fx: #2563eb;     /* foco del input */
+  --shadow: 0 8px 22px rgba(16,24,40,.08);
+}
+
+/* ------ Tema Arena (claro y cálido) ------ */
+body[data-theme="arena"]{
+  --bg: #fbf8f3;
+  --card: #ffffff;
+  --text: #3a3328;
+  --muted: #7d6f58;
+  --border: #eadfce;
+  --brand: #c36a1f;
+  --brand-2: #3f8f7b;
+  --danger: #c04a4a;
+  --ok: #2e8a57;
+
+  --field-bg: #ffffff;
+  --field-bd: #e6dccd;
+  --field-fx: #c36a1f;
+  --shadow: 0 8px 22px rgba(145,115,78,.12);
+}
+
+/* ------ Layout general ------ */
+body.bg{
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.bar{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+
+.wrap{
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+  padding: 16px 14px 24px;
+}
+
+/* ------ Tarjetas ------ */
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+/* ------ Títulos ------ */
+.title, .subtitle{ margin: 0 0 10px; }
+.subtitle{ font-size: 1.05rem; color: var(--muted); }
+
+/* ------ Grillas responsive (mobile-first) ------ */
+.row{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.col{ min-width: 0; }
+.grid-2{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+/* ------ Chips ------ */
+.chips{
+  display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 8px;
+  background: #fff; border: 1px dashed var(--border); border-radius: 12px;
+}
+
+/* ------ Etiquetas y ayudas ------ */
+label{ font-weight: 600; font-size: .95rem; color: var(--text); }
+.muted{ color: var(--muted); font-size: .9rem; }
+
+/* =========================================================
+   CAMPOS: visibilidad y foco en pantallas pequeñas
+   ========================================================= */
+form input,
+form select,
+form textarea{
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--field-bg);
+  color: var(--text);
+  border: 2px solid var(--field-bd);
+  border-radius: 14px;
+  padding: 14px 14px;
+  font-size: 16px; /* evita zoom en iOS */
+  line-height: 1.15;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+form input::placeholder, form textarea::placeholder{ color: #8a95a8; }
+
+form input:focus,
+form select:focus,
+form textarea:focus{
+  border-color: var(--field-fx);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--field-fx) 25%, transparent);
+  background: #fff;
+}
+
+/* Select con flechita */
+form select{
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%),
+    linear-gradient(to right, #fff, #fff);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 13px) calc(50% - 3px),
+    calc(100% - 48px) 50%;
+  background-size: 7px 7px, 7px 7px, 1px 70%;
+  background-repeat: no-repeat;
+  padding-right: 44px;
+}
+
+/* Quitar spin numérico */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+input[type=number]{ -moz-appearance: textfield; }
+
+/* Hora 12h */
+.time-12{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr 100px;
+  align-items: center; gap: 8px;
+}
+.time-12 span{ color: var(--muted); }
+
+/* Resaltado visual de grupos/secciones */
+.section{
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+}
+
+/* Oculto utilitario */
+.hidden{ display: none !important; }
+
+/* ------ Botones ------ */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 14px 16px; border-radius: 14px;
+  border: 1px solid var(--border);
+  color: #fff;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--brand) 92%, #ffffff 0%), var(--brand));
+  font-weight: 700; text-decoration: none; cursor: pointer;
+  transition: transform .04s ease, filter .15s ease, box-shadow .15s ease;
+  width: 100%; /* full en mobile */
+  box-shadow: 0 3px 0 color-mix(in oklab, var(--brand) 60%, #000 40%);
+}
+.btn:hover{ filter: brightness(1.05); }
+.btn:active{ transform: translateY(1px); box-shadow: 0 2px 0 color-mix(in oklab, var(--brand) 60%, #000 40%); }
+
+.btn.success{
+  background: linear-gradient(180deg, color-mix(in oklab, var(--brand-2) 92%, #ffffff 0%), var(--brand-2));
+  box-shadow: 0 3px 0 color-mix(in oklab, var(--brand-2) 60%, #000 40%);
+}
+.btn.danger{
+  background: linear-gradient(180deg, #e57373, #d64141);
+  box-shadow: 0 3px 0 #a33131;
+}
+
+/* Botones en la barra: no full width */
+.nav .btn{ width: auto; }
+
+/* Mensajes */
+.ok{ color: var(--ok); font-weight: 600; }
+.error{ color: var(--danger); font-weight: 600; }
+
+/* ------ Responsiveness ------ */
+@media (min-width: 560px){
+  .wrap{ padding: 22px; }
+  .card{ padding: 18px; }
+  .row{ grid-template-columns: repeat(2, 1fr); }
+  .grid-2{ grid-template-columns: repeat(2, 1fr); }
+  .btn{ width: auto; }
+}
+@media (min-width: 900px){
+  .row{ grid-template-columns: repeat(3, 1fr); }
+  .time-12{ grid-template-columns: 90px auto 90px 120px; }
+}
+
+/* === Arreglo: NO aplicar estilos "gigantes" a checkbox/radio === */
+form input:not([type="checkbox"]):not([type="radio"]),
+form select,
+form textarea{
+  appearance: none;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--field-bg);
+  color: var(--text);
+  border: 2px solid var(--field-bd);
+  border-radius: 14px;
+  padding: 14px 14px;
+  font-size: 16px;
+  line-height: 1.15;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+form input:not([type="checkbox"]):not([type="radio"]):focus,
+form select:focus,
+form textarea:focus{
+  border-color: var(--field-fx);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--field-fx) 25%, transparent);
+  background: #fff;
+}
+
+/* === Checkbox y radios (tamaño compacto con check visible) === */
+input[type="checkbox"],
+input[type="radio"]{
+  appearance: auto;      /* vuelve al control nativo */
+  width: 1.15rem;        /* tamaño cómodo en mobile */
+  height: 1.15rem;
+  margin: 0 8px 0 0;
+  accent-color: var(--brand);  /* color del check ✓ */
+  vertical-align: middle;
+}
+
+/* Etiquetas con buen alineado para checklist */
+label{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+.chips label{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: #fff;
+}
+.chips input[type="checkbox"]{
+  margin-right: 4px;  /* más compacto dentro de chips */
+}
+
+/* Opcional: columnas limpias para listas de servicios */
+#serviciosBarman .chips,
+#serviciosCatering .chips{
+  gap: 8px;
+}
+#serviciosBarman label,
+#serviciosCatering label{
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+/* Placeholders más visibles */
+::placeholder{
+  color: color-mix(in oklab, var(--text) 55%, #999);
+  opacity: 1;
+}
+
+/* Selects con flecha (chevron) */
+select,
+.select{
+  appearance: none;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 40px; /* espacio para la flecha */
+}
+
+/* Hover/focus bonito en select */
+select:focus,
+.select:focus{
+  border-color: var(--field-fx);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--field-fx) 25%, transparent);
+  background-color: #fff;
+}
+
+/* Evita que los checkbox hereden estilos de inputs de texto */
+input[type="checkbox"],
+input[type="radio"]{
+  appearance: auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0 8px 0 0;
+  accent-color: var(--brand);
+  vertical-align: middle;
+}

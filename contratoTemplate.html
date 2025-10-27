@@ -35,10 +35,10 @@
 
   <h3>Condiciones Económicas:</h3>
   <ul>
-    <li><b id="rubrosLabel">Concepto:</b> <span id="rubros"></span></li>
-    <li><b>Movilidad:</b> <span id="movilidad"></span></li>
+    <li><b id="rubrosLabel">Concepto:</b> <span id="rubros"></span></li>    
     <li><b>Adelanto:</b> S/. <span id="adelanto"></span></li>
     <li><b>Resta:</b> S/. <span id="resta"></span></li>
+    <li><b>Movilidad:</b> <span id="movilidad"></span></li>
   </ul>
 
   <!-- === BLOQUE FINAL (siempre al pie) === -->
@@ -153,26 +153,28 @@ function mayusInicial(txt) {
       if (c.tipo === "catering") {
         const cantidadPlatos = buscarCantidadPlatos(c);
         const cantidadTxt = (cantidadPlatos !== null) ? `${cantidadPlatos}` : "los";
-        introHTML = `
+        const descComida = (c.platosDescripcion || "").trim();
+        const descParte  = descComida ? ` (${descComida})` : "";
+         introHTML = `
           Yo, <b>Sujey Solorzano Vicharra</b> y <b>Rosario Carhuallanqui Ruiz</b>,
           socios de <b>LA MARQUESINA CATERING</b> con RUC 20611125918,
           recibo la suma de <b>S/. ${n2(c.adelanto)}</b> de
           <b>${c.cliente}</b> identificado(a) con DNI <b>${c.dniCliente}</b>,
-          para la prestación de servicios para la <b>preparación de ${cantidadTxt} platos de comida</b>.
+          para la prestación de servicios para la <b>preparación de ${cantidadTxt} platos de comida ${descParte} </b>.
         `;
       } else if (c.tipo === "barman") {
         introHTML = `
           Yo, <b>ROSARIO CARHUALLANQUI RUIZ</b>, en representación de
           <b>LA MARQUESINA CATERING</b> con RUC 20611125918, recibo la suma de
-          <b>S/. ${n2(c.adelanto)}</b> para la prestación de servicios de <b>${c.detallePrecio}</b>,
-          a cargo del Barman <b>SEBASTIÁN LIMAYLLA CARHUALLAQUI</b> (DNI 76440595),
-          de <b>${c.cliente}</b> (DNI <b>${c.dniCliente}</b>).
+          <b>S/. ${n2(c.adelanto)}</b> para la prestación de servicios de Cocteles </b>,
+          a cargo del Barman <b>SEBASTIÁN LIMAYLLA CARHUALLAQUI</b> identificado con DNI 76440595,
+          de <b>${c.cliente}</b> identificado con DNI <b>${c.dniCliente}</b>.
         `;
       } else {
         introHTML = `
           Yo, <b>ROSARIO CARHUALLANQUI RUIZ</b>, en representación de
           <b>LA MARQUESINA CATERING</b> con RUC 20611125918, recibo la suma de
-          <b>S/. ${n2(c.adelanto)}</b> de <b>${c.cliente}</b> (DNI <b>${c.dniCliente}</b>)
+          <b>S/. ${n2(c.adelanto)}</b> de <b>${c.cliente}</b> identificado con DNI <b>${c.dniCliente}</b>
           para la prestación de servicios de <b>Catering y Barman</b>.
         `;
       }
@@ -205,7 +207,7 @@ function mayusInicial(txt) {
         let extraCocteles = "";
         if (c.tipo === "barman" || c.tipo === "ambos") {
         if (c.cocteles?.modo === "total" && c.cocteles?.total) {
-            extraCocteles = ` — Cocteles (${c.cocteles.tipoVajilla || "-"}) ${c.cocteles.total}`;
+            extraCocteles = ` — (${c.cocteles.tipoVajilla || "-"}) ${c.cocteles.total}`;
         } else if (c.cocteles?.modo === "separado") {
             const a = c.cocteles?.acrilico || 0;
             const r = c.cocteles?.cristaleria || 0;
@@ -225,7 +227,18 @@ function mayusInicial(txt) {
 
 
       // Totales / evento
-      document.getElementById("movilidad").textContent = c.movilidad ? "Sí" : "No";
+      // ---- Movilidad: mostrar monto o esconder la fila ----
+        const mobSpan = document.getElementById("movilidad");
+        const mobLi   = mobSpan ? mobSpan.closest("li") : null;
+
+        if (c.movOn && Number(c.movilidadMonto) > 0) {
+          mobSpan.textContent = `S/. ${Number(c.movilidadMonto).toFixed(2)}`;
+        } else {
+          // Si no hay movilidad, elimina toda la fila "Movilidad:"
+          if (mobLi) mobLi.remove();
+        }
+
+
       document.getElementById("adelanto").textContent = n2(c.adelanto);
       document.getElementById("resta").textContent   = n2(c.resta);
       // Fecha/hora bonitas con fallback (usa c.fechaTexto / c.hora en AM/PM si vienen)
@@ -253,6 +266,11 @@ function mayusInicial(txt) {
       const elCtr = document.getElementById("firmaContratante");
       [elSeb, elSuj, elCtr].forEach(el => el?.classList.add("hidden"));
       elRos?.classList.remove("hidden");
+
+      // Siempre debe firmar el CONTRATANTE
+      elCtr?.classList.remove("hidden");
+      document.getElementById("nombreContratante").textContent = c.cliente;
+      document.getElementById("dniContratante").textContent = c.dniCliente;
 
       if (c.tipo === "barman") {
         elSeb?.classList.remove("hidden");
