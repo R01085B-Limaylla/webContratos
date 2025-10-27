@@ -180,28 +180,42 @@ function mayusInicial(txt) {
       }
       document.getElementById("textoPrincipal").innerHTML = introHTML;
 
-      // Lista de servicios
-      const ul = document.getElementById("listaServicios");
-      ul.innerHTML = "";
-      (c.servicios || []).forEach(s => {
-        const li = document.createElement("li");
-        li.textContent = s;
-        ul.appendChild(li);
-      });
+      // Lista de servicios (sin "Comida: ..." y con precio por plato si llega)
+const ul = document.getElementById("listaServicios");
+ul.innerHTML = "";
+const precioPlato = Number(c.precioPlato || 0);
 
-      // Etiqueta Rubros dinámica y contenido (sin redundancias)
-        const rubrosLabel = document.getElementById("rubrosLabel");
+(c.servicios || []).forEach(s => {
+  // 1) Ocultar "Comida: ..."
+  if (/^\s*comida\s*:/i.test(s)) return;
 
-        // Normaliza base recibido desde redactar (ya viene como “Comida …” o “Comida y Cocteles …”)
-        let baseRubros = (c.rubrosTexto || "")
-        .replace(/^Platos\b/i, "Comida")
-        .replace(/^Cocteles y Platos\b/i, "Comida y Cocteles");
+  // 2) Añadir precio por plato a "Cantidad de platos: N"
+  const m = s.match(/^\s*cantidad\s*de\s*platos\s*:\s*(\d+)/i);
+  let texto = s;
+  if (m && precioPlato > 0) {
+    const cant = Number(m[1]);
+    texto = `Cantidad de platos: ${cant} — S/. ${precioPlato.toFixed(2)} cada plato`;
+  }
 
-        // Quita la categoría inicial para no repetirla en el contenido
-        function stripCategoria(str){
-        return str.replace(/^(Comida y Cocteles|Comida|Cocteles)\s*—\s*/i, "");
-        }
-        let contenidoRubros = stripCategoria(baseRubros);
+  const li = document.createElement("li");
+  li.textContent = texto;
+  ul.appendChild(li);
+});
+
+// Etiqueta Rubros dinámica y contenido (sin redundancias)
+const rubrosLabel = document.getElementById("rubrosLabel");
+
+// Normaliza base recibido desde redactar (ya viene como “Comida …” o “Comida y Cocteles …”)
+let baseRubros = (c.rubrosTexto || "")
+  .replace(/^Platos\b/i, "Comida")
+  .replace(/^Cocteles y Platos\b/i, "Comida y Cocteles");
+
+// Quita la categoría inicial para no repetirla en el contenido
+function stripCategoria(str){
+  return str.replace(/^(Comida y Cocteles|Comida|Cocteles)\s*—\s*/i, "");
+}
+let contenidoRubros = stripCategoria(baseRubros);
+
 
         // Sufijo de cocteles (si aplica Barman o Ambos)
         let extraCocteles = "";
@@ -255,9 +269,6 @@ function mayusInicial(txt) {
         se prepararán el día <b>${fechaBonita}</b> a las <b>${horaBonita}</b> en <b>${c.direccion}</b>
         ${c.referencia ? "(Ref: " + c.referencia + ")" : ""}.
       `;
-
-
-      
 
       // Firmas
       const elRos = document.getElementById("firmaRosario");

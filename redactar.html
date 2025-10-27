@@ -160,9 +160,13 @@
             <label>Cantidad de platos</label>
             <input type="number" id="cantidadCatering" placeholder="Ingresa Cantidad de platos" min="1" required />
           </div>
+          <div class="col" id="precioPlatoWrap" class="hidden">
+          <label>Precio por plato (S/.)</label>
+          <input type="number" id="precioPlato" min="0" step="0.01" placeholder="Precio por cada plato" />
+        </div>
           <div class="col">
             <label>Comida (describir)</label>
-            <input type="text" id="platosDescripcion" placeholder="Ej: fondo, postre..." required />
+            <input type="text" id="platosDescripcion" placeholder="Ej: pollo enrollado" required />
           </div>
         </div>
       </div>
@@ -397,6 +401,33 @@
       refresh();
     })();
 
+    //Auto precio por plato 
+
+      (function autoPrecioPlato() {
+        const cantidad = document.getElementById("cantidadCatering");
+        const precio = document.getElementById("precioPlato");
+        const total = document.getElementById("total");
+        const adelanto = document.getElementById("adelanto");
+        const resta = document.getElementById("resta");
+
+        function calcular() {
+          const cant = parseFloat(cantidad.value || 0);
+          const p = parseFloat(precio.value || 0);
+
+          if (cant > 0 && p > 0) {
+            total.value = (cant * p).toFixed(2);
+          }
+
+          const t = parseFloat(total.value || 0);
+          const a = parseFloat(adelanto.value || 0);
+          resta.value = (t - a).toFixed(2);
+        }
+
+        [cantidad, precio, total, adelanto].forEach(el =>
+          el.addEventListener("input", calcular)
+        );
+      })();
+
     // Fecha & Hora (helpers)
     (function(){
       const fecha = document.getElementById('fecha');
@@ -537,6 +568,7 @@
         filename: nombreArchivo,
         cantidadCatering,
         platosDescripcion,
+        precioPlato: parseFloat(document.getElementById("precioPlato").value || "0"),
         cocteles: {
           modo: coctelesModo,
           total: coctelesCantidadTotal,
