@@ -547,9 +547,11 @@
       const horaNom = ahora.toTimeString().slice(0, 5).replace(":", "-");
       const nombreArchivo = `Contrato_${tipo}_${fechaNom}_${horaNom}.pdf`;
 
-      // Abrir plantilla
-      const tpl = window.open("contratoTemplate.html", "_blank");
-      if (!tpl) { alert("Tu navegador bloqueó la ventana emergente. Habilítala para generar el PDF."); return; }
+      // Enviar los datos por URL (base64) y navegar a la plantilla en la MISMA pestaña
+        const msg = { type: "fill-contract", autoDownload: true, payload };
+        const q = encodeURIComponent(btoa(JSON.stringify(msg)));
+        window.location.href = `./contratoTemplate.html?m=${q}`;
+
 
       // Payload
       const payload = {
@@ -578,13 +580,7 @@
         }
       };
 
-      // Handshake (sin loops infinitos)
-      let sent=false, tries=0; const maxTries=20;
-      function sendOnce(){ if(sent) return; sent=true; try{ tpl.postMessage({type:"fill-contract",autoDownload:true,payload},"*"); }catch(e){ console.error(e); } }
-      function onMsg(ev){ const t=ev?.data?.type; if(t==="template-ready"||t==="template-ack") sendOnce(); if(t==="template-consumed"){ clearInterval(interval); window.removeEventListener("message",onMsg); } }
-      window.addEventListener("message", onMsg);
-      const interval=setInterval(()=>{ if(tpl.closed){ clearInterval(interval); window.removeEventListener("message",onMsg); return; } try{ tpl.postMessage({type:"ping"},"*"); }catch{} if(++tries>maxTries){ clearInterval(interval); window.removeEventListener("message",onMsg);} },500);
-      setTimeout(sendOnce,300);
+      
     };
   </script>
 </body>

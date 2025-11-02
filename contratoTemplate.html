@@ -76,6 +76,26 @@
 
   <script>
     
+    // === Lee ?m=... de la URL, reconstruye el mensaje y lo envía como evento 'message' ===
+    (function () {
+      try {
+        const params = new URLSearchParams(location.search);
+        const m = params.get("m");
+        if (!m) return;
+
+        const msg = JSON.parse(atob(decodeURIComponent(m)));
+
+        // Simula el mismo evento 'message' que usa tu código
+        const ev = new MessageEvent("message", { data: msg, origin: location.origin, source: window });
+        window.dispatchEvent(ev);
+
+        // (Opcional) limpia la URL
+        // history.replaceState(null, "", location.pathname);
+      } catch (e) {
+        console.error("Error leyendo datos del contrato:", e);
+      }
+    })();
+    
     // ---------- Handshake ----------
     window.addEventListener("load", () => {
       try { if (window.opener) window.opener.postMessage({ type: "template-ready" }, "*"); } catch {}
