@@ -547,10 +547,7 @@
       const horaNom = ahora.toTimeString().slice(0, 5).replace(":", "-");
       const nombreArchivo = `Contrato_${tipo}_${fechaNom}_${horaNom}.pdf`;
 
-      // Enviar los datos por URL (base64) y navegar a la plantilla en la MISMA pestaña
-        const msg = { type: "fill-contract", autoDownload: true, payload };
-        const q = encodeURIComponent(btoa(JSON.stringify(msg)));
-        window.location.href = `./contratoTemplate.html?m=${q}`;
+      
 
 
       // Payload
@@ -579,6 +576,16 @@
           tipoVajilla: coctelesTipo
         }
       };
+    // Empaquetar mensaje y pasarlo por URL con Base64 UTF-8
+const msg = { type: "fill-contract", autoDownload: true, payload };
+
+// UTF-8 → base64 seguro
+const json = JSON.stringify(msg);
+const utf8 = new TextEncoder().encode(json);
+const b64  = btoa(String.fromCharCode(...utf8));
+
+const q = encodeURIComponent(b64);
+window.location.href = `./contratoTemplate.html?m=${q}`;
 
       
     };

@@ -76,25 +76,42 @@
 
   <script>
     
-    // === Lee ?m=... de la URL, reconstruye el mensaje y lo envía como evento 'message' ===
-    (function () {
+         // Lee ?m=..., decodifica UTF-8, guarda el mensaje y lo despacha cuando la página esté lista
+(function () {
+  try {
+    const mParam = new URLSearchParams(location.search).get("m");
+    if (!mParam) return;
+
+    // Decodificación Base64 UTF-8
+    const b64   = decodeURIComponent(mParam);
+    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const json  = new TextDecoder().decode(bytes);
+    const msg   = JSON.parse(json);
+
+    // Guárdalo globalmente por si hace falta leerlo luego
+    window.__BOOT_MSG = msg;
+
+    // Despacha el evento 'message' cuando la página ya registró sus listeners
+    const dispatch = () => {
       try {
-        const params = new URLSearchParams(location.search);
-        const m = params.get("m");
-        if (!m) return;
-
-        const msg = JSON.parse(atob(decodeURIComponent(m)));
-
-        // Simula el mismo evento 'message' que usa tu código
         const ev = new MessageEvent("message", { data: msg, origin: location.origin, source: window });
         window.dispatchEvent(ev);
+      } catch (e) { console.error(e); }
+    };
 
-        // (Opcional) limpia la URL
-        // history.replaceState(null, "", location.pathname);
-      } catch (e) {
-        console.error("Error leyendo datos del contrato:", e);
-      }
-    })();
+    // Si el DOM ya está listo, dispara al próximo tick; si no, espera 'load'
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      setTimeout(dispatch, 0);
+    } else {
+      window.addEventListener("load", () => setTimeout(dispatch, 0), { once: true });
+    }
+
+    // (Opcional) limpiar la URL
+    // history.replaceState(null, "", location.pathname);
+  } catch (e) {
+    console.error("Error leyendo datos del contrato:", e);
+  }
+})();
     
     // ---------- Handshake ----------
     window.addEventListener("load", () => {
