@@ -217,32 +217,142 @@ function mayusInicial(txt) {
       }
       document.getElementById("textoPrincipal").innerHTML = introHTML;
 
-      // Lista de servicios (sin "Comida: ..." y con precio por plato si llega)
+// ===============================
+// 🧾 LISTA DE SERVICIOS (formato final con precios de cocteles)
+// ===============================
 const ul = document.getElementById("listaServicios");
 ul.innerHTML = "";
+
 const precioPlato = Number(c.precioPlato || 0);
 
-(c.servicios || []).forEach(s => {
-  // 1) Ocultar "Comida: ..."
-  if (/^\s*comida\s*:/i.test(s)) return;
-
-  // 2) Añadir precio por plato a "Cantidad de platos: N"
-  const m = s.match(/^\s*cantidad\s*de\s*platos\s*:\s*(\d+)/i);
-  let texto = s;
-  if (m && precioPlato > 0) {
-    const cant = Number(m[1]);
-    texto = `Cantidad de platos: ${cant} — S/. ${precioPlato.toFixed(2)} cada plato`;
-  }
-
+// Helper
+function addLine(texto) {
+  if (!texto) return;
   const li = document.createElement("li");
   li.textContent = texto;
   ul.appendChild(li);
-});
+}
+
+// ===================================================
+// TIPO: AMBOS
+// ===================================================
+if (c.tipo === "ambos") {
+  const platosItem = (c.servicios || []).find(s => /^Platos de sitio/i.test(s));
+  const servItem   = (c.servicios || []).find(s => /^Servilletas/i.test(s));
+  const mesasItem  = (c.servicios || []).find(s => /^Mesas:\s*\d+/i.test(s));
+
+  const platosColor = platosItem?.match(/\(([^)]+)\)/)?.[1] || null;
+  const servColor   = servItem?.match(/\(([^)]+)\)/)?.[1] || null;
+  const mesasNum    = mesasItem?.match(/Mesas:\s*(\d+)/i)?.[1] || null;
+
+  const l1Parts = [];
+  if (platosItem) l1Parts.push(`Platos de sitio${platosColor ? `(${platosColor})` : ""}`);
+  if (servItem)   l1Parts.push(`Servilletas${servColor ? `(${servColor})` : ""}`);
+  if (mesasNum)   l1Parts.push(`Mesas: ${mesasNum}`);
+  if (l1Parts.length) addLine(l1Parts.join(" - "));
+
+  const l2Parts = [];
+  if ((c.servicios || []).some(s => /^Copas$/i.test(s))) l2Parts.push("Copas");
+  if ((c.servicios || []).some(s => /^Cubiertos dorados$/i.test(s))) l2Parts.push("Cubiertos dorados");
+  if (l2Parts.length) addLine(l2Parts.join(" - "));
+
+  const mozosItem = (c.servicios || []).find(s => /^Mozos:\s*\d+/i.test(s));
+  const mozosNum = mozosItem?.match(/Mozos:\s*(\d+)/i)?.[1] || null;
+  if (mozosNum) addLine(`Mozos: ${mozosNum}`);
+
+  if (c.cantidadCatering) {
+    let txt = `Cantidad de platos: ${c.cantidadCatering}`;
+    if (precioPlato > 0) txt += ` — S/. ${precioPlato.toFixed(2)} cada plato`;
+    addLine(txt);
+  }
+
+  if (c.platosDescripcion) addLine(`Comida: ${c.platosDescripcion}`);
+
+  const barmanServicios = (c.servicios || []).filter(s =>
+    /^(Barman|Ayudante de barra|Barra móvil)$/i.test(s)
+  );
+  if (barmanServicios.length) addLine(barmanServicios.join(" - "));
+
+  // === NUEVO: Cocteles con precios por tipo de vaso ===
+  let coctelLinea = "";
+  if (c.cocteles?.modo === "separado") {
+    const a = Number(c.cocteles.acrilico || 0);
+    const r = Number(c.cocteles.cristaleria || 0);
+    coctelLinea = `Cocteles: Acrílico ${a} (S/.3.00 c/u) - Cristalería ${r} (S/.4.50 c/u)`;
+  } else if (c.cocteles?.modo === "total" && Number(c.cocteles.total) > 0) {
+    const tipo = c.cocteles.tipoVajilla || "-";
+    coctelLinea = `Cocteles: (${tipo}) ${c.cocteles.total}`;
+  }
+  if (coctelLinea) addLine(coctelLinea);
+
+  if (c.extras) addLine(`Extras: ${c.extras}`);
+
+// ===================================================
+// TIPO: CATERING
+// ===================================================
+} else if (c.tipo === "catering") {
+  const platosItem = (c.servicios || []).find(s => /^Platos de sitio/i.test(s));
+  const servItem   = (c.servicios || []).find(s => /^Servilletas/i.test(s));
+  const mesasItem  = (c.servicios || []).find(s => /^Mesas:\s*\d+/i.test(s));
+
+  const platosColor = platosItem?.match(/\(([^)]+)\)/)?.[1] || null;
+  const servColor   = servItem?.match(/\(([^)]+)\)/)?.[1] || null;
+  const mesasNum    = mesasItem?.match(/Mesas:\s*(\d+)/i)?.[1] || null;
+
+  const l1Parts = [];
+  if (platosItem) l1Parts.push(`Platos de sitio${platosColor ? ` (${platosColor})` : ""}`);
+  if (servItem)   l1Parts.push(`Servilletas${servColor ? ` (${servColor})` : ""}`);
+  if (mesasNum)   l1Parts.push(`Mesas: ${mesasNum}`);
+  if (l1Parts.length) addLine(l1Parts.join(" - "));
+
+  const l2Parts = [];
+  if ((c.servicios || []).some(s => /^Copas$/i.test(s))) l2Parts.push("Copas");
+  if ((c.servicios || []).some(s => /^Cubiertos dorados$/i.test(s))) l2Parts.push("Cubiertos dorados");
+  if (l2Parts.length) addLine(l2Parts.join(" - "));
+
+  const mozosItem = (c.servicios || []).find(s => /^Mozos:\s*\d+/i.test(s));
+  const mozosNum = mozosItem?.match(/Mozos:\s*(\d+)/i)?.[1] || null;
+  if (mozosNum) addLine(`Mozos: ${mozosNum}`);
+
+  if (c.cantidadCatering) {
+    let txt = `Cantidad de platos: ${c.cantidadCatering}`;
+    if (precioPlato > 0) txt += ` — S/. ${precioPlato.toFixed(2)} cada plato`;
+    addLine(txt);
+  }
+
+  if (c.platosDescripcion) addLine(`Comida: ${c.platosDescripcion}`);
+  if (c.extras) addLine(`Extras: ${c.extras}`);
+
+// ===================================================
+// TIPO: BARMAN
+// ===================================================
+} else if (c.tipo === "barman") {
+  const barmanServicios = (c.servicios || []).filter(s =>
+    /^(Barman|Ayudante de barra|Barra móvil)$/i.test(s)
+  );
+  if (barmanServicios.length) addLine(barmanServicios.join(" - "));
+
+  // === NUEVO: Cocteles con precios por tipo de vaso ===
+  let coctelLinea = "";
+  if (c.cocteles?.modo === "separado") {
+    const a = Number(c.cocteles.acrilico || 0);
+    const r = Number(c.cocteles.cristaleria || 0);
+    coctelLinea = `Cocteles: Acrílico ${a} (S/.3.00 c/u) - Cristalería ${r} (S/.4.50 c/u)`;
+  } else if (c.cocteles?.modo === "total" && Number(c.cocteles.total) > 0) {
+    const tipo = c.cocteles.tipoVajilla || "-";
+    coctelLinea = `Cocteles: (${tipo}) ${c.cocteles.total}`;
+  }
+  if (coctelLinea) addLine(coctelLinea);
+
+  if (c.extras) addLine(`Extras: ${c.extras}`);
+}
+
+
 
 // Etiqueta Rubros dinámica y contenido (sin redundancias)
 const rubrosLabel = document.getElementById("rubrosLabel");
 
-// Normaliza base recibido desde redactar (ya viene como “Comida …” o “Comida y Cocteles …”)
+// Normaliza base recibido desde redactar
 let baseRubros = (c.rubrosTexto || "")
   .replace(/^Platos\b/i, "Comida")
   .replace(/^Cocteles y Platos\b/i, "Comida y Cocteles");
@@ -251,31 +361,30 @@ let baseRubros = (c.rubrosTexto || "")
 function stripCategoria(str){
   return str.replace(/^(Comida y Cocteles|Comida|Cocteles)\s*—\s*/i, "");
 }
+
 let contenidoRubros = stripCategoria(baseRubros);
 
+// 🚫 Quitar cualquier desglose de cocteles (Acrílico/Cristalería) en TODOS los casos
+contenidoRubros = contenidoRubros
+  .replace(/\s*—\s*\((?:Acrílico|Cristalería)\)\s*\d+/gi, "")
+  .replace(/\s*—\s*Cocteles:\s*Acrílico\s*\d+\s*\|\s*Cristalería\s*\d+/gi, "")
+  .trim();
 
-        // Sufijo de cocteles (si aplica Barman o Ambos)
-        let extraCocteles = "";
-        if (c.tipo === "barman" || c.tipo === "ambos") {
-        if (c.cocteles?.modo === "total" && c.cocteles?.total) {
-            extraCocteles = ` — (${c.cocteles.tipoVajilla || "-"}) ${c.cocteles.total}`;
-        } else if (c.cocteles?.modo === "separado") {
-            const a = c.cocteles?.acrilico || 0;
-            const r = c.cocteles?.cristaleria || 0;
-            extraCocteles = ` — Cocteles: Acrílico ${a} | Cristalería ${r}`;
-        }
-        }
-        contenidoRubros += extraCocteles;
+// Label visible
+let labelText = "Detalle:";
+if (c.tipo === "catering")      labelText = "Comida:";
+else if (c.tipo === "barman")   labelText = "Cocteles:";
+else                            labelText = "Comida + Cocteles:";
 
-        // Label visible
-        let labelText = "Detalle:";
-        if (c.tipo === "catering")      labelText = "Comida:";
-        else if (c.tipo === "barman")   labelText = "Cocteles:";
-        else                            labelText = "Comida + Cocteles:";
+rubrosLabel.textContent = labelText;
 
-        rubrosLabel.textContent = labelText;
-        document.getElementById("rubros").textContent = contenidoRubros;
-
+// En “Ambos”, imprime la línea compacta. En otros, el contenido ya saneado.
+if (c.tipo === "ambos" && c.totales) {
+  document.getElementById("rubros").textContent =
+    c.rubrosTexto || `Comida S/. ${n2(c.totales.comida)} + Cocteles S/. ${n2(c.totales.barman)} — Total S/. ${n2(c.totales.total)}`;
+} else {
+  document.getElementById("rubros").textContent = contenidoRubros;
+}
 
       // Totales / evento
       // ---- Movilidad: mostrar monto o esconder la fila ----

@@ -9,6 +9,7 @@
   <script defer src="./script.js"></script>
   <style>
     .hidden{display:none}
+    .note { font-size:.9rem; color:#666 }
   </style>
 </head>
 <body class="bg" onload="protectPage()">
@@ -89,6 +90,7 @@
             </div>
           </div>
         </div>
+        <p class="note">Precio automático Barman: S/. 3.00 (acrílico) • S/. 4.50 (cristalería)</p>
       </div>
 
       <!-- Servicios Catering -->
@@ -109,7 +111,12 @@
               <option value="Rojo">Rojo</option>
               <option value="Azul">Azul</option>
               <option value="Plateado">Plateado</option>
+              <option value="otro">Otro…</option>
             </select>
+          </div>
+          <div class="col hidden" id="colorPlatosOtroWrap">
+            <label>Especificar color</label>
+            <input type="text" id="colorPlatosOtro" placeholder="Ej.: Vino tinto" />
           </div>
         </div>
 <br>
@@ -127,7 +134,12 @@
               <option value="Rojo">Rojo</option>
               <option value="Azul">Azul</option>
               <option value="Negro">Negro</option>
+              <option value="otro">Otro…</option>
             </select>
+          </div>
+          <div class="col hidden" id="colorServilletasOtroWrap">
+            <label>Especificar color</label>
+            <input type="text" id="colorServilletasOtro" placeholder="Ej.: Marfil" />
           </div>
         </div>
 <br>
@@ -160,10 +172,10 @@
             <label>Cantidad de platos</label>
             <input type="number" id="cantidadCatering" placeholder="Ingresa Cantidad de platos" min="1" required />
           </div>
-          <div class="col" id="precioPlatoWrap" class="hidden">
-          <label>Precio por plato (S/.)</label>
-          <input type="number" id="precioPlato" min="0" step="0.01" placeholder="Precio por cada plato" />
-        </div>
+          <div class="col" id="precioPlatoWrap">
+            <label>Precio por plato (S/.)</label>
+            <input type="number" id="precioPlato" min="0" step="0.01" placeholder="Precio por cada plato" />
+          </div>
           <div class="col">
             <label>Comida (describir)</label>
             <input type="text" id="platosDescripcion" placeholder="Ej: pollo enrollado" required />
@@ -173,9 +185,17 @@
 
       <!-- Totales -->
       <div class="row">
+        <div class="col hidden" id="wrapSubtotalBarman">
+          <label>Total cocteles (S/.)</label>
+          <input type="number" id="subtotalBarman" min="0" step="0.01" readonly />
+        </div>
+        <div class="col hidden" id="wrapSubtotalComida">
+          <label>Total comida (S/.)</label>
+          <input type="number" id="subtotalComida" min="0" step="0.01" readonly />
+        </div>
         <div class="col">
           <label>Total (S/.)</label>
-          <input type="number" id="total" min="0" step="0.01" placeholder="Ingresar Costo Total" required />
+          <input type="number" id="total" min="0" step="0.01" placeholder="Se calcula automáticamente" readonly />
         </div>
         <div class="col">
           <label>Adelanto (S/.)</label>
@@ -186,6 +206,7 @@
           <input type="number" id="resta" min="0" step="0.01" placeholder="Resta automática" readonly />
         </div>
       </div>
+      <p class="note" id="detalleTotalesNote"></p>
 
       <!-- Movilidad con monto -->
       <div class="row" style="margin-top:8px">
@@ -216,6 +237,9 @@
               <option>AM</option>
             </select>
           </div>
+          <div style="margin-top:6px">
+            <label><input type="checkbox" id="horaIndefinida"> Hora por definir</label>
+          </div>
           <input type="hidden" id="hora" />
         </div>
       </div>
@@ -244,6 +268,12 @@
           <label>DNI</label>
           <input type="text" id="dni" placeholder="DNI de 8 dígitos" required pattern="[0-9]{8}" title="Debe tener 8 dígitos" />
         </div>
+      </div>
+
+      <!-- Extras (para cualquier tipo) -->
+      <div class="section">
+        <h3>Extras</h3>
+        <textarea id="extras" rows="3" placeholder="Notas adicionales, condiciones especiales, etc."></textarea>
       </div>
 
       <!-- Firmas -->
@@ -287,15 +317,19 @@
       total.addEventListener('input', upd); adelanto.addEventListener('input', upd);
     })();
 
-    // Mostrar/ocultar colores + mesas según checkbox (IDs corregidos)
+    // Mostrar/ocultar colores + mesas según checkbox (IDs corregidos) + manejo de "Otro"
     (function(){
       const chkPlatos = document.getElementById('chkPlatosSitio');
       const platosOpts = document.getElementById('platosOpts');
       const selPlatos = document.getElementById('colorPlatos');
+      const platosOtroWrap = document.getElementById('colorPlatosOtroWrap');
+      const platosOtro = document.getElementById('colorPlatosOtro');
 
       const chkServ = document.getElementById('chkServilletas');
       const servilletasOpts = document.getElementById('servilletasOpts');
       const selServ = document.getElementById('colorServilletas');
+      const servOtroWrap = document.getElementById('colorServilletasOtroWrap');
+      const servOtro = document.getElementById('colorServilletasOtro');
 
       const mesasWrap = document.getElementById('mesasWrap');
       const cantidadMesas = document.getElementById('cantidadMesas');
@@ -322,10 +356,19 @@
         if (chkMozos.checked) cantidadMozos.setAttribute('required','');
         else cantidadMozos.removeAttribute('required');
       }
+      function toggleOtro(selectEl, wrapEl, inputEl){
+        const isOtro = selectEl.value === 'otro';
+        wrapEl.classList.toggle('hidden', !isOtro);
+        if (isOtro) { inputEl.setAttribute('required',''); }
+        else { inputEl.removeAttribute('required'); inputEl.value=''; }
+      }
 
       chkPlatos.addEventListener('change', () => { toggleWrap(chkPlatos, platosOpts, selPlatos); toggleMesas(); });
       chkServ.addEventListener('change', () => { toggleWrap(chkServ, servilletasOpts, selServ); toggleMesas(); });
       chkMozos.addEventListener('change', toggleMozos);
+
+      selPlatos.addEventListener('change', () => toggleOtro(selPlatos, platosOtroWrap, platosOtro));
+      selServ.addEventListener('change', () => toggleOtro(selServ, servOtroWrap, servOtro));
 
       toggleWrap(chkPlatos, platosOpts, selPlatos);
       toggleWrap(chkServ, servilletasOpts, selServ);
@@ -361,11 +404,15 @@
         const barmanOn = (tipoEl.value === "barman" || tipoEl.value === "ambos");
         sepWrap.classList.toggle("hidden", !sep);
         totalWrap.classList.toggle("hidden", sep);
-        setReq(coctelesTipo, barmanOn);
+        setReq(coctelesTipo, barmanOn && !sep);
         setReq(totalEl, barmanOn && !sep);
         setReq(acEl,     barmanOn &&  sep);
         setReq(crEl,     barmanOn &&  sep);
-        if (!barmanOn) [coctelesTipo, totalEl, acEl, crEl].forEach(el => setReq(el, false));
+        // Si está en modo total y hay cantidad, forzar Acrílico por defecto si no se eligió tipo
+        if (barmanOn && !sep) {
+          const n = parseFloat((document.getElementById("coctelesCantidadTotal").value)||0);
+          if (!coctelesTipo.value && n>0) coctelesTipo.value = 'Acrílico';
+        }
       }
 
       function refreshTipo(){
@@ -381,10 +428,19 @@
         setReq(platosDescripcion, cateringOn);
         setReq(firmaCateringSelect, t === "catering");
         refreshCocteles();
+        // Proteger por si __precios aún no está definido
+        if (window.__precios && typeof window.__precios.calc === 'function') {
+          window.__precios.calc();
+        }
       }
 
-      coctelesModo.addEventListener("change", refreshCocteles);
+      coctelesModo.addEventListener("change", () => { refreshCocteles(); window.__precios.calc(); });
+      [coctelesTipo].forEach(el=> el.addEventListener('change', () => window.__precios.calc()));
+      [document.getElementById('coctelesCantidadTotal'), document.getElementById('coctelesAcrilico'), document.getElementById('coctelesCristaleria')]
+        .forEach(el => el.addEventListener('input', () => window.__precios.calc()));
+
       tipoEl.addEventListener("change", refreshTipo);
+      // Llamar una vez, protegido si __precios aún no existe
       refreshTipo();
     })();
 
@@ -401,34 +457,103 @@
       refresh();
     })();
 
-    //Auto precio por plato 
+    // Ajuste para mostrar totales correctos según tipo
+(function autoPrecios(){
+  const tipo = document.getElementById("tipo");
+  const cantidad = document.getElementById("cantidadCatering");
+  const precioPlato = document.getElementById("precioPlato");
+  const total = document.getElementById("total");
+  const adelanto = document.getElementById("adelanto");
+  const resta = document.getElementById("resta");
+  const detalleNote = document.getElementById('detalleTotalesNote');
 
-      (function autoPrecioPlato() {
-        const cantidad = document.getElementById("cantidadCatering");
-        const precio = document.getElementById("precioPlato");
-        const total = document.getElementById("total");
-        const adelanto = document.getElementById("adelanto");
-        const resta = document.getElementById("resta");
+  const wrapB = document.getElementById('wrapSubtotalBarman');
+  const wrapC = document.getElementById('wrapSubtotalComida');
+  const subB = document.getElementById('subtotalBarman');
+  const subC = document.getElementById('subtotalComida');
 
-        function calcular() {
-          const cant = parseFloat(cantidad.value || 0);
-          const p = parseFloat(precio.value || 0);
+  const coctelesModo = document.getElementById('coctelesModo');
+  const coctelesTipo = document.getElementById('coctelesTipo');
+  const cantTotal = document.getElementById('coctelesCantidadTotal');
+  const cantAcr = document.getElementById('coctelesAcrilico');
+  const cantCris = document.getElementById('coctelesCristaleria');
 
-          if (cant > 0 && p > 0) {
-            total.value = (cant * p).toFixed(2);
-          }
+  function calcBarman(){
+    const t = tipo.value;
+    const barmanOn = (t === 'barman' || t === 'ambos');
+    if (!barmanOn) return 0;
+    const modo = coctelesModo.value;
+    const P_ACR = 3.0, P_CRIS = 4.5;
+    if (modo === 'separado'){
+      const a = parseFloat(cantAcr.value||0);
+      const c = parseFloat(cantCris.value||0);
+      return (a*P_ACR) + (c*P_CRIS);
+    } else {
+      const n = parseFloat(cantTotal.value||0);
+      const tipoV = coctelesTipo.value;
+      if (tipoV === 'Acrílico') return n * P_ACR;
+      if (tipoV === 'Cristalería') return n * P_CRIS;
+      return 0;
+    }
+  }
 
-          const t = parseFloat(total.value || 0);
-          const a = parseFloat(adelanto.value || 0);
-          resta.value = (t - a).toFixed(2);
-        }
+  function calcComida(){
+    const t = tipo.value;
+    const catOn = (t === 'catering' || t === 'ambos');
+    if (!catOn) return 0;
+    const cant = parseFloat(cantidad.value||0);
+    const p = parseFloat(precioPlato.value||0);
+    return (cant>0 && p>0)? cant*p : 0;
+  }
 
-        [cantidad, precio, total, adelanto].forEach(el =>
-          el.addEventListener("input", calcular)
-        );
-      })();
+  function calc(){
+    const t = tipo.value;
+    const barman = calcBarman();
+    const comida = calcComida();
+    let tot = 0;
+    if (t === 'barman') tot = barman;
+    else if (t === 'catering') tot = comida;
+    else if (t === 'ambos') tot = barman + comida;
 
-    // Fecha & Hora (helpers)
+    // Mostrar/ocultar subtotales según tipo
+    if (t === 'ambos') {
+      wrapB.classList.remove('hidden');
+      wrapC.classList.remove('hidden');
+    } else {
+      wrapB.classList.add('hidden');
+      wrapC.classList.add('hidden');
+    }
+
+    subB.value = barman.toFixed(2);
+    subC.value = comida.toFixed(2);
+
+    total.value = (tot||0).toFixed(2);
+    const a = parseFloat(adelanto.value||0);
+    resta.value = (tot - a).toFixed(2);
+
+    // Nota inferior
+    if (t === 'ambos') {
+      detalleNote.textContent = `Detalle: Comida S/. ${comida.toFixed(2)} + Barman S/. ${barman.toFixed(2)} = Total S/. ${(tot).toFixed(2)}`;
+    } else if (t === 'barman') {
+      detalleNote.textContent = `Total Barman: S/. ${barman.toFixed(2)}`;
+    } else if (t === 'catering') {
+      detalleNote.textContent = `Total Catering: S/. ${comida.toFixed(2)}`;
+    } else {
+      detalleNote.textContent = '';
+    }
+  }
+
+  [cantidad, precioPlato, adelanto].forEach(el => el.addEventListener("input", calc));
+  [coctelesModo, coctelesTipo].forEach(el => el.addEventListener('change', calc));
+  [cantTotal, cantAcr, cantCris].forEach(el => el.addEventListener('input', calc));
+  tipo.addEventListener('change', calc);
+
+  window.__precios = { calc, calcBarman, calcComida };
+  calc();
+})();
+
+
+    // Fecha & Hora (helpers) + Hora por definir
     (function(){
       const fecha = document.getElementById('fecha');
       const hH = document.getElementById('horaH');
@@ -436,13 +561,27 @@
       const hAP = document.getElementById('horaAP');
       const h24 = document.getElementById('hora');
       const preview = document.getElementById('previewFechaHora');
+      const hInd = document.getElementById('horaIndefinida');
       if (!hH.value) hH.value = 7; if (!hM.value) hM.value = 0;
       function to24(h12, m, ap){ let h=parseInt(h12||0,10); let mm=String(parseInt(m||0,10)).padStart(2,'0'); ap=(ap||'AM').toUpperCase(); if(ap==='AM'){if(h===12)h=0}else{if(h!==12)h+=12} return `${String(h).padStart(2,'0')}:${mm}`; }
       function fFecha(iso){ if(!iso) return ""; const [Y,M,D]=iso.split('-').map(n=>parseInt(n,10)); return new Intl.DateTimeFormat('es-PE',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).format(new Date(Y,(M-1),D)); }
       function fHora(hhmm){ if(!hhmm) return ""; const [H,M]=hhmm.split(':').map(n=>parseInt(n,10)); const d=new Date(); d.setHours(H||0,M||0,0,0); return new Intl.DateTimeFormat('es-PE',{hour:'numeric',minute:'2-digit',hour12:true}).format(d); }
-      function refresh(){ h24.value=to24(hH.value,hM.value,hAP.value); const ft=fFecha(fecha.value), ht=fHora(h24.value); preview.textContent=(ft&&ht)?`${ft} — ${ht}`:'Selecciona fecha y hora…'; }
-      [fecha,hH,hM,hAP].forEach(el=>el.addEventListener('input',refresh)); refresh();
-      window.__fechaHoraHelpers={horaTexto:()=>fHora(h24.value),fechaTexto:()=>fFecha(fecha.value)};
+      function sync(){
+        if (hInd.checked){
+          h24.value='';
+          [hH,hM,hAP].forEach(el=>{ el.setAttribute('disabled',''); el.removeAttribute('required'); });
+        } else {
+          [hH,hM,hAP].forEach(el=>{ el.removeAttribute('disabled'); el.setAttribute('required',''); });
+          h24.value=to24(hH.value,hM.value,hAP.value);
+        }
+        const ft=fFecha(fecha.value);
+        const ht=hInd.checked? 'Hora por definir' : fHora(h24.value);
+        preview.textContent=(ft)?`${ft} — ${ht||''}`:'Selecciona fecha y hora…';
+      }
+      [fecha,hH,hM,hAP].forEach(el=>el.addEventListener('input',sync));
+      hInd.addEventListener('change', sync);
+      sync();
+      window.__fechaHoraHelpers={horaTexto:()=> (hInd.checked? 'Hora por definir' : fHora(h24.value)), fechaTexto:()=>fFecha(fecha.value), horaIndefinida: ()=> !!hInd.checked };
     })();
 
     // Submit y función global
@@ -454,10 +593,39 @@
     // ================= generarContrato =================
     window.generarContrato = async function () {
       const form = document.getElementById("contractForm");
+
+      // ===== Guardas de validación antes de checkValidity() =====
+      // Hora por definir: eliminar required y deshabilitar campos de hora
+      const hInd = document.getElementById('horaIndefinida');
+      const hH = document.getElementById('horaH');
+      const hM = document.getElementById('horaM');
+      const hAP = document.getElementById('horaAP');
+      if (hInd && hInd.checked){
+        [hH,hM,hAP].forEach(el=>{ el.setAttribute('disabled',''); el.removeAttribute('required'); });
+      } else {
+        [hH,hM,hAP].forEach(el=>{ el.removeAttribute('disabled'); el.setAttribute('required',''); });
+      }
+      // Barman en modo total: si hay cantidad y no se eligió tipo, asumir Acrílico
+      const tipoElTmp = document.getElementById('tipo');
+      const coctelesModoTmp = document.getElementById('coctelesModo');
+      const coctelesTipoTmp = document.getElementById('coctelesTipo');
+      const cantTotalTmp = document.getElementById('coctelesCantidadTotal');
+      const barmanOnTmp = (tipoElTmp.value === 'barman' || tipoElTmp.value === 'ambos');
+      if (barmanOnTmp && coctelesModoTmp.value === 'total'){
+        const nTmp = parseFloat(cantTotalTmp.value||0);
+        if (nTmp>0 && !coctelesTipoTmp.value) coctelesTipoTmp.value = 'Acrílico';
+      }
+
       if (!form.checkValidity()) { alert("Por favor, completa todos los campos obligatorios."); return; }
 
       const tipo = document.getElementById("tipo").value;
-      const total = parseFloat(document.getElementById("total").value);
+
+      // Totales calculados (comida + barman)
+      const subBarman = window.__precios.calcBarman();
+      const subComida = window.__precios.calcComida();
+      const totalCalc = (tipo === 'ambos') ? (subBarman + subComida) : (tipo==='barman'?subBarman:subComida);
+
+      const total = parseFloat((totalCalc||0).toFixed(2));
       const adelanto = parseFloat(document.getElementById("adelanto").value);
       const resta = total - adelanto;
 
@@ -468,7 +636,8 @@
 
       // Fechas/horas
       const fecha = document.getElementById("fecha").value;
-      const hora  = document.getElementById("hora").value;
+      const hora  = document.getElementById("hora").value; // puede ser vacío si es indefinida
+      const horaIndefinida = window.__fechaHoraHelpers.horaIndefinida();
       const horaTexto  = window.__fechaHoraHelpers.horaTexto();
       const fechaTexto = window.__fechaHoraHelpers.fechaTexto();
 
@@ -477,6 +646,7 @@
       const contratante = document.getElementById("contratante").value;
       const dni = document.getElementById("dni").value;
       const firmaCateringSelect = document.getElementById("firmaCateringSelect")?.value || "Rosario";
+      const extras = document.getElementById('extras').value || '';
 
       // Barman
       const barmanChecks = [...document.querySelectorAll(".barmanCheck:checked")].map(x => x.value);
@@ -489,8 +659,10 @@
 
       // Catering
       const cateringChecks = [...document.querySelectorAll(".cateringCheck:checked")].map(x => x.value);
-      const colorPlatos = document.getElementById("colorPlatos")?.value || "";
-      const colorServilletas = document.getElementById("colorServilletas")?.value || "";
+      const selPlatos = document.getElementById("colorPlatos");
+      const selServ = document.getElementById("colorServilletas");
+      const colorPlatos = selPlatos?.value === 'otro' ? (document.getElementById('colorPlatosOtro').value||'') : (selPlatos?.value || "");
+      const colorServilletas = selServ?.value === 'otro' ? (document.getElementById('colorServilletasOtro').value||'') : (selServ?.value || "");
       const cantidadCatering = document.getElementById("cantidadCatering")?.value || "";
       const platosDescripcion = document.getElementById("platosDescripcion")?.value || "";
       const cantidadMesas = document.getElementById("cantidadMesas")?.value || "";
@@ -505,9 +677,10 @@
         servicios.push(...barmanChecks);
         let coctelTxt = "";
         if (coctelesModo === "total") {
-          coctelTxt = `Cocteles (${coctelesTipo}) — Cant.: ${coctelesCantidadTotal}${varCoctel.length ? " — Variedades: " + varCoctel.join(", ") : ""}`;
+          const precioUnit = (coctelesTipo === 'Cristalería') ? 4.5 : 3.0;
+          coctelTxt = `Cocteles (${coctelesTipo}) — Cant.: ${coctelesCantidadTotal} — Precio unit.: S/. ${precioUnit.toFixed(2)}${varCoctel.length ? " — Variedades: " + varCoctel.join(", ") : ""}`;
         } else {
-          coctelTxt = `Cocteles — Acrílico: ${coctelesAcrilico} | Cristalería: ${coctelesCristaleria}${varCoctel.length ? " — Variedades: " + varCoctel.join(", ") : ""}`;
+          coctelTxt = `Cocteles — Acrílico: ${coctelesAcrilico} (S/. 3.00) | Cristalería: ${coctelesCristaleria} (S/. 4.50)${varCoctel.length ? " — Variedades: " + varCoctel.join(", ") : ""}`;
         }
         servicios.push(coctelTxt);
       }
@@ -515,20 +688,18 @@
         if (chkPlatos) servicios.push(`Platos de sitio${colorPlatos ? ` (${colorPlatos})` : ""}`);
         if (chkServ)   servicios.push(`Servilletas${colorServilletas ? ` (${colorServilletas})` : ""}`);
 
-      
         // Otros ítems de Catering (sin duplicar Platos de sitio, Servilletas ni Mozos)
         cateringChecks.forEach(v => {
           if (v === "Platos de sitio" || v === "Servilletas" || v === "Mozos") return;
-          servicios.push(v); // Aquí solo entran Copas, Cubiertos dorados, etc.
+          servicios.push(v); // Copas, Cubiertos dorados, etc.
         });
-
 
         // Mesas (si aplica)
         if ((chkPlatos || chkServ) && cantidadMesas) {
           servicios.push(`Mesas: ${cantidadMesas}`);
         }
 
-         // Mozos (si aplica) — aquí va SOLO con cantidad
+        // Mozos (si aplica)
         if (chkMozos && cantidadMozos) {
           servicios.push(`Mozos: ${cantidadMozos}`);
         }
@@ -538,8 +709,23 @@
         if (platosDescripcion) servicios.push(`Comida: ${platosDescripcion}`);
       }
 
-      const rubrosBase = (tipo === "barman") ? "Cocteles" : (tipo === "catering") ? "Comida" : "Comida y Cocteles";
-      const detallePrecio = `${rubrosBase} S/. ${total.toFixed(2)}`;
+      // Extras (si hay)
+      if (extras.trim()) servicios.push(`Extras: ${extras.trim()}`);
+
+      // Rubros / detalle de precios
+      let rubrosBase = (tipo === "barman") ? "Cocteles" : (tipo === "catering") ? "Comida" : "Comida y Cocteles";
+      let detallePrecio = '';
+      let rubrosTexto = '';
+      if (tipo === 'ambos'){
+        rubrosTexto = `Comida S/. ${subComida.toFixed(2)} + Cocteles S/. ${subBarman.toFixed(2)} — Total S/. ${(subComida+subBarman).toFixed(2)}`;
+        detallePrecio = `Comida S/. ${subComida.toFixed(2)} | Barman S/. ${subBarman.toFixed(2)}`;
+      } else if (tipo === 'barman'){
+        rubrosTexto = `Cocteles — Total S/. ${subBarman.toFixed(2)}`;
+        detallePrecio = `Cocteles S/. ${subBarman.toFixed(2)}`;
+      } else {
+        rubrosTexto = `Comida — Total S/. ${subComida.toFixed(2)}`;
+        detallePrecio = `Comida S/. ${subComida.toFixed(2)}`;
+      }
 
       // Archivo
       const ahora = new Date();
@@ -547,47 +733,46 @@
       const horaNom = ahora.toTimeString().slice(0, 5).replace(":", "-");
       const nombreArchivo = `Contrato_${tipo}_${fechaNom}_${horaNom}.pdf`;
 
-      
-
-
       // Payload
       const payload = {
         tipo, adelanto, total, resta,
         movOn,
         movilidadMonto,
         movilidadTexto,
-        rubrosTexto: `${rubrosBase} — Total S/. ${total.toFixed(2)}`,
+        rubrosTexto,
         detallePrecio,
         cliente: contratante,
         dniCliente: dni,
         fecha, hora, fechaTexto, horaTexto,
+        horaIndefinida,
         direccion, referencia,
         servicios,
+        extras,
         firmaCatering: firmaCateringSelect,
         filename: nombreArchivo,
         cantidadCatering,
         platosDescripcion,
         precioPlato: parseFloat(document.getElementById("precioPlato").value || "0"),
+        totales: { barman: subBarman, comida: subComida, total: (subBarman+subComida) },
+        totalCocteles: subBarman,
+        totalComida: subComida,
         cocteles: {
           modo: coctelesModo,
           total: coctelesCantidadTotal,
           acrilico: coctelesAcrilico,
           cristaleria: coctelesCristaleria,
-          tipoVajilla: coctelesTipo
+          tipoVajilla: coctelesTipo,
+          precios: { acrilico: 3.0, cristaleria: 4.5 }
         }
       };
-    // Empaquetar mensaje y pasarlo por URL con Base64 UTF-8
-const msg = { type: "fill-contract", autoDownload: true, payload };
 
-// UTF-8 → base64 seguro
-const json = JSON.stringify(msg);
-const utf8 = new TextEncoder().encode(json);
-const b64  = btoa(String.fromCharCode(...utf8));
-
-const q = encodeURIComponent(b64);
-window.location.href = `./contratoTemplate.html?m=${q}`;
-
-      
+      // Empaquetar mensaje y pasarlo por URL con Base64 UTF-8
+      const msg = { type: "fill-contract", autoDownload: true, payload };
+      const json = JSON.stringify(msg);
+      const utf8 = new TextEncoder().encode(json);
+      const b64  = btoa(String.fromCharCode(...utf8));
+      const q = encodeURIComponent(b64);
+      window.location.href = `./contratoTemplate.html?m=${q}`;
     };
   </script>
 </body>
