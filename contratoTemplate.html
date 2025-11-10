@@ -5,16 +5,39 @@
   <title>Contrato — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="./style.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    body { margin: 0; font-family: "Times New Roman", serif; background: #eee; }
+    body { margin: 0; font-family: "PT Serif", serif; background: #eee; }
     .hidden { display: none !important; }
     .page {
-      width: 210mm; height: 297mm; margin: auto;
+      /* A4 aproximado en px a 96dpi: 794 x 1123 */
+      width: 794px;
+      height: 1123px;
+      margin: 0 auto;
+
       background-image: url("./img/fondo-contrato.png");
-      background-size: cover; background-repeat: no-repeat; background-position: center;
-      position: relative; box-sizing: border-box; padding: 40mm 25mm 30mm 25mm;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      position: relative;
+      box-sizing: border-box;
+
+      /* Padding en px equivalente aproximado a los mm que usabas */
+      padding: 150px 90px 110px 90px;
     }
+
+    /* Cuando realmente imprimas desde el navegador (Ctrl+P), mantén A4 en mm */
+    @media print {
+      .page {
+        width: 210mm;
+        height: 297mm;
+        padding: 40mm 25mm 30mm 25mm;
+      }
+    }
+
     h2 { text-align: center; text-transform: uppercase; margin-top: 0; }
     p, ul { font-size: 14px; line-height: 1.5; text-align: justify; }
     ul { margin-top: 4px; margin-bottom: 4px; padding-left: 20px; }
@@ -137,6 +160,63 @@
         return null;
         }
 
+ // Helper robusto: Cocteles con precios + variedades (lee de payload y, si falta, de servicios)
+function buildCoctelLinea(c) {
+  if (!c) return "";
+
+  // 1) Intentar desde payload.cocteles
+  let a = 0, r = 0; // acrílico, cristalería
+  const modo = c.cocteles?.modo;
+  const tipo = (c.cocteles?.tipoVajilla || "").trim();
+
+  if (modo === "separado") {
+    a = Number(c.cocteles?.acrilico || 0);
+    r = Number(c.cocteles?.cristaleria || 0);
+  } else if (modo === "total" && Number(c.cocteles?.total) > 0) {
+    if (/^acrílico$/i.test(tipo)) a = Number(c.cocteles.total);
+    else if (/^cristalería$/i.test(tipo)) r = Number(c.cocteles.total);
+  }
+
+  // 2) Si aún no hay datos, intentar deducir desde servicios (texto)
+  if (!a && !r && Array.isArray(c.servicios)) {
+    const joined = c.servicios.join(" | ");
+    const mA = joined.match(/Acr[ií]lico(?:\s*[:=]|\s+)(\d+)/i);
+    const mR = joined.match(/Cristaler[ií]a(?:\s*[:=]|\s+)(\d+)/i);
+    if (mA) a = Number(mA[1]);
+    if (mR) r = Number(mR[1]);
+
+    // Caso: "(Cristalería) — Cant.: 80" o "(Acrílico) — Cant.: 50"
+    if (!a && !r) {
+      const mTotCris = joined.match(/\(Cristaler[ií]a\)[^\d]*Cant\.\s*:\s*(\d+)/i);
+      const mTotAcr  = joined.match(/\(Acr[ií]lico\)[^\d]*Cant\.\s*:\s*(\d+)/i);
+      if (mTotCris) r = Number(mTotCris[1]);
+      if (mTotAcr)  a = Number(mTotAcr[1]);
+    }
+  }
+
+  // Si no hay cantidades, no mostramos
+  if (!a && !r) return "";
+
+  // Variedades: primero payload, luego fallback a servicios
+  let variedades = "";
+  if (Array.isArray(c.cocteles?.variedades) && c.cocteles.variedades.length) {
+    variedades = c.cocteles.variedades.join(", ");
+  } else if (Array.isArray(c.servicios)) {
+    const hit = c.servicios.find(s => /Variedades\s*:/i.test(s));
+    const tail = hit?.match(/Variedades\s*:\s*(.+)$/i)?.[1]?.trim();
+    if (tail) variedades = tail;
+  }
+
+  const partes = [];
+  if (a) partes.push(`Acrílico ${a} (S/.3.00 c/u)`);
+  if (r) partes.push(`Cristalería ${r} (S/.4.50 c/u)`);
+
+  let linea = `Cocteles: ${partes.join(" - ")}`;
+  if (variedades) linea += ` - ${variedades}`;
+  return linea;
+}
+
+
 
     // === CANDADO para evitar múltiples descargas ===
     let __alreadyProcessed = false;
@@ -217,6 +297,9 @@ function mayusInicial(txt) {
       }
       document.getElementById("textoPrincipal").innerHTML = introHTML;
 
+
+
+
 // ===============================
 // 🧾 LISTA DE SERVICIOS (formato final con precios de cocteles)
 // ===============================
@@ -232,6 +315,7 @@ function addLine(texto) {
   li.textContent = texto;
   ul.appendChild(li);
 }
+
 
 // ===================================================
 // TIPO: AMBOS
@@ -273,19 +357,12 @@ if (c.tipo === "ambos") {
   );
   if (barmanServicios.length) addLine(barmanServicios.join(" - "));
 
-  // === NUEVO: Cocteles con precios por tipo de vaso ===
-  let coctelLinea = "";
-  if (c.cocteles?.modo === "separado") {
-    const a = Number(c.cocteles.acrilico || 0);
-    const r = Number(c.cocteles.cristaleria || 0);
-    coctelLinea = `Cocteles: Acrílico ${a} (S/.3.00 c/u) - Cristalería ${r} (S/.4.50 c/u)`;
-  } else if (c.cocteles?.modo === "total" && Number(c.cocteles.total) > 0) {
-    const tipo = c.cocteles.tipoVajilla || "-";
-    coctelLinea = `Cocteles: (${tipo}) ${c.cocteles.total}`;
-  }
-  if (coctelLinea) addLine(coctelLinea);
+ const coctelLineaAmbos = buildCoctelLinea(c);
+if (coctelLineaAmbos) addLine(coctelLineaAmbos);
 
-  if (c.extras) addLine(`Extras: ${c.extras}`);
+
+
+  if (c.extras) addLine(`Notas: ${c.extras}`);
 
 // ===================================================
 // TIPO: CATERING
@@ -321,7 +398,7 @@ if (c.tipo === "ambos") {
   }
 
   if (c.platosDescripcion) addLine(`Comida: ${c.platosDescripcion}`);
-  if (c.extras) addLine(`Extras: ${c.extras}`);
+  if (c.extras) addLine(`Notas: ${c.extras}`);
 
 // ===================================================
 // TIPO: BARMAN
@@ -332,20 +409,43 @@ if (c.tipo === "ambos") {
   );
   if (barmanServicios.length) addLine(barmanServicios.join(" - "));
 
-  // === NUEVO: Cocteles con precios por tipo de vaso ===
+  // === Cocteles con precios por tipo de vaso + variedades ===
   let coctelLinea = "";
   if (c.cocteles?.modo === "separado") {
     const a = Number(c.cocteles.acrilico || 0);
     const r = Number(c.cocteles.cristaleria || 0);
     coctelLinea = `Cocteles: Acrílico ${a} (S/.3.00 c/u) - Cristalería ${r} (S/.4.50 c/u)`;
   } else if (c.cocteles?.modo === "total" && Number(c.cocteles.total) > 0) {
-    const tipo = c.cocteles.tipoVajilla || "-";
-    coctelLinea = `Cocteles: (${tipo}) ${c.cocteles.total}`;
+    const tipo = (c.cocteles.tipoVajilla || "").trim();
+    if (/^acrílico$/i.test(tipo)) {
+      coctelLinea = `Cocteles: Acrílico ${Number(c.cocteles.total)} (S/.3.00 c/u)`;
+    } else if (/^cristalería$/i.test(tipo)) {
+      coctelLinea = `Cocteles: Cristalería ${Number(c.cocteles.total)} (S/.4.50 c/u)`;
+    } else {
+      // si no hay tipo claro, no mostramos
+      coctelLinea = "";
+    }
   }
-  if (coctelLinea) addLine(coctelLinea);
+
+  console.log("cocteles =>", JSON.stringify(c.cocteles, null, 2));
+console.log("cocteles.variedades =>", c.cocteles?.variedades);
+console.log("modo, a, r, total, tipo =>",
+  c.cocteles?.modo,
+  c.cocteles?.acrilico,
+  c.cocteles?.cristaleria,
+  c.cocteles?.total,
+  c.cocteles?.tipoVajilla
+);
+console.log("servicios =>", c.servicios);
+
+
+  const coctelLineaAmbos = buildCoctelLinea(c);
+if (coctelLineaAmbos) addLine(coctelLineaAmbos);
+
 
   if (c.extras) addLine(`Extras: ${c.extras}`);
 }
+
 
 
 
@@ -454,13 +554,21 @@ if (c.tipo === "ambos" && c.totales) {
       if (data.autoDownload) {
         const element = document.getElementById("contrato");
         const opt = {
-          margin: 0,
-          filename: c.filename || "Contrato.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-        };
-        await html2pdf().set(opt).from(element).save();
+        margin: 0,
+        filename: c.filename || "Contrato.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          // 👇 fuerza siempre el mismo “viewport” sin importar el celular o PC
+          windowWidth: 794,
+          windowHeight: 1123
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+
       }
     });
 
@@ -559,3 +667,7 @@ if (c.tipo === "ambos" && c.totales) {
 </style>  
 </body>
 </html>
+
+
+
+

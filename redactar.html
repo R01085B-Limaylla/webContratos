@@ -56,10 +56,24 @@
           <div class="col">
             <label>Variedades</label>
             <div class="chips">
-              <label><input type="checkbox" class="varCoctel" value="Machu Picchu"> Machu Picchu</label>
-              <label><input type="checkbox" class="varCoctel" value="Piña Colada"> Piña Colada</label>
-              <label><input type="checkbox" class="varCoctel" value="Blue Long Island"> Blue Long Island</label>
-              <label><input type="checkbox" class="varCoctel" value="Tequila Sunrise"> Tequila Sunrise</label>
+              <label><input type="checkbox" name="cocteles" value="Pisco Sour"> Pisco Sour</label>
+              <label><input type="checkbox" name="cocteles" value="Jamaiquila"> Jamaiquila</label>
+              <label><input type="checkbox" name="cocteles" value="Machu Picchu"> Machu Picchu</label>
+              <label><input type="checkbox" name="cocteles" value="Cuba Libre"> Cuba Libre</label>
+              <label><input type="checkbox" name="cocteles" value="Caipirinha"> Caipirinha</label>
+              <label><input type="checkbox" name="cocteles" value="Tequila Sunrise"> Tequila Sunrise</label>
+              <label><input type="checkbox" name="cocteles" value="Piña Colada"> Piña Colada</label>
+              <label><input type="checkbox" name="cocteles" value="Blue Hawaiian"> Blue Hawaiian</label>
+              <label><input type="checkbox" name="cocteles" value="Pantera Rosa"> Pantera Rosa</label>
+              <label><input type="checkbox" name="cocteles" value="Daiquiri de Fruta"> Daiquiri de Fruta</label>
+              <label><input type="checkbox" name="cocteles" value="Algarrobina"> Algarrobina</label>
+              <label><input type="checkbox" name="cocteles" value="The Dirty Shirley"> The Dirty Shirley</label>
+              <label><input type="checkbox" name="cocteles" value="Mojito de Fruta"> Mojito de Fruta</label>
+              <label><input type="checkbox" name="cocteles" value="Mojito Clásico"> Mojito Clásico</label>
+              <label><input type="checkbox" name="cocteles" value="Dark &amp; Stormy"> Dark &amp; Stormy</label>
+              <label><input type="checkbox" name="cocteles" value="Chilcano de Fruta"> Chilcano de Fruta</label>
+              <label><input type="checkbox" name="cocteles" value="Chilcano Clásico"> Chilcano Clásico</label>
+              <label><input type="checkbox" name="cocteles" value="Blue Long Island"> Blue Long Island</label>
             </div>
           </div>
         </div>
@@ -316,6 +330,14 @@
       function upd(){ const t=parseFloat(total.value||0), a=parseFloat(adelanto.value||0); resta.value=(t-a).toFixed(2); }
       total.addEventListener('input', upd); adelanto.addEventListener('input', upd);
     })();
+
+    // Normaliza: asegúrate de que todos los checkboxes de variedades tengan class="varCoctel"
+(function ensureVarCoctelClass(){
+  document.querySelectorAll("input[name='cocteles']").forEach(el => {
+    el.classList.add("varCoctel");
+  });
+})();
+
 
     // Mostrar/ocultar colores + mesas según checkbox (IDs corregidos) + manejo de "Otro"
     (function(){
@@ -650,12 +672,19 @@
 
       // Barman
       const barmanChecks = [...document.querySelectorAll(".barmanCheck:checked")].map(x => x.value);
-      const varCoctel = [...document.querySelectorAll(".varCoctel:checked")].map(x => x.value);
+      const varCoctel = [
+  ...document.querySelectorAll("input[name='cocteles']:checked")
+].map(el => el.value.trim())
+ .filter(Boolean);
+
+const varCoctelUniq = [...new Set(varCoctel)];
       const coctelesTipo = document.getElementById("coctelesTipo")?.value || "";
       const coctelesModo = document.getElementById("coctelesModo")?.value || "total";
       const coctelesCantidadTotal = parseInt(document.getElementById("coctelesCantidadTotal")?.value || "0", 10);
       const coctelesAcrilico = parseInt(document.getElementById("coctelesAcrilico")?.value || "0", 10);
       const coctelesCristaleria = parseInt(document.getElementById("coctelesCristaleria")?.value || "0", 10);
+
+
 
       // Catering
       const cateringChecks = [...document.querySelectorAll(".cateringCheck:checked")].map(x => x.value);
@@ -762,7 +791,8 @@
           acrilico: coctelesAcrilico,
           cristaleria: coctelesCristaleria,
           tipoVajilla: coctelesTipo,
-          precios: { acrilico: 3.0, cristaleria: 4.5 }
+          precios: { acrilico: 3.0, cristaleria: 4.5 },
+          variedades: varCoctelUniq
         }
       };
 
