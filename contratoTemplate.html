@@ -204,11 +204,11 @@ ul {
 </head>
 <body>
 
-  <div class="pdf-toolbar">
-  <button type="button" onclick="printA4()">🖨️ Imprimir</button>
-  <button type="button" onclick="openPdfA4()">📄 Abrir PDF</button>
-  <button type="button" onclick="sharePdfA4()">📤 Compartir</button>
-</div>
+  <div style="display:flex;justify-content:center;gap:10px;margin:10px 0;">
+  <button id="__btnpdf"   onclick="AndroidBridge.openPdfExternally()">📄Abrir PDF</button>
+  <button id="__btnshare" onclick="AndroidBridge.sharePdf()">📤Compartir</button>
+  <button id="__btnprint" onclick="AndroidBridge.printSystem()">🖨️Imprimir</button>
+  </div>
 
 <div id="contrato" class="page">
   <div class="content">
