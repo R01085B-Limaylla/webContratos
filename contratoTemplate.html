@@ -10,12 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
+    /* Fuente base y tamaño global */
     body { margin: 0; font-family: "PT Serif", serif; background: #eee; }
-    .hidden { display: none !important; }
+
     .page {
-      /* A4 aproximado en px a 96dpi: 794 x 1123 */
-      width: 794px;
-      height: 1123px;
+      width: 595px;
+      height: 842px;
       margin: 0 auto;
 
       background-image: url("./img/fondo-contrato.png");
@@ -24,27 +24,67 @@
       background-position: center;
       position: relative;
       box-sizing: border-box;
-
-      /* Padding en px equivalente aproximado a los mm que usabas */
-      padding: 150px 90px 110px 90px;
+      padding: 140px 80px 110px 80px;
     }
 
-    /* Cuando realmente imprimas desde el navegador (Ctrl+P), mantén A4 en mm */
-    @media print {
-      .page {
-        width: 210mm;
-        height: 297mm;
-        padding: 40mm 25mm 30mm 25mm;
-      }
+    /* <<< Tamaño 10 pt para TODO dentro de la hoja >>> */
+    .page, .page * {
+      font-size: 8pt;
+      line-height: 1.35; /* ajusta si quieres más/menos aire */
     }
 
-    h2 { text-align: center; text-transform: uppercase; margin-top: 0; }
-    p, ul { font-size: 14px; line-height: 1.5; text-align: justify; }
-    ul { margin-top: 4px; margin-bottom: 4px; padding-left: 20px; }
-    .firmas { display: flex; justify-content: space-between; margin-top: 50px; gap: 16px; }
-    .firma { text-align: center; width: 31%; }
-    .firma img { width: 150px; height: auto; }
-    .linea { width: 160px; border-top: 1px solid #000; margin: 0 auto 4px; }
+  
+    h2 {
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  font-size: 9px;        /* ligeramente mayor para título */
+  font-weight: bold;
+  letter-spacing: 0.3px;
+}
+
+p,
+ul {
+  font-size: 8px;        /* texto general en 8px */
+  line-height: 1.4;
+  text-align: justify;
+  margin: 4px 0;
+}
+
+ul {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 18px;
+}
+
+/* ==== Firmas (superior al bloque final) ==== */
+.firmas {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 40px;
+  gap: 14px;
+}
+
+.firma {
+  text-align: center;
+  width: 31%;
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.firma img {
+  width: 110px;         /* ajustado para PDF A4 con letra 8px */
+  height: auto;
+  margin-bottom: 3px;
+}
+
+.linea {
+  width: 140px;
+  border-top: 1px solid #000;
+  margin: 0 auto 4px;
+}
+
   </style>
 </head>
 <body>
@@ -68,7 +108,7 @@
   <div id="bloqueFinal">
     <div id="detalleEvento"></div>
 
-    <div id="fechaActual"></div>
+    
 
     <p id="clausula">
       CLÁUSULA: SI EL CONTRATANTE DESISTE DE FORMALIZAR EL CONTRATO, NO SE REALIZARÁ
@@ -94,6 +134,7 @@
       </div>
     </div>
   </div>
+  <div id="fechaActual"></div>
 </div>
 
 
@@ -262,7 +303,11 @@ function mayusInicial(txt) {
 
       // Título
       document.getElementById("titulo").innerHTML =
-  `<br> <br> CONTRATO DE SERVICIO DE ${String(c.tipo || "").toUpperCase()}`;
+  `<br> CONTRATO DE SERVICIO DE ${String(c.tipo || "").toUpperCase()}`;
+
+  const elementoTitulo = document.getElementById("titulo");
+elementoTitulo.style.textAlign = "center";
+elementoTitulo.style.fontSize = "11pt"; // O "11px", "11rem", etc.
 
 
       // Intro según tipo
@@ -284,7 +329,7 @@ function mayusInicial(txt) {
           Yo, <b>ROSARIO CARHUALLANQUI RUIZ</b>, en representación de
           <b>LA MARQUESINA CATERING</b> con RUC 20611125918, recibo la suma de
           <b>S/. ${n2(c.adelanto)}</b> para la prestación de servicios de Cocteles </b>,
-          a cargo del Barman <b>SEBASTIÁN LIMAYLLA CARHUALLAQUI</b> identificado con DNI 76440595,
+          a cargo del Barman <b>SEBASTIÁN LIMAYLLA CARHUALLANQUI</b> identificado con DNI 76440595,
           de <b>${c.cliente}</b> identificado con DNI <b>${c.dniCliente}</b>.
         `;
       } else {
@@ -553,117 +598,165 @@ if (c.tipo === "ambos" && c.totales) {
       // Descargar PDF
       if (data.autoDownload) {
         const element = document.getElementById("contrato");
-        const opt = {
-        margin: 0,
-        filename: c.filename || "Contrato.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          // 👇 fuerza siempre el mismo “viewport” sin importar el celular o PC
-          windowWidth: 794,
-          windowHeight: 1123
-        },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-      };
 
-      await html2pdf().set(opt).from(element).save();
+        // Tomamos el tamaño real del elemento en píxeles
+        const pdfWidth  = element.offsetWidth;
+        const pdfHeight = element.offsetHeight;
+
+        const opt = {
+          margin: 0,
+          filename: c.filename || "Contrato.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true
+            // 👈 sin windowWidth/windowHeight para que use el tamaño real del elemento
+          },
+          jsPDF: {
+            unit: "px",                     // trabajamos en píxeles
+            format: [pdfWidth, pdfHeight],  // el PDF mide EXACTAMENTE lo mismo que #contrato
+            orientation: "portrait"
+          }
+        };
+
+        await html2pdf().set(opt).from(element).save();
+      }
+
 
       }
-    });
+    );
 
     
   </script>
   <style> 
-  #detalleEvento {
-    position: absolute;
-    bottom: 240px;     /* distancia desde el borde inferior del PDF */
-    left: 60px;       /* ajusta si quieres margen lateral */
-    right: 60px;
-    font-size: 14px;  /* ajusta el tamaño del texto */
-    line-height: 1.5;
-  }
-
-  .firmas {
-  position: absolute;
-  bottom: 100px;      /* justo debajo del detalle del evento */
-  left: 60px;
-  right: 60px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+ 
+/* ===== BLOQUE FINAL ===== */
+#bloqueFinal {
+  margin-top: 30px;
+  font-size: 8px;       /* tamaño general reducido */
+  line-height: 1.4;
 }
 
-.firma {
-  text-align: center;
+/* Subtítulo de sección (h4) */
+#bloqueFinal h4 {
+  margin: 8px 0 4px;
+  font-size: 8px;       /* mismo tamaño que el resto */
+  font-weight: bold;
 }
 
-.firma img {
-  width: 130px;
-  height: auto;
-}
-
-.firma .linea {
-  width: 160px;
-  border-top: 1px solid #000;
-  margin: 0 auto 5px;
-}
-  
-  /* Contenedor final fijo (todo el bloque al pie) */
-#bloqueFinal{
-  position: absolute;
-  left: 60px;
-  right: 60px;
-  bottom: 80px;            /* distancia desde el borde inferior del PDF */
+/* Totales */
+#bloqueFinal .totales {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px 18px;
+  margin-bottom: 10px;
+  font-size: 8px;
 }
 
 /* Texto del evento arriba del bloque final */
-#detalleEvento{
-  margin: 8px 0 10px 0;
-  font-size: 14px;
-  line-height: 1.6;
+#detalleEvento {
+  margin: 8px 0 8px 0;
+  font-size: 8px;
+  line-height: 1.4;
   text-align: justify;
 }
 
 /* Fecha del día, alineada a la derecha */
-#fechaActual{
-  margin: 0 0 8px 0;
-  font-size: 13px;
+#fechaActual {
+  margin: 0 0 6px 0;
+  font-size: 8px;
   text-align: right;
 }
 
-/* Cláusula */
-#clausula{
-  margin: 0 0 18px 0;
-  font-size: 12.5px;
-  line-height: 1.5;
+/* Cláusula (más pequeña) */
+#clausula {
+  margin: 0 0 16px 0;
+  font-size: 7px;       /* más pequeño que el resto */
+  line-height: 1.3;
   text-align: justify;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.15px;
 }
 
-/* Firmas en fila */
-.firmas{
+/* ======= FIRMAS ======= */
+.firmas {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 14px;
+  margin-top: 25px;
+}
+
+.firma {
+  text-align: center;
+  width: 31%;
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.firma img {
+  width: 110px;       /* tamaño proporcional a texto pequeño */
+  height: auto;
+  margin-bottom: 3px;
+}
+
+.linea,
+.firma .linea {
+  border-top: 1px solid #000;
+  width: 140px;
+  margin: 0 auto 4px;
+}
+
+/* Uniformar tamaño en toda la línea de evento */
+#detalleEvento, 
+#detalleEvento b, 
+#detalleEvento strong {
+  font-size: 10px !important;
+  line-height: 1.4;
+  text-align: justify;
+  font-weight: normal;   /* Si quieres que no resalte tanto */
+}
+
+/* Si prefieres mantener la negrita, usa esto en su lugar: */
+#detalleEvento b,
+#detalleEvento strong {
+  font-size: 10px !important;
+  font-weight: bold;
+}
+
+/* La página se comporta como un flex vertical */
+.page{
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empuja el bloque final hacia el borde inferior siempre */
+#bloqueFinal{
+  margin-top: auto;       /* << clave: se va al fondo sin superponerse */
+  padding-bottom: 8mm;    /* separa de la orla/filigrana inferior del fondo */
+}
+
+/* Estructura del pie */
+#bloqueFinal .firmas{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;  /* alinea las firmas por la base */
   gap: 16px;
 }
 
-.firma{
-  text-align: center;
-  width: 31%;
+/* Fecha al final y a la derecha */
+#fechaActual{
+  margin-top: 8px;        /* un poco debajo de las firmas */
+  text-align: right;
 }
 
-.firma img{
-  width: 130px;     /* ajusta si quieres más grande/pequeño */
-  height: auto;
-}
-
-.linea{
+/* Línea de firma compacta */
+.firma .linea{
   width: 160px;
   border-top: 1px solid #000;
   margin: 0 auto 5px;
 }
+
+
 </style>  
 </body>
 </html>
