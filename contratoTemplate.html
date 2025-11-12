@@ -13,39 +13,59 @@
     /* Fuente base y tamaño global */
     body { margin: 0; font-family: "PT Serif", serif; background: #eee; }
 
-    .page {
-      width: 595px;
-      height: 842px;
-      margin: 0 auto;
+    /* ======== CONTRATO A4 CONFIGURACIÓN GENERAL ======== */
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 595px;   /* A4 horizontalmente a 96 dpi */
+  height: 842px;  /* A4 verticalmente a 96 dpi */
+  margin: 0 auto;
 
-      background-image: url("./img/fondo-contrato.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      position: relative;
-      box-sizing: border-box;
-      padding: 140px 80px 110px 80px;
-    }
+  /* Fondo fijo al borde */
+  background-image: url("./img/fondo-contrato.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
 
-    /* <<< Tamaño 10 pt para TODO dentro de la hoja >>> */
-    .page, .page * {
-      font-size: 8pt;
-      line-height: 1.35; /* ajusta si quieres más/menos aire */
-    }
+  box-sizing: border-box;
+  position: relative;
+  font-family: "PT Serif", serif;
+}
 
-  
-    h2 {
+/* ======== CONTENEDOR INTERNO DEL TEXTO ======== */
+.page .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* empuja el bloque final al fondo */
+
+  /* Equivalente a 50 mm 18 mm 25 mm 18 mm */
+  padding: 130px 28px 95px 50px;
+
+  box-sizing: border-box;
+}
+
+/* ======== TAMAÑO DE FUENTE GLOBAL ======== */
+.page,
+.page * {
+  font-size: 6pt;
+  line-height: 1.35;
+}
+
+/* ======== TÍTULOS ======== */
+h2 {
   text-align: center;
   text-transform: uppercase;
   margin-top: 0;
-  font-size: 9px;        /* ligeramente mayor para título */
+  font-size: 9pt;
   font-weight: bold;
   letter-spacing: 0.3px;
 }
 
+/* ======== PÁRRAFOS Y LISTAS ======== */
 p,
 ul {
-  font-size: 8px;        /* texto general en 8px */
+  font-size: 8pt;
   line-height: 1.4;
   text-align: justify;
   margin: 4px 0;
@@ -57,24 +77,31 @@ ul {
   padding-left: 18px;
 }
 
-/* ==== Firmas (superior al bloque final) ==== */
+/* ======== BLOQUE FINAL (CLÁUSULA, FIRMAS, FECHA) ======== */
+#bloqueFinal {
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 8pt;
+}
+
+/* ======== FIRMAS ======== */
 .firmas {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-top: 40px;
+  margin-top: 30px;
   gap: 14px;
 }
 
 .firma {
   text-align: center;
   width: 31%;
-  font-size: 8px;
+  font-size: 8pt;
   line-height: 1.3;
 }
 
 .firma img {
-  width: 110px;         /* ajustado para PDF A4 con letra 8px */
+  width: 110px;
   height: auto;
   margin-bottom: 3px;
 }
@@ -85,57 +112,69 @@ ul {
   margin: 0 auto 4px;
 }
 
+/* ======== FECHA (abajo de firmas) ======== */
+#fechaActual {
+  text-align: right;
+  font-size: 8pt;
+  margin-top: 6px;
+}
+
+
   </style>
 </head>
 <body>
-  <div id="contrato" class="page">
-  <h2 id="titulo"></h2>
+<div id="contrato" class="page">
+  <div class="content">
+    <h2 id="titulo"></h2>
 
-  <p id="textoPrincipal"></p>
+    <p id="textoPrincipal"></p>
 
-  <h3>Servicios:</h3>
-  <ul id="listaServicios"></ul>
+    <h3>Servicios:</h3>
+    <ul id="listaServicios"></ul>
 
-  <h3>Condiciones Económicas:</h3>
-  <ul>
-    <li><b id="rubrosLabel">Concepto:</b> <span id="rubros"></span></li>    
-    <li><b>Adelanto:</b> S/. <span id="adelanto"></span></li>
-    <li><b>Resta:</b> S/. <span id="resta"></span></li>
-    <li><b>Movilidad:</b> <span id="movilidad"></span></li>
-  </ul>
+    <h3>Condiciones Económicas:</h3>
+    <ul>
+      <li><b id="rubrosLabel">Concepto:</b> <span id="rubros"></span></li>
+      <li><b>Adelanto:</b> S/. <span id="adelanto"></span></li>
+      <li><b>Resta:</b> S/. <span id="resta"></span></li>
+      <li><b>Movilidad:</b> <span id="movilidad"></span></li>
+    </ul>
 
-  <!-- === BLOQUE FINAL (siempre al pie) === -->
-  <div id="bloqueFinal">
     <div id="detalleEvento"></div>
 
-    
+    <!-- === BLOQUE FINAL (siempre al pie) === -->
+    <div id="bloqueFinal">
+      <div id="fechaActual"></div>
+      <p id="clausula">
+        CLÁUSULA: SI EL CONTRATANTE DESISTE DE FORMALIZAR EL CONTRATO, NO SE REALIZARÁ
+        EL REEMBOLSO DEL ADELANTO CONSIDERADO COMO SEPARACIÓN DE FECHA.
+      </p>
 
-    <p id="clausula">
-      CLÁUSULA: SI EL CONTRATANTE DESISTE DE FORMALIZAR EL CONTRATO, NO SE REALIZARÁ
-      EL REEMBOLSO DEL ADELANTO CONSIDERADO COMO SEPARACIÓN DE FECHA.
-    </p>
+      <div class="firmas">
+        <div id="firmaRosario" class="firma">
+          <img src="img/firma-rosario.png" alt="Rosario">
+          <div>Rosario Carhuallanqui <br> DNI: 20026242</div>
+        </div>
+        <div id="firmaSebastian" class="firma">
+          <img src="img/firma-sebastian.png" alt="Sebastián">
+          <div>Sebastián Limaylla <br> DNI: 76440595</div>
+        </div>
+        <div id="firmaSujey" class="firma hidden">
+          <img src="img/firma-sujey.png" alt="Sujey">
+          <div>Sujey Solorzano <br> DNI: 74874635</div>
+        </div>
+        <div id="firmaContratante" class="firma hidden">
+          <div class="linea"></div>
+          <div><span id="nombreContratante"></span><br>DNI: <span id="dniContratante"></span></div>
+        </div>
+      </div>
 
-    <div class="firmas">
-      <div id="firmaRosario" class="firma">
-        <img src="img/firma-rosario.png" alt="Rosario">
-        <div>Rosario Carhuallanqui <br> DNI: 20026242</div>
-      </div>
-      <div id="firmaSebastian" class="firma">
-        <img src="img/firma-sebastian.png" alt="Sebastián">
-        <div>Sebastián Limaylla <br> DNI: 76440595</div>
-      </div>
-      <div id="firmaSujey" class="firma hidden">
-        <img src="img/firma-sujey.png" alt="Sujey">
-        <div>Sujey Solorzano <br> DNI: 74874635</div>
-      </div>
-      <div id="firmaContratante" class="firma hidden">
-        <div class="linea"></div>
-        <div><span id="nombreContratante"></span><br>DNI: <span id="dniContratante"></span></div>
-      </div>
+      
+      
     </div>
   </div>
-  <div id="fechaActual"></div>
 </div>
+
 
 
   <script>
@@ -723,10 +762,20 @@ if (c.tipo === "ambos" && c.totales) {
   font-weight: bold;
 }
 
-/* La página se comporta como un flex vertical */
-.page{
-  display: flex;
-  flex-direction: column;
+/* Texto más compacto a los bordes */
+p, ul {
+  font-size: 8px;
+  line-height: 1.5;
+  text-align: justify;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Título centrado */
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
 }
 
 /* Empuja el bloque final hacia el borde inferior siempre */
