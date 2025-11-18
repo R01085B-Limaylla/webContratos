@@ -1,7 +1,8 @@
 // === Configura Supabase ===
 const SUPABASE_URL = "https://pfjhrnxhqhzvqaviasjm.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmamhybnhocWh6dnFhdmlhc2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNzg1MDksImV4cCI6MjA3Njc1NDUwOX0.O9hP-Uh64pDwY4xCcGOYaz9Oi0xARxAbL1PJgCJyLr4";
-window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
   {
@@ -9,10 +10,14 @@ window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: false,
-      storage: localStorage, // fuerza localStorage (evita bloqueos raros)
+      storage: localStorage, // fuerza localStorage
     },
   }
-;
+);
+
+// opcional: lo exponemos también en window por si lo quieres usar desde consola
+window.supabaseClient = supabase;
+
 
 // Asegura ADMINS global en todas las páginas
 window.ADMINS = (window.ADMINS && window.ADMINS.length)

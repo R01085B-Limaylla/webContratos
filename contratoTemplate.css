@@ -1,0 +1,289 @@
+
+    /* Fuente base y tamaño global */
+    body { margin: 0; font-family: "PT Serif", serif; background: #eee; }
+
+    /* ======== CONTRATO A4 CONFIGURACIÓN GENERAL ======== */
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 595px;   /* A4 horizontalmente a 96 dpi */
+  height: 842px;  /* A4 verticalmente a 96 dpi */
+  margin: 0 auto;
+
+  /* Fondo fijo al borde */
+  background-image: url("./img/fondo-contrato.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
+
+  box-sizing: border-box;
+  position: relative;
+  font-family: "PT Serif", serif;
+}
+
+/* ======== CONTENEDOR INTERNO DEL TEXTO ======== */
+.page .content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* empuja el bloque final al fondo */
+
+  /* Equivalente a 50 mm 18 mm 25 mm 18 mm */
+  padding: 130px 28px 95px 50px;
+
+  box-sizing: border-box;
+}
+
+/* ======== TAMAÑO DE FUENTE GLOBAL ======== */
+.page,
+.page * {
+  font-size: 6pt;
+  line-height: 1.35;
+}
+
+/* ======== TÍTULOS ======== */
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+  font-size: 9pt;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+}
+
+/* ======== PÁRRAFOS Y LISTAS ======== */
+p,
+ul {
+  font-size: 8pt;
+  line-height: 1.4;
+  text-align: justify;
+  margin: 4px 0;
+}
+
+ul {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 18px;
+}
+
+/* ======== BLOQUE FINAL (CLÁUSULA, FIRMAS, FECHA) ======== */
+#bloqueFinal {
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 8pt;
+}
+
+/* ======== FIRMAS ======== */
+.firmas {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 30px;
+  gap: 14px;
+}
+
+.firma {
+  text-align: center;
+  width: 31%;
+  font-size: 8pt;
+  line-height: 1.3;
+}
+
+.firma img {
+  width: 110px;
+  height: auto;
+  margin-bottom: 3px;
+}
+
+.linea {
+  width: 140px;
+  border-top: 1px solid #000;
+  margin: 0 auto 4px;
+}
+
+/* ======== FECHA (abajo de firmas) ======== */
+#fechaActual {
+  text-align: right;
+  font-size: 8pt;
+  margin-top: 6px;
+}
+
+ 
+/* ===== BLOQUE FINAL ===== */
+#bloqueFinal {
+  margin-top: 30px;
+  font-size: 8px;       /* tamaño general reducido */
+  line-height: 1.4;
+}
+
+/* Subtítulo de sección (h4) */
+#bloqueFinal h4 {
+  margin: 8px 0 4px;
+  font-size: 8px;       /* mismo tamaño que el resto */
+  font-weight: bold;
+}
+
+/* Totales */
+#bloqueFinal .totales {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px 18px;
+  margin-bottom: 10px;
+  font-size: 8px;
+}
+
+/* Texto del evento arriba del bloque final */
+#detalleEvento {
+  margin: 8px 0 8px 0;
+  font-size: 8px;
+  line-height: 1.4;
+  text-align: justify;
+}
+
+/* Fecha del día, alineada a la derecha */
+#fechaActual {
+  margin: 0 0 6px 0;
+  font-size: 8px;
+  text-align: right;
+}
+
+/* Cláusula (más pequeña) */
+#clausula {
+  margin: 0 0 16px 0;
+  font-size: 7px;       /* más pequeño que el resto */
+  line-height: 1.3;
+  text-align: justify;
+  letter-spacing: 0.15px;
+}
+
+/* ======= FIRMAS ======= */
+.firmas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-top: 25px;
+}
+
+.firma {
+  text-align: center;
+  width: 31%;
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.firma img {
+  width: 110px;       /* tamaño proporcional a texto pequeño */
+  height: auto;
+  margin-bottom: 3px;
+}
+
+.linea,
+.firma .linea {
+  border-top: 1px solid #000;
+  width: 140px;
+  margin: 0 auto 4px;
+}
+
+/* Uniformar tamaño en toda la línea de evento */
+#detalleEvento, 
+#detalleEvento b, 
+#detalleEvento strong {
+  font-size: 10px !important;
+  line-height: 1.4;
+  text-align: justify;
+  font-weight: normal;   /* Si quieres que no resalte tanto */
+}
+
+/* Si prefieres mantener la negrita, usa esto en su lugar: */
+#detalleEvento b,
+#detalleEvento strong {
+  font-size: 10px !important;
+  font-weight: bold;
+}
+
+/* Texto más compacto a los bordes */
+p, ul {
+  font-size: 8px;
+  line-height: 1.5;
+  text-align: justify;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Título centrado */
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+/* Empuja el bloque final hacia el borde inferior siempre */
+#bloqueFinal{
+  margin-top: auto;       /* << clave: se va al fondo sin superponerse */
+  padding-bottom: 8mm;    /* separa de la orla/filigrana inferior del fondo */
+}
+
+/* Estructura del pie */
+#bloqueFinal .firmas{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;  /* alinea las firmas por la base */
+  gap: 16px;
+}
+
+/* Fecha al final y a la derecha */
+#fechaActual{
+  margin-top: 8px;        /* un poco debajo de las firmas */
+  text-align: right;
+}
+
+/* Línea de firma compacta */
+.firma .linea{
+  width: 160px;
+  border-top: 1px solid #000;
+  margin: 0 auto 5px;
+}
+ /* ESTILOS BOTONES MOVILES
+ 
+ */
+
+ /* Botonera flotante */
+  .pdf-toolbar {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  }
+
+  .pdf-toolbar button {
+    appearance: none;
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #111827;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.15s;
+  }
+
+  .pdf-toolbar button:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+  }
+
+  /* Ocultar barra al imprimir o exportar PDF */
+  @media print {
+    .pdf-toolbar { display: none !important; }
+  }
+

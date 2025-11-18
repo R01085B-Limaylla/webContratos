@@ -311,8 +311,8 @@
 
       <!-- Botones -->
       <div class="row gap">
-        <button type="submit" class="btn primary">📄 Generar PDF con plantilla</button>
-        <button type="button" class="btn success" onclick="saveContract()">💾 Guardar</button>
+        <button type="submit" class="btn primary">📄 Crear y Guardar Contrato</button>
+        
       </div>
 
       <p id="saveMsg" class="ok hidden">Guardado correctamente.</p>
@@ -782,7 +782,7 @@ const varCoctelUniq = [...new Set(varCoctel)];
         cantidadCatering,
         platosDescripcion,
         precioPlato: parseFloat(document.getElementById("precioPlato").value || "0"),
-        totales: { barman: subBarman, comida: subComida, total: (subBarman+subComida) },
+        totales: { barman: subBarman, comida: subComida, total: (subBarman + subComida) },
         totalCocteles: subBarman,
         totalComida: subComida,
         cocteles: {
@@ -793,8 +793,12 @@ const varCoctelUniq = [...new Set(varCoctel)];
           tipoVajilla: coctelesTipo,
           precios: { acrilico: 3.0, cristaleria: 4.5 },
           variedades: varCoctelUniq
-        }
+        },
+        // 👇 ESTO VA AL NIVEL RAÍZ, NO DENTRO DE "cocteles"
+        editingId: __editingId,
+        prevPdfPath: __oldPdfPath
       };
+
 
       // Empaquetar mensaje y pasarlo por URL con Base64 UTF-8
       const msg = { type: "fill-contract", autoDownload: true, payload };
@@ -804,6 +808,291 @@ const varCoctelUniq = [...new Set(varCoctel)];
       const q = encodeURIComponent(b64);
       window.location.href = `./contratoTemplate.html?m=${q}`;
     };
+
+    // ================= EDICIÓN DE CONTRATOS EXISTENTES =================
+let __editingId = null;
+let __oldPdfPath = null; // ruta del PDF actual en Supabase
+
+async function loadContratoExistente(id) {
+  try {
+    const { data, error } = await supabase
+      .from("contratos")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error cargando contrato para edición:", error);
+      alert("No se pudo cargar el contrato para editar.");
+      return;
+    }
+    if (!data) {
+      alert("Contrato no encontrado.");
+      return;
+    }
+
+__editingId = id;
+__oldPdfPath = data.pdf_path || null;
+const c = data.payload || {};
+
+
+    // === Tipo ===
+    const tipoEl = document.getElementById("tipo");
+    if (tipoEl) {
+      tipoEl.value = c.tipo || "";
+      tipoEl.dispatchEvent(new Event("change"));
+    }
+
+    // === Datos del cliente ===
+    document.getElementById("contratante").value = c.cliente || "";
+    document.getElementById("dni").value = c.dniCliente || "";
+
+    // === Dirección / referencia ===
+    document.getElementById("direccion").value = c.direccion || "";
+    document.getElementById("referencia").value = c.referencia || "";
+
+    // === Extras ===
+    document.getElementById("extras").value = c.extras || "";
+
+    // === Totales ===
+    if (typeof data.total !== "undefined") {
+      document.getElementById("total").value = Number(data.total || 0).toFixed(2);
+    }
+    if (typeof data.adelanto !== "undefined") {
+      document.getElementById("adelanto").value = Number(data.adelanto || 0).toFixed(2);
+    }
+    if (typeof data.resta !== "undefined") {
+      document.getElementById("resta").value = Number(data.resta || 0).toFixed(2);
+    }
+
+    // === Movilidad ===
+    if (c.movOn) {
+      const movOn = document.getElementById("movOn");
+      const movMonto = document.getElementById("movilidadMonto");
+      movOn.checked = true;
+      movOn.dispatchEvent(new Event("change"));
+      if (movMonto) movMonto.value = c.movilidadMonto || "";
+    }
+
+    // === Fecha ===
+    if (c.fecha) {
+      const fecha = document.getElementById("fecha");
+      if (fecha) fecha.value = c.fecha;
+    }
+
+    // === Hora ===
+    const hInd = document.getElementById("horaIndefinida");
+    const hH = document.getElementById("horaH");
+    const hM = document.getElementById("horaM");
+    const hAP = document.getElementById("horaAP");
+
+    if (c.horaIndefinida) {
+      if (hInd) hInd.checked = true;
+    } else if (c.hora) {
+      const [HH, MM] = c.hora.split(":").map(Number);
+      let ap = "AM";
+      let h12 = HH;
+
+      if (HH === 0) {
+        h12 = 12;
+        ap = "AM";
+      } else if (HH === 12) {
+        h12 = 12;
+        ap = "PM";
+      } else if (HH > 12) {
+        h12 = HH - 12;
+        ap = "PM";
+      }
+
+      if (hH) hH.value = h12;
+      if (hM) hM.value = MM;
+      if (hAP) hAP.value = ap;
+    }
+
+    ["fecha", "horaH", "horaM", "horaAP"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.dispatchEvent(new Event("input"));
+    });
+    if (hInd) hInd.dispatchEvent(new Event("change"));
+
+    // === Catering: cantidad, comida, precio ===
+    if (document.getElementById("cantidadCatering")) {
+      document.getElementById("cantidadCatering").value = c.cantidadCatering || "";
+    }
+    if (document.getElementById("platosDescripcion")) {
+      document.getElementById("platosDescripcion").value = c.platosDescripcion || "";
+    }
+    if (typeof c.precioPlato !== "undefined" && document.getElementById("precioPlato")) {
+      document.getElementById("precioPlato").value = c.precioPlato;
+    }
+
+    // === Barman: cocteles ===
+    const co = c.cocteles || {};
+    const coModo = document.getElementById("coctelesModo");
+    const coTipo = document.getElementById("coctelesTipo");
+    const coCantTotal = document.getElementById("coctelesCantidadTotal");
+    const coAcr = document.getElementById("coctelesAcrilico");
+    const coCris = document.getElementById("coctelesCristaleria");
+
+    if (coModo) {
+      coModo.value = co.modo || "total";
+      coModo.dispatchEvent(new Event("change"));
+    }
+
+    if (co.modo === "total") {
+      if (coCantTotal) coCantTotal.value = co.total || "";
+      if (coTipo && co.tipoVajilla) coTipo.value = co.tipoVajilla;
+    } else if (co.modo === "separado") {
+      if (coAcr) coAcr.value = co.acrilico || "";
+      if (coCris) coCris.value = co.cristaleria || "";
+    }
+
+    // Variedades de cocteles
+    if (Array.isArray(co.variedades)) {
+      co.variedades.forEach(nombre => {
+        const chk = document.querySelector(`input[name="cocteles"][value="${nombre}"]`);
+        if (chk) chk.checked = true;
+      });
+    }
+
+    // === Servicios (para checkboxes de catering/barman) ===
+    const servicios = Array.isArray(c.servicios) ? c.servicios : [];
+
+    // Barman: Barman / Ayudante / Barra móvil
+    if (servicios.length) {
+      servicios.forEach(s => {
+        if (s === "Barman") {
+          const cb = document.querySelector('.barmanCheck[value="Barman"]');
+          if (cb) cb.checked = true;
+        }
+        if (s === "Ayudante de barra") {
+          const cb = document.querySelector('.barmanCheck[value="Ayudante de barra"]');
+          if (cb) cb.checked = true;
+        }
+        if (s === "Barra móvil") {
+          const cb = document.querySelector('.barmanCheck[value="Barra móvil"]');
+          if (cb) cb.checked = true;
+        }
+      });
+    }
+
+    // Catering: Platos de sitio
+    const chkPlatos = document.getElementById("chkPlatosSitio");
+    const platosItem = servicios.find(s => /^Platos de sitio/i.test(s));
+    if (chkPlatos && platosItem) {
+      chkPlatos.checked = true;
+      chkPlatos.dispatchEvent(new Event("change"));
+
+      const mColor = platosItem.match(/\(([^)]+)\)/);
+      if (mColor) {
+        const colorPlatos = document.getElementById("colorPlatos");
+        const otroPlatos = document.getElementById("colorPlatosOtro");
+        if (colorPlatos) {
+          const opt = [...colorPlatos.options].find(o => o.value === mColor[1]);
+          if (opt) {
+            colorPlatos.value = mColor[1];
+          } else {
+            colorPlatos.value = "otro";
+            if (otroPlatos) otroPlatos.value = mColor[1];
+          }
+          colorPlatos.dispatchEvent(new Event("change"));
+        }
+      }
+    }
+
+    // Catering: Servilletas
+    const chkServ = document.getElementById("chkServilletas");
+    const servItem = servicios.find(s => /^Servilletas/i.test(s));
+    if (chkServ && servItem) {
+      chkServ.checked = true;
+      chkServ.dispatchEvent(new Event("change"));
+
+      const mColor = servItem.match(/\(([^)]+)\)/);
+      if (mColor) {
+        const colorServ = document.getElementById("colorServilletas");
+        const otroServ = document.getElementById("colorServilletasOtro");
+        if (colorServ) {
+          const opt = [...colorServ.options].find(o => o.value === mColor[1]);
+          if (opt) {
+            colorServ.value = mColor[1];
+          } else {
+            colorServ.value = "otro";
+            if (otroServ) otroServ.value = mColor[1];
+          }
+          colorServ.dispatchEvent(new Event("change"));
+        }
+      }
+    }
+
+    // Copas
+    const chkCopas = document.getElementById("chkCopas");
+    if (chkCopas && servicios.some(s => /^Copas$/i.test(s.trim()))) {
+      chkCopas.checked = true;
+    }
+
+    // Cubiertos dorados
+    const chkCubiertos = document.getElementById("chkCubiertos");
+    if (chkCubiertos && servicios.some(s => /^Cubiertos dorados$/i.test(s.trim()))) {
+      chkCubiertos.checked = true;
+    }
+
+    // Mesas
+    const mesasItem = servicios.find(s => /^Mesas:\s*\d+/i.test(s));
+    if (mesasItem) {
+      const m = mesasItem.match(/Mesas:\s*(\d+)/i);
+      if (m) {
+        const cantidadMesas = document.getElementById("cantidadMesas");
+        const mesasWrap = document.getElementById("mesasWrap");
+        if (cantidadMesas) cantidadMesas.value = m[1];
+        if (mesasWrap) mesasWrap.classList.remove("hidden");
+      }
+    }
+
+    // Mozos
+    const mozosItem = servicios.find(s => /^Mozos:\s*\d+/i.test(s));
+    if (mozosItem) {
+      const m = mozosItem.match(/Mozos:\s*(\d+)/i);
+      const chkMozos = document.getElementById("chkMozos");
+      const cantMozos = document.getElementById("cantidadMozos");
+      if (chkMozos) {
+        chkMozos.checked = true;
+        chkMozos.dispatchEvent(new Event("change"));
+      }
+      if (cantMozos && m) cantMozos.value = m[1];
+    }
+
+    // Firmas catering
+    if (c.firmaCatering) {
+      const firmaSel = document.getElementById("firmaCateringSelect");
+      if (firmaSel) firmaSel.value = c.firmaCatering;
+    }
+
+    // Recalcular totales
+    if (window.__precios && typeof window.__precios.calc === "function") {
+      window.__precios.calc();
+    }
+
+    // Cambiar texto del botón
+    const btnSubmit = document.querySelector("#contractForm button[type='submit']");
+    if (btnSubmit) {
+      btnSubmit.textContent = "📄 Guardar cambios (crea nuevo contrato)";
+    }
+
+  } catch (e) {
+    console.error("Error inesperado cargando contrato:", e);
+    alert("Ocurrió un error al cargar el contrato.");
+  }
+}
+
+// Al cargar la página, si viene ?contratoId=..., rellenar el formulario
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(location.search);
+  const id = params.get("contratoId");
+  if (id) {
+    loadContratoExistente(id);
+  }
+});
+
   </script>
 </body>
 </html>

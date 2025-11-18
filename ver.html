@@ -4,11 +4,19 @@
   <meta charset="UTF-8" />
   <title>Ver contratos — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Estilos generales de tu app -->
   <link href="./style.css" rel="stylesheet" />
+  <!-- Estilos específicos de esta página -->
+  <link href="./ver.css" rel="stylesheet" />
+
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Tu script general (protectPage, logout, etc.) -->
   <script defer src="./script.js"></script>
+  <script defer src="./ver.js"></script>
 </head>
-<body class="bg" onload="protectPage(); loadContracts();">
+<body class="bg" onload="protectPage();">
   <header class="bar">
     <div class="brand">
       <img src="./img/logo.png" alt="La Marquesina" class="logo">
@@ -22,10 +30,29 @@
   </header>
 
   <main class="wrap">
-    <div id="list" class="grid">
-      <!-- Tarjetas cargadas desde Supabase -->
-    </div>
+    <section class="contracts-header">
+      <div>
+        <h2>Listado de contratos</h2>
+        <p class="contracts-subtitle">
+          
+        </p>
+      </div>
+      <div class="contracts-actions-top">
+        <button class="btn primary" onclick="window.location.href='./redactar.html'">
+          ➕ Nuevo contrato
+        </button>
+      </div>
+    </section>
+
+    <section id="estadoLista" class="contracts-status"></section>
+
+    <section id="listaContratos" class="contracts-list">
+      <!-- Aquí se inyectan las tarjetas -->
+    </section>
+
     <p id="listErr" class="error"></p>
   </main>
+
+
 </body>
 </html>

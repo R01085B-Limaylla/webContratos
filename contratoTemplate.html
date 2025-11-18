@@ -7,208 +7,32 @@
   <link href="./style.css" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="contratoTemplate.css">
   <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    /* Fuente base y tamaño global */
-    body { margin: 0; font-family: "PT Serif", serif; background: #eee; }
+  <script src="contratoTemplato.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./script.js"></script>
 
-    /* ======== CONTRATO A4 CONFIGURACIÓN GENERAL ======== */
-.page {
-  display: flex;
-  flex-direction: column;
-  width: 595px;   /* A4 horizontalmente a 96 dpi */
-  height: 842px;  /* A4 verticalmente a 96 dpi */
-  margin: 0 auto;
+<script>
+  const SUPABASE_URL = "https://pfjhrnxhqhzvqaviasjm.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmamhybnhocWh6dnFhdmlhc2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNzg1MDksImV4cCI6MjA3Njc1NDUwOX0.O9hP-Uh64pDwY4xCcGOYaz9Oi0xARxAbL1PJgCJyLr4";
 
-  /* Fondo fijo al borde */
-  background-image: url("./img/fondo-contrato.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: top center;
-
-  box-sizing: border-box;
-  position: relative;
-  font-family: "PT Serif", serif;
-}
-
-/* ======== CONTENEDOR INTERNO DEL TEXTO ======== */
-.page .content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* empuja el bloque final al fondo */
-
-  /* Equivalente a 50 mm 18 mm 25 mm 18 mm */
-  padding: 130px 28px 95px 50px;
-
-  box-sizing: border-box;
-}
-
-/* ======== TAMAÑO DE FUENTE GLOBAL ======== */
-.page,
-.page * {
-  font-size: 6pt;
-  line-height: 1.35;
-}
-
-/* ======== TÍTULOS ======== */
-h2 {
-  text-align: center;
-  text-transform: uppercase;
-  margin-top: 0;
-  font-size: 9pt;
-  font-weight: bold;
-  letter-spacing: 0.3px;
-}
-
-/* ======== PÁRRAFOS Y LISTAS ======== */
-p,
-ul {
-  font-size: 8pt;
-  line-height: 1.4;
-  text-align: justify;
-  margin: 4px 0;
-}
-
-ul {
-  margin-top: 4px;
-  margin-bottom: 4px;
-  padding-left: 18px;
-}
-
-/* ======== BLOQUE FINAL (CLÁUSULA, FIRMAS, FECHA) ======== */
-#bloqueFinal {
-  margin-top: auto;
-  padding-top: 10px;
-  font-size: 8pt;
-}
-
-/* ======== FIRMAS ======== */
-.firmas {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 30px;
-  gap: 14px;
-}
-
-.firma {
-  text-align: center;
-  width: 31%;
-  font-size: 8pt;
-  line-height: 1.3;
-}
-
-.firma img {
-  width: 110px;
-  height: auto;
-  margin-bottom: 3px;
-}
-
-.linea {
-  width: 140px;
-  border-top: 1px solid #000;
-  margin: 0 auto 4px;
-}
-
-/* ======== FECHA (abajo de firmas) ======== */
-#fechaActual {
-  text-align: right;
-  font-size: 8pt;
-  margin-top: 6px;
-}
-
-
-  </style>
- <script>
-  function getNode(){ return document.getElementById('contrato') || document.querySelector('.page'); }
-
-  // Escala adaptativa (reduce en pantallas pequeñas para evitar cuelgues)
-  function pickScale(){
-    const w = Math.min(window.innerWidth, screen.width || window.innerWidth);
-    if (w <= 390) return 1.25;
-    if (w <= 480) return 1.5;
-    return 2; // desktop
-  }
-
-  function pdfOptionsFor(el){
-    const w = el.clientWidth, h = el.clientHeight;
-    return {
-      margin: 0,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: pickScale(), useCORS: true, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'px', format: [w, h], orientation: 'portrait' }
-    };
-  }
-
-  // Descargar directamente
-  async function downloadPdfA4(){
-    const el = getNode();
-    const opt = pdfOptionsFor(el);
-    await html2pdf().set({ ...opt, filename: 'Contrato.pdf' }).from(el).save();
-  }
-
-  // Abrir/Imprimir: abre ventana en blanco SINCRÓNICAMENTE y luego inyecta el blob (evita bloqueador)
-  async function openPdfA4(){
-    const holder = window.open('about:blank'); // abrir ya!
-    if (!holder) { alert('Permite las ventanas emergentes para abrir el PDF.'); return; }
-
-    try {
-      holder.document.write('<html><body style="font-family:sans-serif;padding:20px">Generando PDF…</body></html>');
-      const el = getNode();
-      const opt = pdfOptionsFor(el);
-      const worker = html2pdf().set(opt).from(el).toPdf();
-      const pdf = await worker.get('pdf');
-      const blob = pdf.output('blob');
-      const url = URL.createObjectURL(blob);
-      holder.location.href = url;
-      // (El usuario usará imprimir desde el visor del navegador)
-      setTimeout(()=>URL.revokeObjectURL(url), 60000);
-    } catch (e) {
-      holder.close();
-      alert('No se pudo abrir el PDF. ' + e.message);
-    }
-  }
-
-  // Compartir con Web Share API + fallback
-  async function sharePdfA4(){
-    const el = getNode();
-    const opt = pdfOptionsFor(el);
-    const worker = html2pdf().set(opt).from(el).toPdf();
-    const pdf = await worker.get('pdf');
-    const blob = pdf.output('blob');
-    const file = new File([blob], 'Contrato.pdf', { type:'application/pdf' });
-
-    if (navigator.canShare?.({ files:[file] })) {
-      await navigator.share({ title:'Contrato — La Marquesina', files:[file] });
-      return;
-    }
-
-    // Fallback: abrir en nueva pestaña (Android/ iOS sin files)
-    const url = URL.createObjectURL(blob);
-    const w = window.open(url, '_blank');
-    if (!w) {
-      // Último recurso: descargar
-      const a = document.createElement('a');
-      a.href = url; a.download = 'Contrato.pdf';
-      document.body.appendChild(a); a.click(); a.remove();
-    }
-    setTimeout(()=>URL.revokeObjectURL(url), 60000);
-  }
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 </script>
-
-
-
-
-</head>
+ 
+ </head>
 <body>
 
-  <div style="display:flex;justify-content:center;gap:10px;margin:10px 0;">
+  <div class="pdf-toolbar">
   <button id="__btnpdf"   onclick="AndroidBridge.openPdfExternally()">📄Abrir PDF</button>
   <button id="__btnshare" onclick="AndroidBridge.sharePdf()">📤Compartir</button>
   <button id="__btnprint" onclick="AndroidBridge.printSystem()">🖨️Imprimir</button>
+  <button onclick="editarContratoDesdeTemplate()">✏️ Editar este contrato</button>
+  <button onclick="window.location.href='ver.html'">📋 Ver contratos</button>
   </div>
+  
+
 
 <div id="contrato" class="page">
   <div class="content">
@@ -265,7 +89,7 @@ ul {
 
 
   <script>
-    
+   
          // Lee ?m=..., decodifica UTF-8, guarda el mensaje y lo despacha cuando la página esté lista
 (function () {
   try {
@@ -425,6 +249,7 @@ function mayusInicial(txt) {
       try { if (window.opener) window.opener.postMessage({ type: "template-consumed" }, "*"); } catch {}
 
       const c = data.payload;
+       window.__lastPayload = c || {};  // 👈 guardar payload globalmente
       if (!c) return;
 
       // Título
@@ -721,220 +546,151 @@ if (c.tipo === "ambos" && c.totales) {
       document.getElementById("fechaActual").textContent = `Huancayo: ${hoyStr}`;
 
 
-      // Descargar PDF
-      if (data.autoDownload) {
-        const element = document.getElementById("contrato");
+  // === Generar PDF, subirlo a Supabase y guardar en la tabla ===
+if (data.autoDownload) {
+  try {
+    const element = document.getElementById("contrato");
 
-        // Tomamos el tamaño real del elemento en píxeles
-        const pdfWidth  = element.offsetWidth;
-        const pdfHeight = element.offsetHeight;
+    const pdfWidth  = element.offsetWidth;
+    const pdfHeight = element.offsetHeight;
 
-        const opt = {
-          margin: 0,
-          filename: c.filename || "Contrato.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: {
-            scale: 2,
-            useCORS: true
-            // 👈 sin windowWidth/windowHeight para que use el tamaño real del elemento
-          },
-          jsPDF: {
-            unit: "px",                     // trabajamos en píxeles
-            format: [pdfWidth, pdfHeight],  // el PDF mide EXACTAMENTE lo mismo que #contrato
-            orientation: "portrait"
-          }
-        };
+    const opt = {
+      margin: 0,
+      filename: c.filename || "Contrato.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: {
+        unit: "px",
+        format: [pdfWidth, pdfHeight],
+        orientation: "portrait"
+      }
+    };
 
-        await html2pdf().set(opt).from(element).save();
+    // 1) Generar PDF como blob
+    const worker = html2pdf().set(opt).from(element).toPdf();
+    const pdf = await worker.get("pdf");
+    const blob = pdf.output("blob");
+
+    // 2) Subir PDF a Supabase Storage
+    const bucketName = "contratos-pdf";
+
+    // si estoy editando y ya existe un pdf_path, reúsalo;
+    // si no, genero uno nuevo
+    const fileName =
+      c.filename ||
+      `Contrato_${(c.tipo || "general")}_${Date.now()}.pdf`;
+
+    const filePath =
+      c.prevPdfPath && typeof c.prevPdfPath === "string"
+        ? c.prevPdfPath
+        : fileName;
+
+    const { error: upErr } = await supabase
+      .storage
+      .from(bucketName)
+      .upload(filePath, blob, {
+        contentType: "application/pdf",
+        upsert: true,   // 👈 sobrescribe el PDF existente
+      });
+
+    if (upErr) {
+      console.error("Error subiendo PDF:", upErr);
+      alert("Error subiendo el PDF a Supabase: " + upErr.message);
+      return;
+    } else {
+      console.log("PDF subido OK en ruta:", filePath);
+    }
+
+    // 3) Guardar registro en la tabla contratos
+    const row = {
+      tipo: c.tipo,
+      cliente: c.cliente,
+      dni: c.dniCliente,
+      fecha_evento: c.fecha || null,
+      direccion: c.direccion || "",
+      referencia: c.referencia || "",
+      total: c.total || null,
+      adelanto: c.adelanto || null,
+      resta: c.resta || null,
+      pdf_path: filePath,   // mismo que en upload
+      filename: fileName,
+      payload: c
+    };
+
+    let dbErr = null;
+    let savedId = c.editingId || null;
+
+    if (c.editingId) {
+      // 👇 MODO EDICIÓN: actualiza el registro existente
+      const { data: updData, error } = await supabase
+        .from("contratos")
+        .update(row)
+        .eq("id", c.editingId)
+        .select("id")
+        .maybeSingle();
+
+      dbErr = error;
+      if (!error && updData) savedId = updData.id;
+    } else {
+      // 👇 MODO NUEVO: inserta uno nuevo
+      const { data: insData, error } = await supabase
+        .from("contratos")
+        .insert([row])
+        .select("id")
+        .maybeSingle();
+
+      dbErr = error;
+      if (!error && insData) savedId = insData.id;
+    }
+
+    if (dbErr) {
+      console.error("Error guardando en DB:", dbErr);
+      alert("Error guardando el contrato en la base de datos: " + dbErr.message);
+    } else {
+      window.__lastContratoId = savedId || c.editingId || null;
+      console.log(
+        c.editingId
+          ? "Contrato actualizado en la tabla 'contratos' (ID " + savedId + ")"
+          : "Contrato creado en la tabla 'contratos' (ID " + savedId + ")"
+      );
+    }
+
+    // 4) Descargar el PDF al usuario (como antes)
+    try {
+      await html2pdf().set(opt).from(element).save();
+    } catch (e) {
+      console.warn("PDF subido, pero no se descargó automáticamente:", e);
+    }
+  } catch (e) {
+    console.error("Error generando/subiendo/guardando PDF:", e);
+    alert("Error generando o guardando el PDF: " + e.message);
+  }
+}});
+
+    // === Variables globales para edición desde el template ===
+    window.__lastContratoId = window.__lastContratoId || null;
+    window.__lastPayload = window.__lastPayload || null;
+
+    // Botón "✏️ Editar este contrato" en contratoTemplate
+    function editarContratoDesdeTemplate() {
+      const id =
+        window.__lastContratoId ||
+        (window.__lastPayload && window.__lastPayload.editingId);
+
+      console.log("editarContratoDesdeTemplate() → id:", id, "payload:", window.__lastPayload);
+
+      if (!id) {
+        alert("Aún no se pudo identificar el contrato para editar. Guarda el contrato primero.");
+        return;
       }
 
-
-      }
-    );
+      // Ir a redactar con ese contrato
+      window.location.href = `redactar.html?contratoId=${id}`;
+    }
 
     
   </script>
-  <style> 
- 
-/* ===== BLOQUE FINAL ===== */
-#bloqueFinal {
-  margin-top: 30px;
-  font-size: 8px;       /* tamaño general reducido */
-  line-height: 1.4;
-}
-
-/* Subtítulo de sección (h4) */
-#bloqueFinal h4 {
-  margin: 8px 0 4px;
-  font-size: 8px;       /* mismo tamaño que el resto */
-  font-weight: bold;
-}
-
-/* Totales */
-#bloqueFinal .totales {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3px 18px;
-  margin-bottom: 10px;
-  font-size: 8px;
-}
-
-/* Texto del evento arriba del bloque final */
-#detalleEvento {
-  margin: 8px 0 8px 0;
-  font-size: 8px;
-  line-height: 1.4;
-  text-align: justify;
-}
-
-/* Fecha del día, alineada a la derecha */
-#fechaActual {
-  margin: 0 0 6px 0;
-  font-size: 8px;
-  text-align: right;
-}
-
-/* Cláusula (más pequeña) */
-#clausula {
-  margin: 0 0 16px 0;
-  font-size: 7px;       /* más pequeño que el resto */
-  line-height: 1.3;
-  text-align: justify;
-  letter-spacing: 0.15px;
-}
-
-/* ======= FIRMAS ======= */
-.firmas {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  margin-top: 25px;
-}
-
-.firma {
-  text-align: center;
-  width: 31%;
-  font-size: 8px;
-  line-height: 1.3;
-}
-
-.firma img {
-  width: 110px;       /* tamaño proporcional a texto pequeño */
-  height: auto;
-  margin-bottom: 3px;
-}
-
-.linea,
-.firma .linea {
-  border-top: 1px solid #000;
-  width: 140px;
-  margin: 0 auto 4px;
-}
-
-/* Uniformar tamaño en toda la línea de evento */
-#detalleEvento, 
-#detalleEvento b, 
-#detalleEvento strong {
-  font-size: 10px !important;
-  line-height: 1.4;
-  text-align: justify;
-  font-weight: normal;   /* Si quieres que no resalte tanto */
-}
-
-/* Si prefieres mantener la negrita, usa esto en su lugar: */
-#detalleEvento b,
-#detalleEvento strong {
-  font-size: 10px !important;
-  font-weight: bold;
-}
-
-/* Texto más compacto a los bordes */
-p, ul {
-  font-size: 8px;
-  line-height: 1.5;
-  text-align: justify;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-/* Título centrado */
-h2 {
-  text-align: center;
-  text-transform: uppercase;
-  margin-top: 0;
-}
-
-/* Empuja el bloque final hacia el borde inferior siempre */
-#bloqueFinal{
-  margin-top: auto;       /* << clave: se va al fondo sin superponerse */
-  padding-bottom: 8mm;    /* separa de la orla/filigrana inferior del fondo */
-}
-
-/* Estructura del pie */
-#bloqueFinal .firmas{
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;  /* alinea las firmas por la base */
-  gap: 16px;
-}
-
-/* Fecha al final y a la derecha */
-#fechaActual{
-  margin-top: 8px;        /* un poco debajo de las firmas */
-  text-align: right;
-}
-
-/* Línea de firma compacta */
-.firma .linea{
-  width: 160px;
-  border-top: 1px solid #000;
-  margin: 0 auto 5px;
-}
- /* ESTILOS BOTONES MOVILES
- 
- */
-
- /* Botonera flotante */
-  .pdf-toolbar {
-    position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 9999;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(6px);
-    padding: 8px 14px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.15);
-  }
-
-  .pdf-toolbar button {
-    appearance: none;
-    border: 0;
-    padding: 10px 14px;
-    border-radius: 8px;
-    background: #111827;
-    color: #fff;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: filter 0.2s, transform 0.15s;
-  }
-
-  .pdf-toolbar button:hover {
-    filter: brightness(1.15);
-    transform: translateY(-1px);
-  }
-
-  /* Ocultar barra al imprimir o exportar PDF */
-  @media print {
-    .pdf-toolbar { display: none !important; }
-  }
-
-</style>  
+    
 </body>
 </html>
 
