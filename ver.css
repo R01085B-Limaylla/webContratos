@@ -258,3 +258,110 @@
   color: #b91c1c;
   font-weight: 600;
 }
+
+/* ========= Mejora de legibilidad general ========= */
+
+/* Cuerpo del contrato: texto un poco más grande y más aire */
+.contract-body {
+  font-size: 0.98rem;      /* antes 0.9, un poquito más grande */
+  line-height: 1.5;        /* más separación entre líneas */
+}
+
+/* Cada línea de info dentro de la tarjeta */
+.contract-line {
+  margin: 0.25rem 0;
+  line-height: 1.5;
+}
+
+/* Resaltar palabras clave (Adelanto, Resta, Detalles, etc.) */
+.contract-line strong {
+  font-weight: 700;
+}
+
+/* Bloques internos (Catering / Cocteles) más claros visualmente */
+.contract-block {
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
+  background: #f9fafb;           /* fondo suave gris claro */
+  border: 1px dashed #e5e7eb;    /* borde sutil para separar el bloque */
+}
+
+/* Pequeño espacio arriba del emoji para que no se vea “pegado” */
+.contract-block .emoji {
+  margin-right: 0.25rem;
+}
+
+/* Título interno de los bloques (ej: 🍽 Catering / 🍹 Cocteles) un poco más marcado */
+.contract-block .contract-line:first-child strong {
+  font-size: 0.96rem;
+}
+
+/* Cliente y tipo de contrato ligeramente más grandes para identificación rápida */
+.contract-client {
+  font-size: 1.05rem;
+}
+
+.contract-type {
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+/* Para pantallas pequeñas, aún más cómodo de leer */
+@media (max-width: 640px) {
+  .contract-body {
+    font-size: 1rem;
+  }
+
+  .contract-line {
+    margin: 0.3rem 0;
+  }
+}
+
+/* Opcional: que el texto dentro de contratos vencidos siga siendo legible */
+.contract-card--expired .contract-body {
+  color: #7f1d1d;
+}
+
+.contract-card--expired .contract-block {
+  background: #fef3f2;      /* fondo suave rosado en bloques */
+  border-color: #fecaca;
+}
+
+/* ===== Colores pastel diferenciados por tipo de bloque ===== */
+
+/* 🍽 Catering → verde menta pastel */
+.contract-block.catering-block {
+  background: #E8F8F2;               /* pastel menta */
+  border: 1px solid #C8ECE1;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.85rem;
+}
+
+/* 🍹 Cocteles → rosado durazno pastel */
+.contract-block.barman-block {
+  background: #76bbe969;               /* pastel rosado */
+  border: 1px solid #5eaece;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.85rem;
+}
+
+/* Texto dentro de las cajitas más legible */
+.contract-block p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Encabezado del bloque (emoji + texto) más marcado */
+.contract-block strong {
+  font-size: 1rem;
+}
+
+/* ===== Prioridad: en contratos vencidos, los bloques se ven en rojo (alerta) ===== */
+
+.contract-card--expired .contract-block,
+.contract-card--expired .contract-block.catering-block,
+.contract-card--expired .contract-block.barman-block {
+  background: #fef3f2;   /* fondo rosado de alerta */
+  border-color: #fecaca; /* borde rojizo */
+}

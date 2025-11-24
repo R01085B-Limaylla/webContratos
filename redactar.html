@@ -240,7 +240,7 @@
           <label>Fecha del evento</label>
           <input class="input" type="date" id="fecha" required />
         </div>
-        <div class="field">
+        <div class="field" id="horaGeneralField">
           <label>Hora (AM/PM)</label>
           <div class="time-12">
             <input class="input" id="horaH" type="number" min="1" max="12" required />
@@ -259,6 +259,48 @@
       </div>
 
       <p class="muted" id="previewFechaHora">Selecciona fecha y hora…</p>
+
+            <!-- Horas específicas por tipo -->
+            <div class="section">
+        <h3>Horas específicas</h3>
+        <div class="grid-2">
+          <!-- Hora comida (catering) -->
+          <div class="field" id="horaComBlock">
+            <label>Hora comida (catering)</label>
+            <div class="time-12">
+              <input class="input" id="horaComH" type="number" min="1" max="12" />
+              <span>:</span>
+              <input class="input" id="horaComM" type="number" min="0" max="59" step="1" />
+              <select class="select" id="horaComAP">
+                <option>PM</option>
+                <option>AM</option>
+              </select>
+            </div>
+            <div style="margin-top:6px">
+              <label><input type="checkbox" id="horaComIndef"> Hora de comida por definir</label>
+            </div>
+          </div>
+
+          <!-- Hora cocteles (barman) -->
+          <div class="field" id="horaCockBlock">
+            <label>Hora cocteles (barman)</label>
+            <div class="time-12">
+              <input class="input" id="horaCockH" type="number" min="1" max="12" />
+              <span>:</span>
+              <input class="input" id="horaCockM" type="number" min="0" max="59" step="1" />
+              <select class="select" id="horaCockAP">
+                <option>PM</option>
+                <option>AM</option>
+              </select>
+            </div>
+            <div style="margin-top:6px">
+              <label><input type="checkbox" id="horaCockIndef"> Hora de cocteles por definir</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
       <!-- Ubicación -->
       <div class="row">
@@ -399,72 +441,169 @@
     })();
 
     // Unifica secciones y required por tipo
-    (function(){
-      const tipoEl = document.getElementById("tipo");
-      const secBarman = document.getElementById("serviciosBarman");
-      const secCatering = document.getElementById("serviciosCatering");
-      const firmaBarman = document.getElementById("firmaBarman");
-      const firmaCatering = document.getElementById("firmaCatering");
-      const firmaAmbos = document.getElementById("firmaAmbos");
+    // Unifica secciones y required por tipo
+(function(){
+  const tipoEl = document.getElementById("tipo");
+  const secBarman = document.getElementById("serviciosBarman");
+  const secCatering = document.getElementById("serviciosCatering");
+  const firmaBarman = document.getElementById("firmaBarman");
+  const firmaCatering = document.getElementById("firmaCatering");
+  const firmaAmbos = document.getElementById("firmaAmbos");
 
-      const coctelesTipo  = document.getElementById("coctelesTipo");
-      const coctelesModo  = document.getElementById("coctelesModo");
-      const totalWrap     = document.getElementById("coctelesTotalWrap");
-      const sepWrap       = document.getElementById("coctelesSepWrap");
-      const totalEl       = document.getElementById("coctelesCantidadTotal");
-      const acEl          = document.getElementById("coctelesAcrilico");
-      const crEl          = document.getElementById("coctelesCristaleria");
+  const coctelesTipo  = document.getElementById("coctelesTipo");
+  const coctelesModo  = document.getElementById("coctelesModo");
+  const totalWrap     = document.getElementById("coctelesTotalWrap");
+  const sepWrap       = document.getElementById("coctelesSepWrap");
+  const totalEl       = document.getElementById("coctelesCantidadTotal");
+  const acEl          = document.getElementById("coctelesAcrilico");
+  const crEl          = document.getElementById("coctelesCristaleria");
 
-      const cantidadCatering   = document.getElementById("cantidadCatering");
-      const platosDescripcion  = document.getElementById("platosDescripcion");
-      const firmaCateringSelect= document.getElementById("firmaCateringSelect");
+  const cantidadCatering   = document.getElementById("cantidadCatering");
+  const platosDescripcion  = document.getElementById("platosDescripcion");
+  const firmaCateringSelect= document.getElementById("firmaCateringSelect");
 
-      function setReq(el,on){ if(!el) return; on ? el.setAttribute("required","") : el.removeAttribute("required"); }
+  // BLOQUES DE HORA
+  const horaGeneralField = document.getElementById("horaGeneralField");
+  const horaH = document.getElementById("horaH");
+  const horaM = document.getElementById("horaM");
+  const horaAP = document.getElementById("horaAP");
 
-      function refreshCocteles(){
-        const sep = coctelesModo.value === "separado";
-        const barmanOn = (tipoEl.value === "barman" || tipoEl.value === "ambos");
-        sepWrap.classList.toggle("hidden", !sep);
-        totalWrap.classList.toggle("hidden", sep);
-        setReq(coctelesTipo, barmanOn && !sep);
-        setReq(totalEl, barmanOn && !sep);
-        setReq(acEl,     barmanOn &&  sep);
-        setReq(crEl,     barmanOn &&  sep);
-        // Si está en modo total y hay cantidad, forzar Acrílico por defecto si no se eligió tipo
-        if (barmanOn && !sep) {
-          const n = parseFloat((document.getElementById("coctelesCantidadTotal").value)||0);
-          if (!coctelesTipo.value && n>0) coctelesTipo.value = 'Acrílico';
-        }
-      }
+  const horaComBlock  = document.getElementById("horaComBlock");
+  const horaCockBlock = document.getElementById("horaCockBlock");
 
-      function refreshTipo(){
-        const t = tipoEl.value;
-        const barmanOn   = (t === "barman" || t === "ambos");
-        const cateringOn = (t === "catering" || t === "ambos");
-        secBarman.classList.toggle("hidden", !barmanOn);
-        secCatering.classList.toggle("hidden", !cateringOn);
-        firmaBarman.classList.toggle("hidden", !barmanOn);
-        firmaCatering.classList.toggle("hidden", !cateringOn);
-        firmaAmbos.classList.toggle("hidden", t !== "ambos");
-        setReq(cantidadCatering,  cateringOn);
-        setReq(platosDescripcion, cateringOn);
-        setReq(firmaCateringSelect, t === "catering");
-        refreshCocteles();
-        // Proteger por si __precios aún no está definido
-        if (window.__precios && typeof window.__precios.calc === 'function') {
-          window.__precios.calc();
-        }
-      }
+  function setReq(el,on){ if(!el) return; on ? el.setAttribute("required","") : el.removeAttribute("required"); }
 
-      coctelesModo.addEventListener("change", () => { refreshCocteles(); window.__precios.calc(); });
-      [coctelesTipo].forEach(el=> el.addEventListener('change', () => window.__precios.calc()));
-      [document.getElementById('coctelesCantidadTotal'), document.getElementById('coctelesAcrilico'), document.getElementById('coctelesCristaleria')]
-        .forEach(el => el.addEventListener('input', () => window.__precios.calc()));
+  function setReqHoraGeneral(on){
+    [horaH, horaM, horaAP].forEach(el => {
+      if (!el) return;
+      if (on) el.setAttribute("required",""); else el.removeAttribute("required");
+    });
+  }
 
-      tipoEl.addEventListener("change", refreshTipo);
-      // Llamar una vez, protegido si __precios aún no existe
-      refreshTipo();
-    })();
+  function refreshCocteles(){
+    const sep = coctelesModo.value === "separado";
+    const t = tipoEl.value;
+    const barmanOn = (t === "barman" || t === "ambos");
+    sepWrap.classList.toggle("hidden", !sep);
+    totalWrap.classList.toggle("hidden", sep);
+    setReq(coctelesTipo, barmanOn && !sep);
+    setReq(totalEl, barmanOn && !sep);
+    setReq(acEl,     barmanOn &&  sep);
+    setReq(crEl,     barmanOn &&  sep);
+
+    // Si está en modo total y hay cantidad, forzar Acrílico por defecto si no se eligió tipo
+    if (barmanOn && !sep) {
+      const n = parseFloat((document.getElementById("coctelesCantidadTotal").value)||0);
+      if (!coctelesTipo.value && n>0) coctelesTipo.value = 'Acrílico';
+    }
+  }
+
+  function refreshTipo(){
+    const t = tipoEl.value;
+    const barmanOn   = (t === "barman" || t === "ambos");
+    const cateringOn = (t === "catering" || t === "ambos");
+
+    // Secciones barman / catering
+    secBarman.classList.toggle("hidden", !barmanOn);
+    secCatering.classList.toggle("hidden", !cateringOn);
+    firmaBarman.classList.toggle("hidden", !barmanOn);
+    firmaCatering.classList.toggle("hidden", !cateringOn);
+    firmaAmbos.classList.toggle("hidden", t !== "ambos");
+
+    setReq(cantidadCatering,  cateringOn);
+    setReq(platosDescripcion, cateringOn);
+    setReq(firmaCateringSelect, t === "catering");
+
+    // HORAS: qué se ve según tipo
+    if (!t) {
+      // Sin tipo seleccionado: mostrar solo hora general
+      if (horaGeneralField) horaGeneralField.classList.remove("hidden");
+      if (horaComBlock)  horaComBlock.classList.add("hidden");
+      if (horaCockBlock) horaCockBlock.classList.add("hidden");
+      setReqHoraGeneral(true);
+    } else if (t === "barman") {
+      // Solo barman -> solo hora cocteles
+      if (horaGeneralField) horaGeneralField.classList.add("hidden");
+      if (horaComBlock)  horaComBlock.classList.add("hidden");
+      if (horaCockBlock) horaCockBlock.classList.remove("hidden");
+      setReqHoraGeneral(false);
+    } else if (t === "catering") {
+      // Solo catering -> solo hora comida
+      if (horaGeneralField) horaGeneralField.classList.add("hidden");
+      if (horaComBlock)  horaComBlock.classList.remove("hidden");
+      if (horaCockBlock) horaCockBlock.classList.add("hidden");
+      setReqHoraGeneral(false);
+    } else if (t === "ambos") {
+      // Ambos -> solo horas específicas (comida + cocteles)
+      if (horaGeneralField) horaGeneralField.classList.add("hidden");
+      if (horaComBlock)  horaComBlock.classList.remove("hidden");
+      if (horaCockBlock) horaCockBlock.classList.remove("hidden");
+      setReqHoraGeneral(false);
+    }
+
+    refreshCocteles();
+ refreshHorasRequired();  // 👈 esto al final de refreshTipo()
+    // Proteger por si __precios aún no está definido
+    if (window.__precios && typeof window.__precios.calc === 'function') {
+      window.__precios.calc();
+    }
+  }
+
+
+    // Marca / desmarca required en las horas según tipo y "hora por definir"
+  function refreshHorasRequired() {
+    const t = tipoEl.value;
+
+    const hInd   = document.getElementById("horaIndefinida");
+    const comInd = document.getElementById("horaComIndef");
+    const cockInd= document.getElementById("horaCockIndef");
+
+    // ¿Se exige hora general?
+    const needGeneral = (!t || t === "") && !(hInd && hInd.checked);
+
+    // ¿Se exige hora comida?
+    const needCom = (t === "catering" || t === "ambos") && !(comInd && comInd.checked);
+
+    // ¿Se exige hora cocteles?
+    const needCock = (t === "barman" || t === "ambos") && !(cockInd && cockInd.checked);
+
+    // General
+    setReq(horaH,  needGeneral);
+    setReq(horaM,  needGeneral);
+    setReq(horaAP, needGeneral);
+
+    // Comida
+    setReq(horaComH,  needCom);
+    setReq(horaComM,  needCom);
+    setReq(horaComAP, needCom);
+
+    // Cocteles
+    setReq(horaCockH,  needCock);
+    setReq(horaCockM,  needCock);
+    setReq(horaCockAP, needCock);
+  }
+
+    const hInd   = document.getElementById("horaIndefinida");
+  const comInd = document.getElementById("horaComIndef");
+  const cockInd= document.getElementById("horaCockIndef");
+
+  [hInd, comInd, cockInd].forEach(el => {
+    if (!el) return;
+    el.addEventListener("change", refreshHorasRequired);
+  });
+
+
+  coctelesModo.addEventListener("change", () => { refreshCocteles(); window.__precios.calc(); });
+  [coctelesTipo].forEach(el=> el.addEventListener('change', () => window.__precios.calc()));
+  [document.getElementById('coctelesCantidadTotal'), document.getElementById('coctelesAcrilico'), document.getElementById('coctelesCristaleria')]
+    .forEach(el => el.addEventListener('input', () => window.__precios.calc()));
+
+  tipoEl.addEventListener("change", refreshTipo);
+
+  // Llamar una vez al inicio
+  refreshTipo();
+})();
+
 
     // Movilidad: mostrar monto si está activo
     (function(){
@@ -617,16 +756,119 @@
       const form = document.getElementById("contractForm");
 
       // ===== Guardas de validación antes de checkValidity() =====
-      // Hora por definir: eliminar required y deshabilitar campos de hora
-      const hInd = document.getElementById('horaIndefinida');
-      const hH = document.getElementById('horaH');
-      const hM = document.getElementById('horaM');
-      const hAP = document.getElementById('horaAP');
-      if (hInd && hInd.checked){
-        [hH,hM,hAP].forEach(el=>{ el.setAttribute('disabled',''); el.removeAttribute('required'); });
-      } else {
-        [hH,hM,hAP].forEach(el=>{ el.removeAttribute('disabled'); el.setAttribute('required',''); });
+      // === HORAS INDEPENDIENTES ===
+
+      // Catering
+      const horaComH  = document.getElementById("horaComH")?.value || "";
+      const horaComM  = document.getElementById("horaComM")?.value || "";
+      const horaComAP = document.getElementById("horaComAP")?.value || "PM";
+      
+
+      let horaCom24 = "";
+      let horaComTexto = "";
+
+      // ===== Horas específicas (comida / cocteles) =====
+
+      // --- Comida (catering) ---
+      const horaComIndef = document.getElementById("horaComIndef")?.checked || false;
+      let horaComida24 = "";
+      let horaComidaTexto = "";
+
+      if (!horaComIndef) {
+        const hCH = document.getElementById("horaComH")?.value;
+        const hCM = document.getElementById("horaComM")?.value;
+        const hCAP = document.getElementById("horaComAP")?.value || "PM";
+
+        if (hCH && hCM !== "") {
+          let h = parseInt(hCH, 10) || 0;
+          const mNum = parseInt(hCM, 10) || 0;
+          const m = String(mNum).padStart(2, "0");
+
+          let h24 = h % 12;
+          if (hCAP === "PM") h24 += 12;
+
+          horaComida24 = `${String(h24).padStart(2, "0")}:${m}`;
+
+          const d = new Date();
+          d.setHours(h24, mNum, 0, 0);
+          horaComidaTexto = new Intl.DateTimeFormat("es-PE", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true
+          }).format(d);
+        }
       }
+
+      // --- Cocteles (barman) ---
+      const horaCockIndef = document.getElementById("horaCockIndef")?.checked || false;
+      let horaCoctel24 = "";
+      let horaCoctelTexto = "";
+
+      if (!horaCockIndef) {
+        const hKH = document.getElementById("horaCockH")?.value;
+        const hKM = document.getElementById("horaCockM")?.value;
+        const hKAP = document.getElementById("horaCockAP")?.value || "PM";
+
+        if (hKH && hKM !== "") {
+          let h = parseInt(hKH, 10) || 0;
+          const mNum = parseInt(hKM, 10) || 0;
+          const m = String(mNum).padStart(2, "0");
+
+          let h24 = h % 12;
+          if (hKAP === "PM") h24 += 12;
+
+          horaCoctel24 = `${String(h24).padStart(2, "0")}:${m}`;
+
+          const d = new Date();
+          d.setHours(h24, mNum, 0, 0);
+          horaCoctelTexto = new Intl.DateTimeFormat("es-PE", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true
+          }).format(d);
+        }
+      }
+
+
+      if (!horaComIndef && horaComH && horaComM) {
+        const h = parseInt(horaComH, 10);
+        const m = String(parseInt(horaComM, 10)).padStart(2, "0");
+        let h24 = h % 12;
+        if (horaComAP === "PM") h24 += 12;
+        horaCom24 = `${String(h24).padStart(2, "0")}:${m}`;
+        // Formato bonito
+        const d = new Date();
+        d.setHours(h24, m);
+        horaComTexto = new Intl.DateTimeFormat("es-PE", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true
+        }).format(d);
+      }
+
+      // Cocteles
+      const horaCockH  = document.getElementById("horaCockH")?.value || "";
+      const horaCockM  = document.getElementById("horaCockM")?.value || "";
+      const horaCockAP = document.getElementById("horaCockAP")?.value || "PM";
+      
+
+      let horaCock24 = "";
+      let horaCockTexto = "";
+      if (!horaCockIndef && horaCockH && horaCockM) {
+        const h = parseInt(horaCockH, 10);
+        const m = String(parseInt(horaCockM, 10)).padStart(2, "0");
+        let h24 = h % 12;
+        if (horaCockAP === "PM") h24 += 12;
+        horaCock24 = `${String(h24).padStart(2, "0")}:${m}`;
+        const d = new Date();
+        d.setHours(h24, m);
+        horaCockTexto = new Intl.DateTimeFormat("es-PE", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true
+        }).format(d);
+      }
+
       // Barman en modo total: si hay cantidad y no se eligió tipo, asumir Acrílico
       const tipoElTmp = document.getElementById('tipo');
       const coctelesModoTmp = document.getElementById('coctelesModo');
@@ -657,11 +899,15 @@
       const movilidadTexto = movOn ? `S/. ${movilidadMonto.toFixed(2)}` : "No aplica";
 
       // Fechas/horas
+      // ===== Fechas / hora general (tu código de antes) =====
       const fecha = document.getElementById("fecha").value;
       const hora  = document.getElementById("hora").value; // puede ser vacío si es indefinida
       const horaIndefinida = window.__fechaHoraHelpers.horaIndefinida();
       const horaTexto  = window.__fechaHoraHelpers.horaTexto();
       const fechaTexto = window.__fechaHoraHelpers.fechaTexto();
+
+      
+
 
       const direccion = document.getElementById("direccion").value;
       const referencia = document.getElementById("referencia").value;
@@ -764,27 +1010,68 @@ const varCoctelUniq = [...new Set(varCoctel)];
 
       // Payload
       const payload = {
-        tipo, adelanto, total, resta,
+        tipo,
+        adelanto,
+        total,
+        resta,
+
+        // Movilidad
         movOn,
         movilidadMonto,
         movilidadTexto,
+
         rubrosTexto,
         detallePrecio,
+
+        // Cliente
         cliente: contratante,
         dniCliente: dni,
-        fecha, hora, fechaTexto, horaTexto,
+
+        // Fecha general
+        fecha,
+        fechaTexto,
         horaIndefinida,
-        direccion, referencia,
+
+        // Hora general (fallback original)
+        hora,
+        horaTexto,
+
+        // Horas específicas
+        horaComida24,
+        horaComidaTexto,
+        horaComidaIndefinida: horaComIndef,
+
+        horaCoctel24,
+        horaCoctelTexto,
+        horaCoctelIndefinida: horaCockIndef,
+
+        // Ubicación
+        direccion,
+        referencia,
+
+        // Servicios
         servicios,
         extras,
         firmaCatering: firmaCateringSelect,
+
+        // Archivo
         filename: nombreArchivo,
+
+        // Catering
         cantidadCatering,
         platosDescripcion,
         precioPlato: parseFloat(document.getElementById("precioPlato").value || "0"),
-        totales: { barman: subBarman, comida: subComida, total: (subBarman + subComida) },
+
+        // Totales
+        totales: {
+          barman: subBarman,
+          comida: subComida,
+          total: (subBarman + subComida)
+        },
         totalCocteles: subBarman,
         totalComida: subComida,
+
+        // Cocteles
         cocteles: {
           modo: coctelesModo,
           total: coctelesCantidadTotal,
@@ -794,10 +1081,12 @@ const varCoctelUniq = [...new Set(varCoctel)];
           precios: { acrilico: 3.0, cristaleria: 4.5 },
           variedades: varCoctelUniq
         },
-        // 👇 ESTO VA AL NIVEL RAÍZ, NO DENTRO DE "cocteles"
+
+        // Edición
         editingId: __editingId,
         prevPdfPath: __oldPdfPath
       };
+
 
 
       // Empaquetar mensaje y pasarlo por URL con Base64 UTF-8
@@ -831,10 +1120,9 @@ async function loadContratoExistente(id) {
       return;
     }
 
-__editingId = id;
-__oldPdfPath = data.pdf_path || null;
-const c = data.payload || {};
-
+    __editingId = id;
+    __oldPdfPath = data.pdf_path || null;
+    const c = data.payload || {};
 
     // === Tipo ===
     const tipoEl = document.getElementById("tipo");
@@ -880,7 +1168,7 @@ const c = data.payload || {};
       if (fecha) fecha.value = c.fecha;
     }
 
-    // === Hora ===
+    // === Hora GENERAL (legacy) ===
     const hInd = document.getElementById("horaIndefinida");
     const hH = document.getElementById("horaH");
     const hM = document.getElementById("horaM");
@@ -914,6 +1202,66 @@ const c = data.payload || {};
       if (el) el.dispatchEvent(new Event("input"));
     });
     if (hInd) hInd.dispatchEvent(new Event("change"));
+
+
+    // ================================
+    // === HORAS ESPECÍFICAS NUEVAS ===
+    // ================================
+
+    // --- Hora COMIDA ---
+    const horaComIndefChk = document.getElementById("horaComIndef");
+    const horaComH = document.getElementById("horaComH");
+    const horaComM = document.getElementById("horaComM");
+    const horaComAP = document.getElementById("horaComAP");
+
+    if (horaComIndefChk) {
+      if (c.horaComidaIndefinida) {
+        horaComIndefChk.checked = true;
+      } else {
+        horaComIndefChk.checked = false;
+
+        if (c.horaComida24) {
+          const [hc24, mc] = c.horaComida24.split(":").map(Number);
+
+          let h12 = hc24 % 12;
+          if (h12 === 0) h12 = 12;
+          const ap = hc24 >= 12 ? "PM" : "AM";
+
+          if (horaComH) horaComH.value = h12;
+          if (horaComM) horaComM.value = mc;
+          if (horaComAP) horaComAP.value = ap;
+        }
+      }
+      // forzar refresco si tienes listeners
+      horaComIndefChk.dispatchEvent(new Event("change"));
+    }
+
+    // --- Hora COCTELES ---
+    const horaCockIndefChk = document.getElementById("horaCockIndef");
+    const horaCockH = document.getElementById("horaCockH");
+    const horaCockM = document.getElementById("horaCockM");
+    const horaCockAP = document.getElementById("horaCockAP");
+
+    if (horaCockIndefChk) {
+      if (c.horaCoctelIndefinida) {
+        horaCockIndefChk.checked = true;
+      } else {
+        horaCockIndefChk.checked = false;
+
+        if (c.horaCoctel24) {
+          const [hk24, mk] = c.horaCoctel24.split(":").map(Number);
+
+          let h12 = hk24 % 12;
+          if (h12 === 0) h12 = 12;
+          const ap = hk24 >= 12 ? "PM" : "AM";
+
+          if (horaCockH) horaCockH.value = h12;
+          if (horaCockM) horaCockM.value = mk;
+          if (horaCockAP) horaCockAP.value = ap;
+        }
+      }
+      horaCockIndefChk.dispatchEvent(new Event("change"));
+    }
 
     // === Catering: cantidad, comida, precio ===
     if (document.getElementById("cantidadCatering")) {

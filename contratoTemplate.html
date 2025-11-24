@@ -24,13 +24,34 @@
  </head>
 <body>
 
-  <div class="pdf-toolbar">
-  <button id="__btnpdf"   onclick="AndroidBridge.openPdfExternally()">📄Abrir PDF</button>
-  <button id="__btnshare" onclick="AndroidBridge.sharePdf()">📤Compartir</button>
-  <button id="__btnprint" onclick="AndroidBridge.printSystem()">🖨️Imprimir</button>
-  <button onclick="editarContratoDesdeTemplate()">✏️ Editar este contrato</button>
-  <button onclick="window.location.href='ver.html'">📋 Ver contratos</button>
+<div class="pdf-toolbar no-print">
+  <!-- Fila superior: Editar / Ver contratos -->
+  <div class="pdf-row pdf-row-secondary">
+    <button class="pdf-btn pdf-secondary" onclick="editarContratoDesdeTemplate()">
+      ✏️ Editar este contrato
+    </button>
+    <button class="pdf-btn pdf-secondary" onclick="window.location.href='ver.html'">
+      📋 Ver contratos
+    </button>
   </div>
+
+  <!-- Fila inferior: Abrir / Compartir / Imprimir -->
+  <div class="pdf-row pdf-row-main">
+    <button class="pdf-btn pdf-main" id="__btnpdf" onclick="AndroidBridge.openPdfExternally()">
+      📄 Abrir PDF
+    </button>
+    <button class="pdf-btn pdf-main" id="__btnshare" onclick="AndroidBridge.sharePdf()">
+      📤 Compartir
+    </button>
+    <button class="pdf-btn pdf-main" id="__btnprint" onclick="AndroidBridge.printSystem()">
+      🖨️ Imprimir
+    </button>
+  </div>
+</div>
+
+
+
+
   
 
 
@@ -237,20 +258,55 @@ function mayusInicial(txt) {
 
     
     // ---------- Relleno y descarga ----------
-    window.addEventListener("message", async (e) => {
-      const data = e?.data;
-      if (data?.type !== "fill-contract") return;
+            window.addEventListener("message", async (e) => {
+          const data = e?.data;
+          if (data?.type !== "fill-contract") return;
 
-      // Evitar reprocesar
-      if (__alreadyProcessed) return;
-      __alreadyProcessed = true;
+          if (__alreadyProcessed) return;
+          __alreadyProcessed = true;
 
-      // Avisar al opener que ya consumimos el payload
-      try { if (window.opener) window.opener.postMessage({ type: "template-consumed" }, "*"); } catch {}
+          const c = data.payload;
+          if (!c) return;
 
-      const c = data.payload;
-       window.__lastPayload = c || {};  // 👈 guardar payload globalmente
-      if (!c) return;
+          // ==== HORAS ESPECÍFICAS PARA EL CONTRATO ====
+
+          let textoComida = "";
+          let textoCoctel = "";
+
+          if (c.tipo === "catering" || c.tipo === "ambos") {
+            if (c.horaComidaIndefinida) {
+              textoComida = "los platos de comida se servirán en horario por definir";
+            } else if (c.horaComidaTexto) {
+              textoComida = `los platos de comida se servirán a las ${c.horaComidaTexto}`;
+            }
+          }
+
+          if (c.tipo === "barman" || c.tipo === "ambos") {
+            if (c.horaCoctelIndefinida) {
+              textoCoctel = "los cocteles se prepararán en horario por definir";
+            } else if (c.horaCoctelTexto) {
+              textoCoctel = `los cocteles se prepararán a las ${c.horaCoctelTexto}`;
+            }
+          }
+
+          let textoHoras = "";
+          if (textoComida && textoCoctel) {
+            textoHoras = `${textoComida} y ${textoCoctel}`;
+          } else {
+            textoHoras = textoComida || textoCoctel;
+          }
+
+          if (!textoHoras) {
+            const horaBonita = c.horaTexto || "";
+            if (c.tipo === "barman") {
+              textoHoras = `los cocteles se prepararán a las ${horaBonita}`;
+            } else if (c.tipo === "catering") {
+              textoHoras = `los platos de comida se servirán a las ${horaBonita}`;
+            } else {
+              textoHoras = `los cocteles y platos de comida se prepararán a las ${horaBonita}`;
+            }
+          }
+
 
       // Título
       document.getElementById("titulo").innerHTML =
@@ -501,16 +557,25 @@ if (c.tipo === "ambos" && c.totales) {
       const fechaBonita = mayusInicial(c.fechaTexto || formatearFechaISO(c.fecha));
       const horaBonita  = c.horaTexto || formatearHora24(c.hora);
 
-      document.getElementById("detalleEvento").innerHTML = `
-        <br>
-        Los <b>${
+      // Elegir texto según tipo
+        const sujetoEvento =
           (c.tipo === "barman")
             ? "cocteles"
-            : (c.tipo === "catering" ? "platos de comida" : "cocteles y platos de comida")
-        }</b>
-        se prepararán el día <b>${fechaBonita}</b> a las <b>${horaBonita}</b> en <b>${c.direccion}</b>
+            : (c.tipo === "catering" ? "platos de comida" : "cocteles y platos de comida");
+
+        // Verbo según tipo:
+        // - Barman / Ambos (cocteles): "se preparan"
+        // - Catering: "se servirán"
+        const verboEvento = (c.tipo === "catering") ? "se servirán" : "se preparan";
+
+        document.getElementById("detalleEvento").innerHTML = `
+        <br>
+        ${textoHoras}
+        el día <b>${c.fechaTexto}</b> en <b>${c.direccion}</b>
         ${c.referencia ? "(Ref: " + c.referencia + ")" : ""}.
       `;
+
+
 
       // Firmas
       const elRos = document.getElementById("firmaRosario");

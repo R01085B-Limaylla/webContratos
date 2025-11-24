@@ -248,42 +248,280 @@ h2 {
  
  */
 
- /* Botonera flotante */
+/* ===== Botonera flotante unificada ===== */
+
+/* ===== Botonera flotante arriba del contrato ===== */
+
+.pdf-toolbar {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;         /* Fila de arriba y fila de abajo */
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  padding: 8px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, .18);
+}
+
+/* Filas internas: arriba (editar/ver) y abajo (abrir/compartir/imprimir) */
+.pdf-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Botón base */
+.pdf-btn {
+  appearance: none;
+  border: 1px solid #d1d5db;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 150px;
+  text-align: center;
+  box-shadow: 0 3px 0 rgba(15, 23, 42, 0.25);
+  transition:
+    transform 0.12s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+/* Botones principales (Abrir / Compartir / Imprimir) */
+.pdf-btn.pdf-main {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+/* Botones secundarios (Editar / Ver contratos) */
+.pdf-btn.pdf-secondary {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+/* Hover genérico */
+.pdf-btn:hover {
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.7);
+}
+
+/* Hover específico */
+.pdf-btn.pdf-main:hover {
+  background: #020617;
+  border-color: #020617;
+}
+
+.pdf-btn.pdf-secondary:hover {
+  background: #dbeafe;
+}
+
+/* ===== Responsive para móviles ===== */
+@media (max-width: 600px) {
   .pdf-toolbar {
-    position: fixed;
-    top: 14px;
-    left: 50%;
+    top: 8px;
+    width: 96%;
     transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 9999;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(6px);
-    padding: 8px 14px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    padding: 8px 10px;
   }
 
-  .pdf-toolbar button {
-    appearance: none;
-    border: 0;
-    padding: 10px 14px;
-    border-radius: 8px;
-    background: #111827;
-    color: #fff;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: filter 0.2s, transform 0.15s;
+  .pdf-row {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .pdf-toolbar button:hover {
-    filter: brightness(1.15);
-    transform: translateY(-1px);
+  .pdf-btn {
+    min-width: 130px;
+    font-size: 11px;
+    padding: 7px 10px;
   }
+}
+
+/* Ocultar toda la barra al imprimir / en PDF */
+@media print {
+  .pdf-toolbar {
+    display: none !important;
+  }
+}
+
+
+/* En pantallas muy pequeñas, que la barra “salte” a varias filas ordenadas */
+@media (max-width: 600px) {
+  .pdf-toolbar {
+    top: 10px;
+    width: 95%;
+    transform: translateX(-50%);
+    border-radius: 16px;
+  }
+
+  .pdf-btn {
+    min-width: 130px;
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+}
+
+/* Ocultar barra al imprimir o exportar PDF */
+@media print {
+  .pdf-toolbar {
+    display: none !important;
+  }
+}
+
 
   /* Ocultar barra al imprimir o exportar PDF */
   @media print {
     .pdf-toolbar { display: none !important; }
   }
 
+/* Ocultar botones en impresión o cuando html2pdf toma captura */
+@media print {
+  .no-print {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+/* html2pdf también respeta esto */
+.no-print {
+  -webkit-print-color-adjust: exact;
+}
+
+/* ===== Estilo general del toolbar ===== */
+
+.pdf-toolbar,
+.extra-toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+/* ===== Botones extra (Editar / Ver) ===== */
+
+.btn-extra {
+  padding: 12px 18px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all .15s ease;
+  min-width: 160px;
+  text-align: center;
+}
+
+.btn-extra:hover {
+  background: #eef2ff;
+  border-color: #93c5fd;
+}
+
+.btn-extra:active {
+  transform: translateY(2px);
+}
+
+/* Colores específicos */
+.btn-edit {
+  background: #fff7ed;
+  border-color: #fdba74;
+}
+
+.btn-edit:hover {
+  background: #fed7aa;
+}
+
+.btn-view {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.btn-view:hover {
+  background: #dbeafe;
+}
+
+/* ===== Ocultar en impresión ===== */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ===== Botones secundarios (Editar / Ver contratos) ===== */
+
+.no-print {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px auto 0;
+}
+
+/* Para que no afecte a otros .no-print que puedas usar en otro sitio,
+   si prefieres, puedes cambiar el contenedor a .extra-toolbar y usar esa clase en el HTML */
+
+.no-print .btn-edit,
+.no-print .btn-view {
+  appearance: none;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.12);
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  min-width: 150px;
+}
+
+/* Editar: tono cálido (naranja suave) */
+.no-print .btn-edit {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
+.no-print .btn-edit:hover {
+  filter: brightness(1.03);
+  box-shadow: 0 4px 10px rgba(248, 177, 149, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Ver contratos: tono azul suave */
+.no-print .btn-view {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.no-print .btn-view:hover {
+  filter: brightness(1.03);
+  box-shadow: 0 4px 10px rgba(147, 197, 253, 0.6);
+  transform: translateY(-1px);
+}
+
+/* En móviles, si quieres que ocupen cada uno una línea distinta: */
+@media (max-width: 600px) {
+  .no-print {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .no-print .btn-edit,
+  .no-print .btn-view {
+    width: 75%;
+    max-width: 260px;
+  }
+}
