@@ -26,6 +26,7 @@ window.ADMINS = (window.ADMINS && window.ADMINS.length)
       "rosario@lamarquesina.pe",
       "sebastian@lamarquesina.pe",
       "sujey@lamarquesina.pe",
+      "paulmarcos@lamarquesina.pe"
     ];
 
 // === Helpers de sesión / auth ===
