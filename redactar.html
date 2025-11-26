@@ -7,6 +7,7 @@
   <link href="./style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="./script.js"></script>
+  <script defer src="./popups-loader.js"></script>
   <style>
     .hidden{display:none}
     .note { font-size:.9rem; color:#666 }
@@ -21,14 +22,16 @@
     <nav class="nav">
       <a href="./dashboard.html" class="btn">Panel</a>
       <a href="./ver.html" class="btn">Ver contratos</a>
-      <button class="btn danger" onclick="logout()">Cerrar sesión</button>
+      
+      <button class="btn danger" onclick="openLogoutPopup()">Cerrar sesión</button>
+      
     </nav>
   </header>
 
   <main class="wrap">
     <form id="contractForm" class="card stack">
       <h2 class="subtitle">Datos del contrato</h2>
-
+      <div id="popups-root"></div>
       <!-- Tipo -->
       <label>Tipo de contrato</label>
       <select id="tipo" required>

@@ -14,6 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Tu script general (protectPage, logout, etc.) -->
   <script defer src="./script.js"></script>
+  <script src="./popups-loader.js" defer></script>
   <script defer src="./ver.js"></script>
 </head>
 <body class="bg" onload="protectPage();">
@@ -25,7 +26,7 @@
     <nav class="nav">
       <a href="./dashboard.html" class="btn">Panel</a>
       <a href="./redactar.html" class="btn">Redactar</a>
-      <button class="btn danger" onclick="logout()">Cerrar sesión</button>
+      <button class="btn danger" onclick="openLogoutPopup()">Cerrar sesión</button>
     </nav>
   </header>
 
@@ -37,6 +38,8 @@
           
         </p>
       </div>
+      <div id="popups-root"></div>
+
       <div class="contracts-actions-top">
         <button class="btn primary" onclick="window.location.href='./redactar.html'">
           ➕ Nuevo contrato

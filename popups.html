@@ -1,0 +1,69 @@
+<!-- popups.html -->
+<div id="logoutPopup" class="popup-overlay hidden">
+  <div class="popup-box">
+    <h3>¿Cerrar sesión?</h3>
+    <p>¿Estás seguro de que deseas cerrar sesión?</p>
+
+    <div class="popup-buttons">
+      <button class="btn-confirm" onclick="confirmLogout()">Sí, cerrar</button>
+      <button class="btn-cancel" onclick="closeLogoutPopup()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="otroPopup" class="popup-overlay hidden">
+  <div class="popup-box">
+    <h3>Otro popup</h3>
+    <p>Contenido de otro popup...</p>
+    <div class="popup-buttons">
+      <button class="btn-confirm" onclick="accionOtroPopup()">Aceptar</button>
+      <button class="btn-cancel" onclick="closeOtroPopup()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup: Ver / Imprimir PDF -->
+<div id="popupVerPdf" class="popup-overlay hidden">
+  <div class="popup-box">
+    <h3>Ver / Imprimir contrato</h3>
+    <p>¿Deseas abrir el PDF de este contrato para verlo o imprimirlo?</p>
+    <div class="popup-buttons">
+      <button class="btn-confirm" onclick="confirmVerPdf()">Sí, abrir PDF</button>
+      <button class="btn-cancel" onclick="closeVerPdfPopup()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup: Editar contrato -->
+<div id="popupEditar" class="popup-overlay hidden">
+  <div class="popup-box">
+    <h3>Editar contrato</h3>
+    <p>Vas a ir a la pantalla de edición de este contrato. ¿Deseas continuar?</p>
+    <div class="popup-buttons">
+      <button class="btn-confirm" onclick="confirmEditarContrato()">Sí, editar</button>
+      <button class="btn-cancel" onclick="closeEditarPopup()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup: Eliminar contrato -->
+<div id="popupEliminar" class="popup-overlay hidden">
+  <div class="popup-box">
+    <h3>Eliminar contrato</h3>
+    <p>Esta acción eliminará el contrato y su PDF asociado. ¿Estás seguro de que deseas eliminarlo?</p>
+    <div class="popup-buttons">
+      <button class="btn-confirm" onclick="confirmEliminarContrato()">Sí, eliminar</button>
+      <button class="btn-cancel" onclick="closeEliminarPopup()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup: Cargando... -->
+<div id="popupLoading" class="popup-overlay hidden">
+  <div class="popup-box popup-loading">
+    <div class="spinner"></div>
+    <h3>Cargando...</h3>
+    <p>Estamos generando el contrato. Por favor espera unos segundos.</p>
+  </div>
+</div>
+
