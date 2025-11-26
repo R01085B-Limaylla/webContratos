@@ -203,23 +203,7 @@
   color: #ffffff;
 }
 
-.btn.danger {
-  background: #fee2e2;
-  color: #b91c1c;
-  border-radius: 999px;
-  border: 1px solid #fecaca;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
 
-.btn.danger:hover {
-  background: #ef4444;
-  border-color: #b91c1c;
-  color: #fef2f2;
-}
 
 /* ===== Responsive ===== */
 
@@ -365,3 +349,4 @@
   background: #fef3f2;   /* fondo rosado de alerta */
   border-color: #fecaca; /* borde rojizo */
 }
+

@@ -408,3 +408,113 @@ function descargarContrato() {
   };
   html2pdf().set(opt).from(element).save();
 }
+
+function openLogoutPopup() {
+  const el = document.getElementById("logoutPopup");
+  if (el) el.classList.remove("hidden");
+}
+
+function closeLogoutPopup() {
+  const el = document.getElementById("logoutPopup");
+  if (el) el.classList.add("hidden");
+}
+
+async function confirmLogout() {
+  closeLogoutPopup();
+  await logout(); // tu función ya existente
+}
+
+// Ejemplo para otro popup:
+function openOtroPopup() {
+  const el = document.getElementById("otroPopup");
+  if (el) el.classList.remove("hidden");
+}
+function closeOtroPopup() {
+  const el = document.getElementById("otroPopup");
+  if (el) el.classList.add("hidden");
+}
+
+// ===== POPUPS ESPECÍFICOS PARA VER / EDITAR / ELIMINAR =====
+let pendingPdfUrl = null;
+let pendingContratoId = null;
+let pendingEliminarData = { id: null, pdfPath: null };
+
+// --- Ver / Imprimir PDF ---
+function openVerPdfPopup(url) {
+  if (!url || url === "#") {
+    alert("Este contrato aún no tiene PDF asociado.");
+    return;
+  }
+  pendingPdfUrl = url;
+
+  const popup = document.getElementById("popupVerPdf");
+  if (popup) popup.classList.remove("hidden");
+}
+
+function closeVerPdfPopup() {
+  const popup = document.getElementById("popupVerPdf");
+  if (popup) popup.classList.add("hidden");
+  pendingPdfUrl = null;
+}
+
+function confirmVerPdf() {
+  const url = pendingPdfUrl;
+  closeVerPdfPopup();
+  if (url) {
+    verPdf(url); // usa tu función existente
+  }
+}
+
+// --- Editar contrato ---
+function openEditarPopup(id) {
+  pendingContratoId = id;
+  const popup = document.getElementById("popupEditar");
+  if (popup) popup.classList.remove("hidden");
+}
+
+function closeEditarPopup() {
+  const popup = document.getElementById("popupEditar");
+  if (popup) popup.classList.add("hidden");
+  pendingContratoId = null;
+}
+
+function confirmEditarContrato() {
+  const id = pendingContratoId;
+  closeEditarPopup();
+  if (id != null) {
+    editarContrato(id); // usa tu función existente
+  }
+}
+
+// --- Eliminar contrato ---
+function openEliminarPopup(id, pdfPath) {
+  pendingEliminarData = { id, pdfPath };
+  const popup = document.getElementById("popupEliminar");
+  if (popup) popup.classList.remove("hidden");
+}
+
+function closeEliminarPopup() {
+  const popup = document.getElementById("popupEliminar");
+  if (popup) popup.classList.add("hidden");
+  pendingEliminarData = { id: null, pdfPath: null };
+}
+
+async function confirmEliminarContrato() {
+  const { id, pdfPath } = pendingEliminarData;
+  closeEliminarPopup();
+  if (id == null) return;
+
+  // Llamamos a tu función original de eliminar
+  await eliminarContrato(id, pdfPath);
+}
+
+// ==== Popup Cargando ====
+function openLoadingPopup() {
+  const p = document.getElementById("popupLoading");
+  if (p) p.classList.remove("hidden");
+}
+
+function closeLoadingPopup() {
+  const p = document.getElementById("popupLoading");
+  if (p) p.classList.add("hidden");
+}

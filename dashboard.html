@@ -5,8 +5,11 @@
   <title>Panel — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="./style.css" rel="stylesheet" />
+  <!-- Supabase y tu lógica principal -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="./script.js"></script>
+  <!-- Loader que trae el HTML común de los popups -->
+  <script defer src="./popups-loader.js"></script>
 </head>
 <body class="bg" onload="protectPage()">
   <header class="bar">
@@ -14,8 +17,12 @@
       <img src="./img/logo.png" alt="La Marquesina" class="logo">
       <h1>Panel La Marquesina</h1>
     </div>
-    <button class="btn danger" onclick="logout()">Cerrar sesión</button>
+    <!-- Ahora abrimos el popup, no cerramos sesión directo -->
+    <button class="btn danger" onclick="openLogoutPopup()">Cerrar sesión</button>
   </header>
+
+  <!-- Aquí se inyectan los popups desde popups.html -->
+  <div id="popups-root"></div>
 
   <main class="grid2">
     <a class="card action" href="./redactar.html">✍️ Redactar contrato</a>

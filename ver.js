@@ -59,8 +59,6 @@ function editarContrato(id) {
 }
 
 async function eliminarContrato(id, pdfPath) {
-  if (!confirm("¿Seguro que deseas eliminar este contrato?")) return;
-
   const { error: dbErr } = await supabase
     .from(TABLE_NAME)
     .delete()
@@ -85,6 +83,7 @@ async function eliminarContrato(id, pdfPath) {
 
   cargarContratos();
 }
+
 
 // ===== Bloques específicos =====
 function buildMovilidadLine(p) {
@@ -378,16 +377,17 @@ if (tipoLower === "catering") {
         </div>
 
         <footer class="contract-actions">
-          <button class="btn ghost" onclick="verPdf('${pdfUrl}')">
-            📄 Ver / Imprimir PDF
-          </button>
-          <button class="btn outline" onclick="editarContrato(${c.id})">
-            ✏️ Editar
-          </button>
-          <button class="btn danger" onclick="eliminarContrato(${c.id}, '${c.pdf_path || ""}')">
-            🗑️ Eliminar
-          </button>
-        </footer>
+        <button class="btn ghost" onclick="openVerPdfPopup('${pdfUrl}')">
+          📄 Ver / Imprimir PDF
+        </button>
+        <button class="btn outline" onclick="openEditarPopup(${c.id})">
+          ✏️ Editar
+        </button>
+        <button class="btn danger" onclick="openEliminarPopup(${c.id}, '${c.pdf_path || ""}')">
+          🗑️ Eliminar
+        </button>
+      </footer>
+
       </article>
     `;
   });

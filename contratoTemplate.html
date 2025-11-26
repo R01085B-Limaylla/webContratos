@@ -13,16 +13,13 @@
   <script src="contratoTemplato.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="./script.js"></script>
+  <script defer src="./popups-loader.js"></script>
 
-<script>
-  const SUPABASE_URL = "https://pfjhrnxhqhzvqaviasjm.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmamhybnhocWh6dnFhdmlhc2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjExNzg1MDksImV4cCI6MjA3Njc1NDUwOX0.O9hP-Uh64pDwY4xCcGOYaz9Oi0xARxAbL1PJgCJyLr4";
-
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-</script>
  
  </head>
 <body>
+
+  <div id="popups-root"></div>
 
 <div class="pdf-toolbar no-print">
   <!-- Fila superior: Editar / Ver contratos -->
@@ -48,12 +45,6 @@
     </button>
   </div>
 </div>
-
-
-
-
-  
-
 
 <div id="contrato" class="page">
   <div class="content">
@@ -101,13 +92,9 @@
         </div>
       </div>
 
-      
-      
     </div>
   </div>
 </div>
-
-
 
   <script>
    
@@ -229,7 +216,6 @@ function buildCoctelLinea(c) {
 }
 
 
-
     // === CANDADO para evitar múltiples descargas ===
     let __alreadyProcessed = false;
     
@@ -267,6 +253,9 @@ function mayusInicial(txt) {
 
           const c = data.payload;
           if (!c) return;
+
+           // Mostrar popup cargando
+            openLoadingPopup();
 
           // ==== HORAS ESPECÍFICAS PARA EL CONTRATO ====
 
@@ -729,6 +718,9 @@ if (data.autoDownload) {
   } catch (e) {
     console.error("Error generando/subiendo/guardando PDF:", e);
     alert("Error generando o guardando el PDF: " + e.message);
+  }{
+    // 🔵 Cerrar popup de cargando
+    closeLoadingPopup();
   }
 }});
 
@@ -758,7 +750,3 @@ if (data.autoDownload) {
     
 </body>
 </html>
-
-
-
-
