@@ -3,6 +3,7 @@
 const BUCKET = "contratos-pdf";
 const TABLE_NAME = "contratos";
 
+
 // ===== Helpers =====
 function formatMoney(valor) {
   if (valor == null || isNaN(valor)) return "S/. 0.00";
@@ -59,10 +60,7 @@ function editarContrato(id) {
 }
 
 async function eliminarContrato(id, pdfPath) {
-  const { error: dbErr } = await supabase
-    .from(TABLE_NAME)
-    .delete()
-    .eq("id", id);
+  const { error: dbErr } = await supabaseClient.from(TABLE_NAME).delete().eq("id", id);
 
   if (dbErr) {
     alert("Error al eliminar el contrato.");
@@ -71,10 +69,7 @@ async function eliminarContrato(id, pdfPath) {
   }
 
   if (pdfPath) {
-    const { error: stErr } = await supabase
-      .storage
-      .from(BUCKET)
-      .remove([pdfPath]);
+  const { error: stErr } = await supabaseClient.storage.from(BUCKET).remove([pdfPath]);
 
     if (stErr) {
       console.warn("Contrato borrado, pero hubo problema eliminando el PDF:", stErr);
@@ -259,10 +254,10 @@ async function cargarContratos() {
   contenedor.innerHTML = "";
   if (estado) estado.textContent = "Cargando contratos…";
 
-  const { data, error } = await supabase
-    .from(TABLE_NAME)
-    .select("*")
-    .order("fecha_evento", { ascending: true, nullsFirst: false });
+  const { data, error } = await supabaseClient
+  .from(TABLE_NAME)
+  .select("*")
+  .order("fecha_evento", { ascending: true, nullsFirst: false });
 
   if (error) {
     if (estado) estado.textContent = "";
@@ -284,10 +279,8 @@ async function cargarContratos() {
 
   const cards = data.map((c) => {
     // URL pública del PDF
-    const { data: pub } = supabase
-      .storage
-      .from(BUCKET)
-      .getPublicUrl(c.pdf_path || "");
+    const { data: pub } = supabaseClient.storage.from(BUCKET).getPublicUrl(c.pdf_path || "");
+
 
     const pdfUrl = (pub && pub.publicUrl) ? pub.publicUrl : "#";
 
