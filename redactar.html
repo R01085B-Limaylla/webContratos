@@ -1107,11 +1107,14 @@ let __oldPdfPath = null; // ruta del PDF actual en Supabase
 
 async function loadContratoExistente(id) {
   try {
-    const { data, error } = await supabase
-      .from("contratos")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    const sb = window.supabaseClient; // o window.sb si lo creaste
+
+const { data, error } = await sb
+  .from("contratos")
+  .select("*")
+  .eq("id", id)
+  .maybeSingle();
+
 
     if (error) {
       console.error("Error cargando contrato para edición:", error);
