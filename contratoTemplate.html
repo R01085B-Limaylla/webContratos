@@ -9,10 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="contratoTemplate.css">
   <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="contratoTemplato.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="./script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="contratoTemplato.js"></script>
+  
   <script defer src="./popups-loader.js"></script>
 
  
@@ -639,13 +640,12 @@ if (data.autoDownload) {
         ? c.prevPdfPath
         : fileName;
 
-    const { error: upErr } = await supabase
-      .storage
-      .from(bucketName)
-      .upload(filePath, blob, {
-        contentType: "application/pdf",
-        upsert: true,   // 👈 sobrescribe el PDF existente
-      });
+    const sb = window.supabaseClient;
+
+const { error: upErr } = await sb.storage
+  .from(bucketName)
+  .upload(filePath, blob, { contentType: "application/pdf", upsert: true });
+
 
     if (upErr) {
       console.error("Error subiendo PDF:", upErr);
@@ -676,22 +676,24 @@ if (data.autoDownload) {
 
     if (c.editingId) {
       // 👇 MODO EDICIÓN: actualiza el registro existente
-      const { data: updData, error } = await supabase
-        .from("contratos")
-        .update(row)
-        .eq("id", c.editingId)
-        .select("id")
-        .maybeSingle();
+      const { data: updData, error } = await sb
+  .from("contratos")
+  .update(row)
+  .eq("id", c.editingId)
+  .select("id")
+  .maybeSingle();
+
 
       dbErr = error;
       if (!error && updData) savedId = updData.id;
     } else {
       // 👇 MODO NUEVO: inserta uno nuevo
-      const { data: insData, error } = await supabase
-        .from("contratos")
-        .insert([row])
-        .select("id")
-        .maybeSingle();
+      const { data: insData, error } = await sb
+  .from("contratos")
+  .insert([row])
+  .select("id")
+  .maybeSingle();
+
 
       dbErr = error;
       if (!error && insData) savedId = insData.id;
