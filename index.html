@@ -44,7 +44,8 @@
     // Si ya hay sesión activa, pasa directo al panel
     (async () => {
       try {
-        const { data } = await supabaseClient.auth.getSession();
+        const { data } = await window.supabaseClient.auth.getSession();
+
         if (data?.session) location.href = "dashboard.html";
       } catch (e) {
         console.warn("No se pudo verificar la sesión:", e);
