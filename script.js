@@ -521,8 +521,12 @@ function closeLoadingPopup() {
 }
 
 // nieve eliminar despues de navidad
-  // ❄️ SOLO EN DICIEMBRE
+
+
+  // ❄️ Activar nieve SOLO en diciembre
   const isDecember = new Date().getMonth() === 11;
+
+  // páginas donde se muestra
   const SNOW_PAGES = ["dashboard.html", "ver.html"];
   const currentPage = location.pathname.split("/").pop();
 
@@ -538,13 +542,13 @@ function closeLoadingPopup() {
     resize();
     window.addEventListener("resize", resize);
 
-    // ❄️ MÁS NIEVE + MÁS GRANDE
-    const flakes = Array.from({ length: 180 }, () => ({
+    // ❄️ configuración ORIGINAL (la que te gustó)
+    const flakes = Array.from({ length: 140 }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      r: Math.random() * 3.5 + 2,      // tamaño más grande
-      d: Math.random() * 1.5 + 0.6,
-      o: Math.random() * 0.4 + 0.6     // opacidad alta
+      r: Math.random() * 2.5 + 1.2,
+      d: Math.random() * 1.2 + 0.4,
+      o: Math.random() * 0.6 + 0.4
     }));
 
     let angle = 0;
@@ -554,17 +558,11 @@ function closeLoadingPopup() {
 
       flakes.forEach(f => {
         ctx.beginPath();
-
-        // ✨ BRILLO FUERTE + BORDE
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "rgba(216, 224, 247, 1)";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "rgba(200,200,255,0.8)";
         ctx.fillStyle = `rgba(255,255,255,${f.o})`;
-        ctx.strokeStyle = "rgba(211, 216, 240, 0.9)";
-        ctx.lineWidth = 1;
-
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.stroke();
       });
 
       update();
@@ -572,13 +570,12 @@ function closeLoadingPopup() {
 
     function update() {
       angle += 0.01;
-
       flakes.forEach(f => {
-        f.y += Math.pow(f.d, 2) + 0.6;
-        f.x += Math.sin(angle) * 0.8;
+        f.y += Math.pow(f.d, 2) + 0.4;
+        f.x += Math.sin(angle) * 0.7;
 
         if (f.y > h) {
-          f.y = -10;
+          f.y = -5;
           f.x = Math.random() * w;
         }
       });
@@ -589,4 +586,6 @@ function closeLoadingPopup() {
       requestAnimationFrame(animate);
     })();
   }
+
+
 // nieve eliminar despues de navidad
