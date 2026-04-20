@@ -113,6 +113,6 @@ function enviarWhatsApp() {
   }
 
   const mensajeCodificado = encodeURIComponent(mensaje);
-  const url = `https://api.whatsapp.com/send?phone=${telefonoFinal}&text=${mensajeCodificado}`;
+  const url = `https://wa.me/${telefonoFinal}?text=${mensajeCodificado}`;
 window.location.href = url;
 }
