@@ -4,25 +4,41 @@
   <meta charset="UTF-8" />
   <title>Carta de Barman — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="./img/barman-preview.jpeg" />
   <link rel="stylesheet" href="./barman.css" />
 </head>
 <body class="barman-public">
 
-  <header class="public-topbar">
-    <div class="public-brand">
-      <h1>La Marquesina</h1>
+<header class="public-topbar">
+
+  <!-- IZQUIERDA (LOGO + TEXTO) -->
+  <div class="public-brand">
+    <img src="./img/barman-preview.jpeg" alt="Barman" class="brand-logo">
+    
+    <div>
+      <h1>LimHermanos - La Marquesina</h1>
       <p>Servicio de Barman</p>
     </div>
+  </div>
 
-    <div class="public-actions">
-      <a class="btn primary" href="img/Carta Cocteles-mockteles.pdf" target="_blank" rel="noopener">
-        Ver PDF
-      </a>
-      <a class="btn" href="https://wa.me/51966144104?text=Hola,%20quiero%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20barman." target="_blank" rel="noopener">
-        WhatsApp
-      </a>
-    </div>
-  </header>
+  <!-- DERECHA (BOTONES) -->
+  <div class="public-actions">
+
+    <a class="btn" href="./servicios.html">
+      Inicio
+    </a>
+
+    <a class="btn primary" href="img/Carta-Cocteles-mockteles.pdf" target="_blank" rel="noopener">
+      Ver PDF
+    </a>
+
+    <a class="btn whatsapp" href="https://wa.me/51966144104?text=Hola,%20quiero%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20barman." target="_blank" rel="noopener">
+      WhatsApp
+    </a>
+
+  </div>
+
+</header>
 
   <main class="menu-wrapper">
     <section class="menu-intro">
@@ -50,7 +66,7 @@
     </section>
 
     <section class="menu-bottom-cta">
-      <a class="btn primary" href="img/Carta Cocteles-mockteles.pdf" target="_blank" rel="noopener">
+      <a class="btn primary" href="img/Carta-Cocteles-mockteles.pdf" target="_blank" rel="noopener">
         Abrir carta en PDF
       </a>
       <a class="btn" href="https://wa.me/51966144104?text=Hola,%20quiero%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20barman." target="_blank" rel="noopener">
@@ -58,6 +74,13 @@
       </a>
     </section>
   </main>
+
+<script>
+  history.pushState(null, "", location.href);
+  window.addEventListener("popstate", function () {
+    window.location.href = "./servicios.html";
+  });
+</script>
 
 </body>
 </html>

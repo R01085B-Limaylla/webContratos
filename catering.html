@@ -4,28 +4,42 @@
   <meta charset="UTF-8" />
   <title>Catering — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+<link rel="icon" href="./img/logo.png" />
   <link rel="stylesheet" href="./catering.css" />
 </head>
 
 <body class="catering-public">
 
-  <header class="topbar">
-    <div class="brand">
+<header class="public-topbar">
+
+  <!-- IZQUIERDA (LOGO + TEXTO) -->
+  <div class="public-brand">
+    <img src="./img/logo.png" alt="Catering" class="brand-logo">
+    
+    <div>
       <h1>La Marquesina</h1>
-      <p>Catering</p>
+      <p>Servicio de Catering</p>
     </div>
+  </div>
 
-    <div class="actions">
-      <a class="btn primary" href="img/catering.pdf" target="_blank">
-        Ver PDF
-      </a>
+  <!-- DERECHA (BOTONES) -->
+  <div class="public-actions">
 
-      <a class="btn" href="https://wa.me/51942709363?text=Hola,%20quiero%20información%20del%20servicio%20de%20catering">
-        WhatsApp
-      </a>
-    </div>
-  </header>
+    <a class="btn" href="./servicios.html">
+      Inicio
+    </a>
+
+    <a class="btn primary" href="img/catering.pdf" target="_blank" rel="noopener">
+      Ver PDF
+    </a>
+
+    <a class="btn whatsapp" href="https://wa.me/51966144104?text=Hola,%20quiero%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20catering." target="_blank" rel="noopener">
+      WhatsApp
+    </a>
+
+  </div>
+
+</header>
 
   <main class="container">
 
@@ -81,6 +95,12 @@
     </section>
 
   </main>
+<script>
+  history.pushState(null, "", location.href);
+  window.addEventListener("popstate", function () {
+    window.location.href = "./servicios.html";
+  });
+</script>
 
 </body>
 </html>

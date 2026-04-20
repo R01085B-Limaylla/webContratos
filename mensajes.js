@@ -27,11 +27,7 @@ Te compartimos nuestras propuestas para eventos:
 
 Puedes ver más detalles aquí:
 
-🍽️ Catering:
-👉 https://www.lamarquesinacatering.live/catering.html
-
-🍸 Barman:
-👉 https://www.lamarquesinacatering.live/barman.html
+👉 https://www.lamarquesinacatering.live/servicios.html
 
 Será un gusto acompañarte y ayudarte a crear una excelente experiencia en tu evento.`
 };
@@ -117,7 +113,6 @@ function enviarWhatsApp() {
   }
 
   const mensajeCodificado = encodeURIComponent(mensaje);
-  const url = `https://wa.me/${telefonoFinal}?text=${mensajeCodificado}`;
-
-  window.open(url, "_blank");
+  const url = `https://api.whatsapp.com/send?phone=${telefonoFinal}&text=${mensajeCodificado}`;
+window.location.href = url;
 }
