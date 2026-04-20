@@ -1,0 +1,138 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.barman-public {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #e9dcc8;
+  color: #2e1d13;
+}
+
+.public-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(244, 234, 216, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(74, 46, 24, 0.12);
+}
+
+.public-brand h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.public-brand p {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+.public-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  padding: 11px 16px;
+  border-radius: 12px;
+  border: 1px solid #5c3a22;
+  color: #5c3a22;
+  background: #fff8ef;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: #5c3a22;
+  color: #fff8ef;
+}
+
+.menu-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 36px;
+}
+
+.menu-intro {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.menu-intro h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+}
+
+.menu-intro p {
+  margin: 0;
+  color: #5f4a3c;
+}
+
+.menu-gallery {
+  display: grid;
+  gap: 18px;
+}
+
+.menu-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+  background: #f8f1e7;
+}
+
+.menu-bottom-cta {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .public-topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .public-actions {
+    width: 100%;
+  }
+
+  .public-actions .btn {
+    flex: 1;
+  }
+
+  .menu-wrapper {
+    padding: 18px 10px 28px;
+  }
+
+  .menu-gallery {
+    gap: 12px;
+  }
+
+  .menu-gallery img {
+    border-radius: 12px;
+  }
+}

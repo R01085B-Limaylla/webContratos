@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mensajes instantáneos — La Marquesina</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link href="./style.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./script.js"></script>
+  <script defer src="./popups-loader.js"></script>
+  <script defer src="./mensajes.js"></script>
+</head>
+
+<canvas id="snowCanvas"></canvas>
+
+<body class="bg" onload="protectPage();">
+  <header class="bar">
+    <div class="brand">
+      <img src="./img/logo.png" alt="La Marquesina" class="logo">
+      <h1>Mensajes</h1>
+    </div>
+
+    <nav class="nav">
+      <a href="./dashboard.html" class="btn">Panel</a>
+      <a href="./redactar.html" class="btn">Redactar</a>
+      <a href="./ver.html" class="btn">Contratos</a>
+      <button class="btn danger" onclick="openLogoutPopup()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="contracts-header">
+      <div>
+        <h2>Mensajes instantáneos</h2>
+        <p class="contracts-subtitle">
+          Selecciona el tipo de mensaje y envíalo por WhatsApp.
+        </p>
+      </div>
+
+      <div id="popups-root"></div>
+    </section>
+
+    <!-- BOTONES PRINCIPALES -->
+    <section class="contracts-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+      <button class="card action" onclick="seleccionarTipo('barman')">
+        🍸 Para barman
+      </button>
+
+      <button class="card action" onclick="seleccionarTipo('catering')">
+        🍽️ Para catering
+      </button>
+
+      <button class="card action" onclick="seleccionarTipo('ambos')">
+        📦 Ambos
+      </button>
+    </section>
+
+    <!-- PANEL DEL FORMULARIO -->
+    <section id="panelMensaje" class="card" style="margin-top:20px; padding:20px; display:none;">
+      <h3 id="tituloTipo">Enviar mensaje</h3>
+      <p id="descripcionTipo" style="margin-bottom:14px;">
+        Completa el número y abre WhatsApp con el mensaje listo.
+      </p>
+
+      <div style="display:grid; gap:14px;">
+        <div>
+          <label for="telefonoDestino" style="display:block; margin-bottom:6px; font-weight:600;">
+            Número de teléfono
+          </label>
+          <input
+            id="telefonoDestino"
+            type="text"
+            placeholder="+51 999 999 999"
+            style="width:100%; padding:12px; border-radius:12px; border:1px solid #ccc; font-size:16px;"
+          />
+          <small style="display:block; margin-top:6px; opacity:.8;">
+            Ejemplo: +51 999 999 999
+          </small>
+        </div>
+
+        <div>
+          <label for="mensajePreview" style="display:block; margin-bottom:6px; font-weight:600;">
+            Vista previa del mensaje
+          </label>
+          <textarea
+            id="mensajePreview"
+            rows="7"
+            readonly
+            style="width:100%; padding:12px; border-radius:12px; border:1px solid #ccc; font-size:15px; resize:vertical;"
+          ></textarea>
+        </div>
+
+       
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn primary" onclick="enviarWhatsApp()">Enviar mensaje</button>
+          <button class="btn" onclick="cerrarPanelMensaje()">Cancelar</button>
+        </div>
+
+        <p id="msgError" class="error" style="margin:0;"></p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
