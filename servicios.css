@@ -1,13 +1,19 @@
+/* General Body Styles */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #f5efe6, #e8dcc8);
+  background: linear-gradient(135deg, #f5efe6, #e8dcc8); /* Fondo degradado para el body */
 }
 
-.container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 30px 20px;
+/* Servicios Contenedor */
+main.container {
+  background: url('img/Diseño\ sin\ título.jpg') no-repeat center center;
+  background-size: cover; /* Asegura que la imagen cubra todo el fondo */
+  min-height: 100vh; /* Esto asegura que cubra toda la altura de la pantalla */
+  padding: 0; /* Elimina cualquier padding extra */
+  background-position: center; /* Asegura que la imagen esté centrada */
+  background-attachment: fixed; /* Fondo fijo en PC */
+  overflow-x: hidden; /* Evita el scroll horizontal */
 }
 
 /* HEADER */
@@ -21,6 +27,12 @@ body {
   margin-bottom: 10px;
 }
 
+.letra {
+  width: 500px;
+  margin-bottom: 0px;
+  margin-top: -10px;
+}
+
 .header h1 {
   margin: 0;
   font-size: 2.5rem;
@@ -31,21 +43,45 @@ body {
   color: #666;
 }
 
+/* HERO */
+.hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: white;
+  margin-top: 10px;
+}
+
 /* GRID */
 .grid {
   display: grid;
   gap: 25px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Ajuste automático */
+  justify-items: center; /* Asegura que las tarjetas estén centradas */
+  margin-top: 20px;
+  padding: 0 10px; /* Añadido padding horizontal para que los cuadros no toquen los bordes */
+  width: 100%; /* Asegura que la cuadrícula ocupe todo el ancho */
+  max-width: 1200px; /* Limita el ancho máximo */
+  margin-left: auto;
+  margin-right: auto; /* Centra los cuadros en el centro */
 }
 
 /* CARD */
 .card {
-  background: white;
+  background: rgb(235, 217, 159);
   border-radius: 18px;
   overflow: hidden;
   text-decoration: none;
   color: #333;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
   transition: 0.3s;
 }
 
@@ -81,6 +117,7 @@ body {
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid #333;
+  text-align: center;
 }
 
 .btn.primary {
@@ -88,8 +125,83 @@ body {
   color: white;
 }
 
+.btn.whatsapp {
+  background: #25D366;
+  color: white;
+  border: none;
+}
+
 /* CTA */
 .cta {
   text-align: center;
   margin-top: 40px;
+}
+
+/* Estilos de Adaptabilidad para Móviles */
+@media (max-width: 768px) {
+  main.container {
+    background-attachment: scroll; /* Permite que el fondo se mueva con el contenido en móvil */
+    overflow: auto; /* Permite el scroll del contenido */
+  }
+
+  .grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .card-content h2 {
+    font-size: 1.2rem;
+  }
+
+  .card-content p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Estilos de Adaptabilidad para Móviles */
+@media (max-width: 768px) {
+  main.container {
+    background-attachment: scroll; /* Permite que el fondo se mueva con el contenido en móvil */
+    overflow: auto; /* Permite el scroll del contenido */
+    padding: 0 20px; /* Añadir padding para que el contenido no toque los bordes */
+  }
+
+  .grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    padding: 0 15px; /* Espaciado lateral para evitar que los cuadros toquen los bordes */
+  }
+
+  .hero h1 {
+    font-size: 1.8rem; /* Ajusta el tamaño de la fuente para una mejor lectura en móviles */
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .card-content h2 {
+    font-size: 1.2rem;
+  }
+
+  .card-content p {
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+
+  .btn {
+    padding: 12px 18px; /* Aumenta el padding de los botones en móviles para mejor clicabilidad */
+    font-size: 1rem; /* Ajusta el tamaño de fuente de los botones */
+    margin: 10px 0; /* Espacio alrededor de los botones */
+  }
+
+  .cta {
+    margin-top: 30px;
+  }
 }

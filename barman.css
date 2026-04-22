@@ -145,7 +145,7 @@ body.barman-public {
   justify-content: space-between;
   align-items: center;
   padding: 12px 18px;
-  background: #d4c7b6;
+  background: #d4c7b6b4;
   backdrop-filter: blur(6px);
   border-bottom: 1px solid #ddd;
 }
