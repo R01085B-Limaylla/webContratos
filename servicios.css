@@ -27,13 +27,16 @@ main.container {
   margin-bottom: 10px;
 }
 
-/* Hacer la imagen dentro de .letra más pequeña */
+/* Hacer la imagen dentro de .letra más pequeña y centrada */
 .letra {
   width: 80%; /* Reduce el tamaño de la imagen al 80% del ancho del contenedor */
   max-width: 600px; /* Máximo tamaño de la imagen, ajustado a 600px */
   height: auto; /* Mantiene la relación de aspecto de la imagen */
   margin-bottom: 0px;
   margin-top: -10px;
+  display: block; /* Asegura que la imagen sea un bloque */
+  margin-left: auto; /* Centra la imagen en el contenedor */
+  margin-right: auto; /* Centra la imagen en el contenedor */
 }
 
 .header h1 {
