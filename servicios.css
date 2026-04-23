@@ -27,7 +27,7 @@ main.container {
   margin-bottom: 10px;
 }
 
-/* Hacer la imagen dentro de .letra más pequeña y centrada */
+/* Hacer la imagen dentro de .letra más pequeña */
 .letra {
   width: 80%; /* Reduce el tamaño de la imagen al 80% del ancho del contenedor */
   max-width: 600px; /* Máximo tamaño de la imagen, ajustado a 600px */
@@ -153,7 +153,9 @@ main.container {
 
   .grid {
     grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-    padding: 0 15px; /* Espaciado lateral para evitar que los cuadros toquen los bordes */
+    padding: 0 0; /* Elimina el padding lateral para evitar que los cuadros estén lejos de los bordes */
+    margin-left: 0; /* Alinea los cuadros al borde izquierdo */
+    margin-right: 0; /* Alinea los cuadros al borde derecho */
   }
 
   .hero h1 {
