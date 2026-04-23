@@ -142,34 +142,6 @@ main.container {
   main.container {
     background-attachment: scroll; /* Permite que el fondo se mueva con el contenido en móvil */
     overflow: auto; /* Permite el scroll del contenido */
-  }
-
-  .grid {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-  }
-
-  .hero h1 {
-    font-size: 2rem;
-  }
-
-  .hero p {
-    font-size: 1rem;
-  }
-
-  .card-content h2 {
-    font-size: 1.2rem;
-  }
-
-  .card-content p {
-    font-size: 0.85rem;
-  }
-}
-
-/* Estilos de Adaptabilidad para Móviles */
-@media (max-width: 768px) {
-  main.container {
-    background-attachment: scroll; /* Permite que el fondo se mueva con el contenido en móvil */
-    overflow: auto; /* Permite el scroll del contenido */
     padding: 0 20px; /* Añadir padding para que el contenido no toque los bordes */
   }
 
