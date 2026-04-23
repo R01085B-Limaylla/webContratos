@@ -27,8 +27,11 @@ main.container {
   margin-bottom: 10px;
 }
 
+/* Hacer la imagen dentro de .letra más pequeña */
 .letra {
-  width: 500px;
+  width: 80%; /* Reduce el tamaño de la imagen al 80% del ancho del contenedor */
+  max-width: 600px; /* Máximo tamaño de la imagen, ajustado a 600px */
+  height: auto; /* Mantiene la relación de aspecto de la imagen */
   margin-bottom: 0px;
   margin-top: -10px;
 }
@@ -89,11 +92,11 @@ main.container {
   transform: translateY(-5px);
 }
 
-/* IMAGEN */
+/* IMAGEN en CARD */
 .card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
+  width: 100%; /* La imagen ocupará todo el ancho disponible del contenedor */
+  height: auto; /* Mantiene la relación de aspecto de la imagen */
+  object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
 }
 
 /* CONTENIDO */
