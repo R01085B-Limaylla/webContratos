@@ -3,7 +3,7 @@ let tipoMensajeSeleccionado = "";
 const mensajesPorTipo = {
 barman: `Hola, te saluda el Barman de LimHermanos🍸
 
-Queremos compartirte nuestra propuesta de servicio de bar para eventos, donde ofrecemos una variedad de cócteles y mockteles preparados al momento, con una presentación cuidada y atención profesional.
+Queremos compartirte nuestra propuesta de servicio de bar para eventos.
 
 Puedes ver nuestra carta completa aquí:
 👉 https://www.lamarquesinacatering.live/barman.html
@@ -11,8 +11,6 @@ Puedes ver nuestra carta completa aquí:
 Será un gusto acompañarte en tu evento y resolver cualquier consulta que tengas.`,
 
   catering: `Hola, te saluda La Marquesina 🍽️
-
-Te compartimos nuestro servicio de catering, donde ofrecemos diversas opciones de menús para todo tipo de eventos, combinando sabor, presentación y una experiencia de calidad.
 
 Puedes revisar nuestro menú completo aquí:
 👉 https://www.lamarquesinacatering.live/catering.html
