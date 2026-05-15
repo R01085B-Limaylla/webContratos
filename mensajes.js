@@ -6,14 +6,14 @@ barman: `Hola, te saluda el Barman de LimHermanos🍸
 Queremos compartirte nuestra propuesta de servicio de bar para eventos.
 
 Puedes ver nuestra carta completa aquí:
-👉 https://www.lamarquesinacatering.live/barman.html
+👉 https://www.lamarquesinacatering.live/servicios/barman/
 
 Será un gusto acompañarte en tu evento y resolver cualquier consulta que tengas.`,
 
   catering: `Hola, te saluda La Marquesina 🍽️
 
 Puedes revisar nuestro menú completo aquí:
-👉 https://www.lamarquesinacatering.live/catering.html
+👉 https://www.lamarquesinacatering.live/servicios/catering/
 
 Estamos atentos para ayudarte a encontrar la mejor opción para tu evento.`,
 
@@ -25,7 +25,7 @@ Te compartimos nuestras propuestas para eventos:
 
 Puedes ver más detalles aquí:
 
-👉 https://www.lamarquesinacatering.live/servicios.html
+👉 https://www.lamarquesinacatering.live/servicios/servicios/
 
 Será un gusto acompañarte y ayudarte a crear una excelente experiencia en tu evento.`
 };
