@@ -591,32 +591,63 @@ function closeLoadingPopup() {
 // nieve eliminar despues de navidad
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  const pagina = location.pathname.split("/").pop();
+    const header = document.querySelector(".bar");
 
-  document.querySelectorAll(".nav-btn").forEach(btn => {
+    let ultimoScroll = 0;
 
-    if(btn.dataset.page === pagina){
-      btn.classList.add("active");
-    }
+    window.addEventListener("scroll", () => {
 
-  });
+        const scrollActual = window.pageYOffset;
+
+        /* Arriba del todo siempre visible */
+        if (scrollActual < 50) {
+            header.classList.remove("hide");
+            ultimoScroll = scrollActual;
+            return;
+        }
+
+        /* Bajando */
+        if (scrollActual > ultimoScroll) {
+            header.classList.add("hide");
+        }
+        /* Subiendo */
+        else {
+            header.classList.remove("hide");
+        }
+
+        ultimoScroll = scrollActual;
+    });
 
 });
 
 
+document.addEventListener("DOMContentLoaded", () => {
+
+    const paginaActual =
+        window.location.pathname.split("/").pop();
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+
+        const paginaBoton = btn.getAttribute("data-page");
+
+        if (paginaBoton === paginaActual) {
+            btn.classList.add("active");
+        }
+
+    });
+
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  const header = document.querySelector(".bar");
+  const pagina = window.location.pathname.split("/").pop() || "dashboard.html";
 
-  if (!header) return;
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 120) {
-      header.classList.add("ocultar-header");
-    } else {
-      header.classList.remove("ocultar-header");
+  document.querySelectorAll("[data-page]").forEach(btn => {
+    if (btn.dataset.page === pagina) {
+      btn.classList.add("active");
     }
   });
 });

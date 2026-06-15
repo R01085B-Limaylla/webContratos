@@ -22,15 +22,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   <header class="bar">
     <div class="brand">
       <img src="./img/logo.png" alt="La Marquesina" class="logo">
-      <h1>Panel La Marquesina</h1>
+      <h1></h1>
+      <a href="dashboard.html" class="nav-btn" data-page="dashboard.html">
+    <i class="fa-solid fa-house"></i>
+    <span>Inicio</span>
+  </a>
     </div>
     <!-- Ahora abrimos el popup, no cerramos sesión directo -->
         <nav class="nav-panel">
 
-  <a href="dashboard.html" class="nav-btn" data-page="dashboard.html">
-    <i class="fa-solid fa-house"></i>
-    <span>Inicio</span>
-  </a>
+  
 
   <a href="redactar.html" class="nav-btn" data-page="redactar.html">
     <i class="fa-solid fa-file-pen"></i>
@@ -52,12 +53,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     <span>Recetas</span>
   </a>
 
-  <button class="btn danger" onclick="openLogoutPopup()">
-    <i class="fa-solid fa-right-from-bracket"></i>
-    Cerrar sesión
-  </button>
+  
 
 </nav>
+<button class="logout-btn" onclick="openLogoutPopup()">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    <span>Cerrar sesión</span>
+  </button>
   </header>
 
   <!-- Aquí se inyectan los popups desde popups.html -->
