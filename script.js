@@ -604,3 +604,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const header = document.querySelector(".bar");
+
+  if (!header) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 120) {
+      header.classList.add("ocultar-header");
+    } else {
+      header.classList.remove("ocultar-header");
+    }
+  });
+});
