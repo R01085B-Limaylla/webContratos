@@ -19,37 +19,61 @@
     };
   }
 
-  // Descargar directamente
+
+  function mostrarPopupLoading() {
+  const popup = document.getElementById('popupLoading');
+  if (popup) popup.classList.remove('hidden');
+}
+
+function ocultarPopupLoading() {
+  const popup = document.getElementById('popupLoading');
+  if (popup) popup.classList.add('hidden');
+}
+
   async function downloadPdfA4(){
+  mostrarPopupLoading();
+
+  try {
     const el = getNode();
     const opt = pdfOptionsFor(el);
     await html2pdf().set({ ...opt, filename: 'Contrato.pdf' }).from(el).save();
+  } finally {
+    ocultarPopupLoading();
+  }
+}
+
+async function openPdfA4(){
+  mostrarPopupLoading();
+
+  const holder = window.open('about:blank');
+  if (!holder) {
+    ocultarPopupLoading();
+    alert('Permite las ventanas emergentes para abrir el PDF.');
+    return;
   }
 
-  // Abrir/Imprimir: abre ventana en blanco SINCRÓNICAMENTE y luego inyecta el blob (evita bloqueador)
-  async function openPdfA4(){
-    const holder = window.open('about:blank'); // abrir ya!
-    if (!holder) { alert('Permite las ventanas emergentes para abrir el PDF.'); return; }
-
-    try {
-      holder.document.write('<html><body style="font-family:sans-serif;padding:20px">Generando PDF…</body></html>');
-      const el = getNode();
-      const opt = pdfOptionsFor(el);
-      const worker = html2pdf().set(opt).from(el).toPdf();
-      const pdf = await worker.get('pdf');
-      const blob = pdf.output('blob');
-      const url = URL.createObjectURL(blob);
-      holder.location.href = url;
-      // (El usuario usará imprimir desde el visor del navegador)
-      setTimeout(()=>URL.revokeObjectURL(url), 60000);
-    } catch (e) {
-      holder.close();
-      alert('No se pudo abrir el PDF. ' + e.message);
-    }
+  try {
+    holder.document.write('<html><body style="font-family:sans-serif;padding:20px">Generando PDF…</body></html>');
+    const el = getNode();
+    const opt = pdfOptionsFor(el);
+    const worker = html2pdf().set(opt).from(el).toPdf();
+    const pdf = await worker.get('pdf');
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    holder.location.href = url;
+    setTimeout(()=>URL.revokeObjectURL(url), 60000);
+  } catch (e) {
+    holder.close();
+    alert('No se pudo abrir el PDF. ' + e.message);
+  } finally {
+    ocultarPopupLoading();
   }
+}
 
-  // Compartir con Web Share API + fallback
-  async function sharePdfA4(){
+async function sharePdfA4(){
+  mostrarPopupLoading();
+
+  try {
     const el = getNode();
     const opt = pdfOptionsFor(el);
     const worker = html2pdf().set(opt).from(el).toPdf();
@@ -62,15 +86,20 @@
       return;
     }
 
-    // Fallback: abrir en nueva pestaña (Android/ iOS sin files)
     const url = URL.createObjectURL(blob);
     const w = window.open(url, '_blank');
+
     if (!w) {
-      // Último recurso: descargar
       const a = document.createElement('a');
-      a.href = url; a.download = 'Contrato.pdf';
-      document.body.appendChild(a); a.click(); a.remove();
+      a.href = url;
+      a.download = 'Contrato.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
     }
+
     setTimeout(()=>URL.revokeObjectURL(url), 60000);
+  } finally {
+    ocultarPopupLoading();
   }
-  
+}

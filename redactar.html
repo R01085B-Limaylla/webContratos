@@ -89,6 +89,87 @@ else if (texto === "Cristalería") claseExtra = "cristaleria";
 });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const iconos = {
+        "Platos de sitio": {
+            icon: "fa-solid fa-utensils",
+            color: "#ff6b35"
+        },
+        "Servilletas": {
+            icon: "fa-solid fa-scroll",
+            color: "#9c27b0"
+        },
+        "Copas": {
+            icon: "fa-solid fa-champagne-glasses",
+            color: "#eab308"
+        },
+        "Cubiertos dorados": {
+            icon: "fa-solid fa-spoon",
+            color: "#f59e0b"
+        },
+        "Mozos": {
+            icon: "fa-solid fa-user-tie",
+            color: "#10b981"
+        }
+    };
+
+    document.querySelectorAll(".cateringCheck").forEach(function (check) {
+
+        if (check.dataset.uiverse === "true") return;
+        check.dataset.uiverse = "true";
+
+        check.style.position = "absolute";
+        check.style.opacity = "0";
+        check.style.pointerEvents = "none";
+
+        const texto = check.value || "Opción";
+
+        const datos = iconos[texto] || {
+            icon: "fa-solid fa-circle-check",
+            color: "#2260ff"
+        };
+
+        const label = document.querySelector(`label[for="${check.id}"]`);
+        if (label) label.style.display = "none";
+
+        let nodo = check.nextSibling;
+        while (nodo && nodo.nodeType === 3) {
+            nodo.textContent = "";
+            nodo = nodo.nextSibling;
+        }
+
+        const card = document.createElement("div");
+        card.className = "uiverse-card";
+
+        card.innerHTML = `
+            <span class="uiverse-circle"></span>
+            <span class="uiverse-icon" style="color:${datos.color}">
+                <i class="${datos.icon}"></i>
+            </span>
+            <span class="uiverse-text">${texto}</span>
+        `;
+
+        check.insertAdjacentElement("afterend", card);
+
+        function actualizar() {
+            card.classList.toggle("active", check.checked);
+        }
+
+        card.addEventListener("click", function (e) {
+            e.preventDefault();
+            check.click();
+        });
+
+        check.addEventListener("change", actualizar);
+
+        actualizar();
+    });
+
+});
+</script>
+
 <body class="bg" onload="protectPage()">
   <header class="bar">
     <div class="brand">

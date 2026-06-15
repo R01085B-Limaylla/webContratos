@@ -719,3 +719,65 @@ select.select-convertido {
 .radio-input:checked + .radio-tile .radio-icon {
   transform: scale(1.2);
 }
+
+.uiverse-card {
+    display: flex;
+    align-items: center;
+    width: 240px;
+    min-height: 55px;
+    border-radius: 25px;
+    border: 2px solid #b5bfd9;
+    background: #fff;
+    box-shadow: 0 5px 10px rgba(0,0,0,.1);
+    cursor: pointer;
+    position: relative;
+    padding-left: 50px;
+    margin: 10px 0;
+    transition: .2s ease;
+}
+
+.uiverse-card:hover {
+    border-color: #2260ff;
+}
+
+.uiverse-circle {
+    position: absolute;
+    left: 15px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #b5bfd9;
+    border-radius: 50%;
+    background: #fff;
+    transition: .2s ease;
+}
+
+.uiverse-card.active .uiverse-circle {
+    background: #2260ff;
+    border-color: #2260ff;
+}
+
+.uiverse-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    transition: .2s ease;
+}
+
+.uiverse-card.active .uiverse-icon {
+    filter: brightness(1.2);
+    transform: scale(1.15);
+}
+
+.uiverse-text {
+    color: #707070;
+    font-size: 14px;
+    transition: .2s ease;
+}
+
+.uiverse-card.active .uiverse-text {
+    color: #2260ff;
+    font-weight: 600;
+}
+
+.uiverse-card.active {
+    border-color: #2260ff;
+}
