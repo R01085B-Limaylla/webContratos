@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Redactar contrato — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="./style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="./script.js"></script>
@@ -13,6 +15,80 @@
     .note { font-size:.9rem; color:#666 }
   </style>
 </head>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const iconos = {
+    "Barman": '<i class="fa-solid fa-martini-glass"></i>',
+    "Catering": '<i class="fa-solid fa-utensils"></i>',
+    "Ambos": '<i class="fa-solid fa-champagne-glasses"></i>',
+
+    "Acrílico": '<i class="fa-solid fa-glass-water"></i>',
+    "Cristalería": '<i class="fa-solid fa-wine-glass-empty"></i>',
+
+    "Una sola cantidad total": '<i class="fa-solid fa-box"></i>',
+    "Separar por Acrílico / Cristalería": '<i class="fa-solid fa-table-columns"></i>'
+  };
+
+  function convertirSelectATarjetas(idSelect) {
+    const select = document.getElementById(idSelect);
+    if (!select) return;
+
+    select.classList.add("select-convertido");
+
+    const contenedor = document.createElement("div");
+    contenedor.className = "radio-inputs";
+
+    Array.from(select.options).forEach(option => {
+      if (option.value === "") return;
+
+      const texto = option.text.trim();
+
+let claseExtra = "";
+
+if (texto === "Barman") claseExtra = "barman";
+else if (texto === "Catering") claseExtra = "catering";
+else if (texto === "Ambos") claseExtra = "ambos";
+else if (texto === "Acrílico") claseExtra = "acrilico";
+else if (texto === "Cristalería") claseExtra = "cristaleria";
+      const icono = iconos[texto] || '<i class="fa-solid fa-circle-dot"></i>';
+
+      const label = document.createElement("label");
+
+      label.innerHTML = `
+        <input class="radio-input" type="radio" name="${idSelect}" value="${option.value}">
+        <span class="radio-tile ${claseExtra}">
+          <span class="radio-icon">${icono}</span>
+          <span class="radio-label">${texto}</span>
+        </span>
+      `;
+
+      const radio = label.querySelector(".radio-input");
+
+      if (select.value === option.value) {
+        radio.checked = true;
+      }
+
+      radio.addEventListener("change", function () {
+        select.value = this.value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+
+      contenedor.appendChild(label);
+    });
+
+    select.insertAdjacentElement("afterend", contenedor);
+  }
+
+  convertirSelectATarjetas("tipo");
+  convertirSelectATarjetas("coctelesTipo");
+  convertirSelectATarjetas("coctelesModo");
+  convertirSelectATarjetas("firmaCateringSelect");
+
+});
+</script>
+
 <body class="bg" onload="protectPage()">
   <header class="bar">
     <div class="brand">

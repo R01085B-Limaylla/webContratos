@@ -572,3 +572,150 @@ input[type="checkbox"], input[type="radio"]{
 }
 
 /* nieve eliminar despues de naviada*/
+
+/* SELECT con apariencia tipo Uiverse */
+select {
+  width: 100%;
+  min-height: 55px;
+  padding: 12px 16px;
+  border: 2px solid #b5bfd9;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #707070;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.10);
+  transition: 0.2s ease;
+}
+
+/* Al pasar el mouse */
+select:hover {
+  border-color: #2260ff;
+  color: #2260ff;
+}
+
+/* Al hacer click */
+select:focus {
+  border-color: #2260ff;
+  color: #2260ff;
+  box-shadow: 
+    0 5px 10px rgba(0, 0, 0, 0.10),
+    0 0 0 4px #b5c9fc;
+}
+
+/* Opciones internas */
+select option {
+  color: #333;
+  background: #fff;
+}
+
+.radio-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.radio-input {
+  display: none;
+}
+
+.radio-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 95px;
+  min-height: 80px;
+  border-radius: 12px;
+  border: 2px solid #b5bfd9;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: 0.2s ease;
+  color: #707070;
+  position: relative;
+}
+
+.radio-tile::before {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #b5bfd9;
+  border-radius: 50%;
+  top: 6px;
+  left: 6px;
+  opacity: 0;
+  transform: scale(0);
+  transition: 0.25s ease;
+}
+
+.radio-input:checked + .radio-tile {
+  border-color: #2260ff;
+  color: #2260ff;
+  background: #f5f8ff;
+}
+
+.radio-input:checked + .radio-tile::before {
+  opacity: 1;
+  transform: scale(1);
+  background: #2260ff;
+  border-color: #2260ff;
+}
+
+.radio-tile:hover {
+  border-color: #2260ff;
+}
+
+.radio-label {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.radio-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+select.select-convertido {
+  display: none !important;
+}
+
+.radio-icon {
+  font-size: 30px;
+  margin-bottom: 8px;
+  transition: all .3s ease;
+}
+
+/* Barman */
+.radio-tile.barman .radio-icon {
+  color: #d97706; /* naranja */
+}
+
+/* Catering */
+.radio-tile.catering .radio-icon {
+  color: #16a34a; /* verde */
+}
+
+/* Ambos */
+.radio-tile.ambos .radio-icon {
+  color: #7c3aed; /* morado */
+}
+
+/* Acrílico */
+.radio-tile.acrilico .radio-icon {
+  color: #0ea5e9; /* azul */
+}
+
+/* Cristalería */
+.radio-tile.cristaleria .radio-icon {
+  color: #ec4899; /* rosa */
+}
+
+.radio-input:checked + .radio-tile .radio-icon {
+  transform: scale(1.2);
+}
