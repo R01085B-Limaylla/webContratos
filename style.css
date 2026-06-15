@@ -129,15 +129,62 @@ body.bg{
 }
 
 /* Tarjetas-botón del dashboard */
-.card.action{
-  max-width: 260px;
-  width: 100%;
-  text-align: center;
-  font-weight: 600;
+/* Botones dashboard estilo Uiverse */
+.bookmarkBtn {
+  width: 260px;
+  height: 60px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.068);
+  background-color: rgb(255, 255, 255);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 16px;
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  text-decoration: none;
+  padding: 0;
+}
+
+.IconContainer {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(to bottom, rgb(255, 136, 255), rgb(172, 70, 255));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 2;
+  transition-duration: 0.3s;
+  font-size: 22px;
+}
+
+.text {
+  height: 100%;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(0, 0, 0);
+  z-index: 1;
+  transition-duration: 0.3s;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.bookmarkBtn:hover .IconContainer {
+  width: 230px;
+}
+
+.bookmarkBtn:hover .text {
+  transform: translateX(10px);
+  width: 0;
+  font-size: 0;
+}
+
+.bookmarkBtn:active {
+  transform: scale(0.95);
 }
 
 
