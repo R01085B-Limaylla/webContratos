@@ -949,3 +949,204 @@ select.select-convertido {
     margin-right: 10px;
     margin-bottom: 10px;
 }
+
+.nav-btn.active {
+  color: #2563eb;
+  background: #eef4ff;
+  border-color: rgba(37,99,235,.35);
+
+  box-shadow:
+    0 0 20px rgba(37,99,235,.25),
+    0 8px 18px rgba(37,99,235,.15);
+}
+
+.nav-btn.active i{
+  color:#2563eb;
+
+  filter:
+    drop-shadow(0 0 6px rgba(37,99,235,.35));
+
+  transform:scale(1.15);
+}
+
+/* ===== MENÚ SUPERIOR ===== */
+
+.nav-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: fit-content;
+  max-width: 100%;
+  margin: 15px auto;
+  padding: 8px;
+
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 18px;
+
+  box-shadow: 0 8px 22px rgba(0,0,0,.12);
+}
+
+.nav-btn,
+.nav-panel .btn.danger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-width: 135px;
+  height: 52px;
+  padding: 0 16px;
+
+  border: 1px solid transparent;
+  border-radius: 14px;
+
+  background: transparent;
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.nav-btn i,
+.nav-panel .btn.danger i {
+  font-size: 18px;
+}
+
+.nav-btn:hover {
+  color: #2563eb;
+  background: #f8fafc;
+  border-color: rgba(37,99,235,.25);
+  transform: translateY(-1px);
+}
+
+.nav-btn.active {
+  color: #2563eb;
+  background: #eef4ff;
+  border-color: rgba(37,99,235,.35);
+  box-shadow: 0 0 18px rgba(37,99,235,.25);
+}
+
+.nav-btn.active i {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 5px rgba(37,99,235,.4));
+}
+
+/* Cerrar sesión */
+.nav-panel .btn.danger {
+  color: #b91c1c;
+}
+
+.nav-panel .btn.danger:hover {
+  color: #dc2626;
+  background: #fff1f2;
+  border-color: rgba(220,38,38,.25);
+  box-shadow: 0 0 16px rgba(220,38,38,.18);
+}
+
+/* Responsive */
+@media (max-width: 760px) {
+  .nav-panel {
+    width: 100%;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .nav-btn,
+  .nav-panel .btn.danger {
+    min-width: 54px;
+    width: 54px;
+    padding: 0;
+  }
+
+  .nav-btn span,
+  .nav-panel .btn.danger span {
+    display: none;
+  }
+}
+
+/* HEADER: logo izquierda + menú centrado */
+.header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 115px;
+  padding: 18px 30px;
+}
+
+.brand {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 18px;
+  background: #fff;
+  padding: 8px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.12);
+}
+
+.nav-panel {
+  margin: 0 auto;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    min-height: auto;
+    padding: 20px 12px;
+    gap: 16px;
+  }
+
+  .brand {
+    position: static;
+    transform: none;
+  }
+
+  .logo {
+    width: 68px;
+    height: 68px;
+  }
+
+  .nav-panel {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-panel {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .nav-btn,
+  .nav-panel .btn.danger {
+    min-width: 88px;
+    height: 52px;
+    font-size: 10px;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .nav-btn i,
+  .nav-panel .btn.danger i {
+    font-size: 18px;
+  }
+}

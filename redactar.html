@@ -281,15 +281,42 @@ document.addEventListener("DOMContentLoaded", function () {
   <header class="bar">
     <div class="brand">
       <img src="./img/logo.png" alt="La Marquesina" class="logo">
-      <h1>Redactar contrato</h1>
+      
     </div>
-    <nav class="nav">
-      <a href="./dashboard.html" class="btn">Panel</a>
-      <a href="./ver.html" class="btn">Ver contratos</a>
-      
-      <button class="btn danger" onclick="openLogoutPopup()">Cerrar sesión</button>
-      
-    </nav>
+    <nav class="nav-panel">
+
+  <a href="dashboard.html" class="nav-btn" data-page="dashboard.html">
+    <i class="fa-solid fa-house"></i>
+    <span>Inicio</span>
+  </a>
+
+  <a href="redactar.html" class="nav-btn" data-page="redactar.html">
+    <i class="fa-solid fa-file-pen"></i>
+    <span>Redactar</span>
+  </a>
+
+  <a href="ver.html" class="nav-btn" data-page="ver.html">
+    <i class="fa-solid fa-folder-open"></i>
+    <span>Ver Contratos</span>
+  </a>
+
+  <a href="mensajes.html" class="nav-btn" data-page="mensajes.html">
+    <i class="fa-solid fa-paper-plane"></i>
+    <span>Enviar Mensajes</span>
+  </a>
+
+  <a href="recetas.html" class="nav-btn" data-page="recetas.html">
+    <i class="fa-solid fa-utensils"></i>
+    <span>Recetas</span>
+  </a>
+
+  <button class="btn danger" onclick="openLogoutPopup()">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    Cerrar sesión
+  </button>
+
+</nav>
+    
   </header>
 
   <main class="wrap">

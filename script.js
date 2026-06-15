@@ -590,3 +590,17 @@ function closeLoadingPopup() {
 
 // nieve eliminar despues de navidad
 
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const pagina = location.pathname.split("/").pop();
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+
+    if(btn.dataset.page === pagina){
+      btn.classList.add("active");
+    }
+
+  });
+
+});
