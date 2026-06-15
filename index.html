@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Iniciar sesión — La Marquesina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="./index.css" rel="stylesheet" />
   <link href="./style.css" rel="stylesheet" />
   <!-- 1) Cargar Supabase ANTES que tu script -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,9 +18,9 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     <h1 class="title">Iniciar sesión</h1>
     <form id="loginForm" class="stack">
       <label>Correo</label>
-      <input type="email" id="email" required />
+      <input type="email" id="email" placeholder="Correo" required />
       <label>Contraseña</label>
-      <input type="password" id="password" required />
+      <input type="password" id="password" placeholder="Contraseña" required />
       <button type="submit" class="btn primary">Entrar</button>
       <p id="loginError" class="error"></p>
     </form>
@@ -31,12 +32,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   <!-- 3) Ahora sí puedes usar las funciones/variables definidas en script.js -->
   <script>
     // Lista de administradores permitidos
-    window.ADMINS = [
-    "rosario@lamarquesina.pe",
-    "sebastian@lamarquesina.pe",
-    "sujey@lamarquesina.pe",
-    "paulmarcos@lamarquesina.pe"
-  ];
+  
 
     // Inicializa el formulario de login
     if (typeof setupLogin === "function") {
