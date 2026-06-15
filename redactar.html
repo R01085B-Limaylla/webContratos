@@ -170,6 +170,85 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const iconos = {
+    "Barman": { icon: "fa-solid fa-martini-glass-citrus", color: "#2563eb" },
+    "Ayudante de barra": { icon: "fa-solid fa-user-tie", color: "#16a34a" },
+    "Barra móvil": {
+    icon: "fa-solid fa-dolly",
+    color: "#f59e0b"
+}
+  };
+
+  document.querySelectorAll(".barmanCheck").forEach(function (check) {
+
+    if (check.dataset.card === "true") return;
+    check.dataset.card = "true";
+
+    check.style.position = "absolute";
+    check.style.opacity = "0";
+    check.style.pointerEvents = "none";
+
+    const texto = check.value;
+    const datos = iconos[texto] || iconos["Barman"];
+
+    const label = document.querySelector(`label[for="${check.id}"]`);
+    if (label) label.style.display = "none";
+
+    let nodo = check.nextSibling;
+    while (nodo) {
+      if (nodo.nodeType === 3) {
+        nodo.textContent = "";
+      }
+
+      if (nodo.nodeType === 1 && nodo.tagName === "BR") {
+        break;
+      }
+
+      if (nodo.nodeType === 1 && nodo.tagName === "INPUT") {
+        break;
+      }
+
+      nodo = nodo.nextSibling;
+    }
+
+    const card = document.createElement("div");
+    card.className = "radio-tile-custom";
+
+    card.innerHTML = `
+      <span class="radio-circle-custom"></span>
+      <span class="radio-icon-custom" style="color:${datos.color}">
+        <i class="${datos.icon}"></i>
+      </span>
+      <span class="radio-label-custom">${texto}</span>
+    `;
+
+    check.insertAdjacentElement("afterend", card);
+
+    function actualizar() {
+      card.classList.toggle("active", check.checked);
+    }
+
+    card.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      check.checked = !check.checked;
+      check.dispatchEvent(new Event("input", { bubbles: true }));
+      check.dispatchEvent(new Event("change", { bubbles: true }));
+
+      actualizar();
+    });
+
+    check.addEventListener("change", actualizar);
+    actualizar();
+  });
+
+});
+</script>
+
 <body class="bg" onload="protectPage()">
   <header class="bar">
     <div class="brand">

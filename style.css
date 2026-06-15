@@ -781,3 +781,72 @@ select.select-convertido {
 .uiverse-card.active {
     border-color: #2260ff;
 }
+
+.radio-tile-custom{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:flex-start;
+    width:180px;
+    height:60px;
+    margin:6px;
+    padding-left:35px;
+    border:2px solid #b5bfd9;
+    border-radius:12px;
+    background:#fff;
+    cursor:pointer;
+    position:relative;
+    transition:.2s;
+    box-shadow:0 5px 10px rgba(0,0,0,.1);
+}
+
+.radio-tile-custom:hover{
+    border-color:#2260ff;
+}
+
+.radio-circle-custom{
+    position:absolute;
+    top:8px;
+    left:8px;
+    width:12px;
+    height:12px;
+    border:2px solid #b5bfd9;
+    border-radius:50%;
+    opacity:0;
+    transform:scale(0);
+    transition:.2s;
+}
+
+.radio-tile-custom.active{
+    border-color:#2260ff;
+}
+
+.radio-tile-custom.active .radio-circle-custom{
+    opacity:1;
+    transform:scale(1);
+    background:#2260ff;
+    border-color:#2260ff;
+}
+
+.radio-icon-custom{
+    font-size:26px;
+    width:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-right:12px;
+}
+
+.radio-label-custom{
+    font-size:14px;
+    color:#666;
+    text-align:left;
+    line-height:1.2;
+    display:flex;
+    align-items:center;
+}
+
+.radio-tile-custom{
+    display:inline-flex;
+    vertical-align:top;
+}
