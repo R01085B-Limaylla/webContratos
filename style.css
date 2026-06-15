@@ -850,3 +850,102 @@ select.select-convertido {
     display:inline-flex;
     vertical-align:top;
 }
+
+/* ===== Inputs Premium ===== */
+
+#contractForm input:not([type="checkbox"]):not([type="radio"]),
+#contractForm select,
+#contractForm textarea {
+
+  width: 100%;
+  min-height: 46px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: all .3s ease;
+}
+
+/* Hover */
+
+#contractForm input:hover,
+#contractForm select:hover,
+#contractForm textarea:hover {
+  border-color: #8b5cf6;
+}
+
+/* Focus */
+
+#contractForm input:focus,
+#contractForm select:focus,
+#contractForm textarea:focus {
+  animation: rotateShadow 6s infinite ease-in-out;
+  border-color: #8b5cf6;
+}
+
+/* Placeholder */
+
+#contractForm input::placeholder,
+#contractForm textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Textarea */
+
+#contractForm textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Animación */
+
+@keyframes rotateShadow {
+
+  0% {
+    box-shadow:
+      -3px -3px 8px rgba(214,198,165,.75),
+       3px  3px 8px rgba(148,163,184,.75);
+  }
+
+  25% {
+    box-shadow:
+      -3px  3px 8px rgba(214,198,165,.75),
+       3px -3px 8px rgba(148,163,184,.75);
+  }
+
+  50% {
+    box-shadow:
+       3px  3px 8px rgba(214,198,165,.75),
+      -3px -3px 8px rgba(148,163,184,.75);
+  }
+
+  75% {
+    box-shadow:
+       3px -3px 8px rgba(214,198,165,.75),
+      -3px  3px 8px rgba(148,163,184,.75);
+  }
+
+  100% {
+    box-shadow:
+      -3px -3px 8px rgba(214,198,165,.75),
+       3px  3px 8px rgba(148,163,184,.75);
+  }
+}
+
+.uiverse-card {
+    display: inline-flex;
+    vertical-align: top;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}

@@ -115,6 +115,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+    let filaHorizontal = null;
+
     document.querySelectorAll(".cateringCheck").forEach(function (check) {
 
         if (check.dataset.uiverse === "true") return;
@@ -151,7 +153,33 @@ document.addEventListener("DOMContentLoaded", function () {
             <span class="uiverse-text">${texto}</span>
         `;
 
-        check.insertAdjacentElement("afterend", card);
+        // Crear fila horizontal una sola vez
+        if (!filaHorizontal) {
+            filaHorizontal = document.createElement("div");
+            filaHorizontal.style.display = "flex";
+            filaHorizontal.style.flexWrap = "wrap";
+            filaHorizontal.style.gap = "10px";
+            filaHorizontal.style.margin = "10px 0";
+        }
+
+        // Estos 3 van juntos
+        if (
+            texto === "Platos de sitio" ||
+            texto === "Servilletas" ||
+            texto === "Mozos"
+        ) {
+
+            if (!filaHorizontal.parentNode) {
+                check.parentNode.insertBefore(filaHorizontal, check);
+            }
+
+            filaHorizontal.appendChild(card);
+
+        } else {
+
+            check.insertAdjacentElement("afterend", card);
+
+        }
 
         function actualizar() {
             card.classList.toggle("active", check.checked);
@@ -280,9 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <!-- Servicios Barman -->
       <div id="serviciosBarman" class="section">
         <h3>Servicios (Barman)</h3>
-        <label><input type="checkbox" class="barmanCheck" value="Barman" checked> Barman</label>
-        <label><input type="checkbox" class="barmanCheck" value="Ayudante de barra"> Ayudante de barra</label>
-        <label><input type="checkbox" class="barmanCheck" value="Barra móvil"> Barra móvil</label>
+        
         <div class="row">
           <div class="col">
             <label>Cocteles</label>
@@ -344,13 +370,36 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
         <p class="note">Precio automático Barman: S/. 3.00 (acrílico) • S/. 4.50 (cristalería)</p>
+
+        <label><input type="checkbox" class="barmanCheck" value="Barman" checked> Barman</label>
+        <label><input type="checkbox" class="barmanCheck" value="Ayudante de barra"> Ayudante de barra</label>
+        <label><input type="checkbox" class="barmanCheck" value="Barra móvil"> Barra móvil</label>
       </div>
 
       <!-- Servicios Catering -->
       <div id="serviciosCatering" class="section hidden">
         <h3>Servicios (Catering)</h3>
 
-        <!-- Platos de sitio -->
+       
+
+        <div class="row">
+          <div class="col">
+            <label>Cantidad de platos</label>
+            <input type="number" id="cantidadCatering" placeholder="Ingresa Cantidad de platos" min="1" required />
+          </div>
+          <div class="col" id="precioPlatoWrap">
+            <label>Precio por plato (S/.)</label>
+            <input type="number" id="precioPlato" min="0" step="0.01" placeholder="Precio por cada plato" />
+          </div>
+          <div class="col">
+            <label>Comida (describir)</label>
+            <input type="text" id="platosDescripcion" placeholder="Ej: pollo enrollado" required />
+          </div>
+          
+          <br>
+          
+        </div>
+         <!-- Platos de sitio -->
         <label>
           <input type="checkbox" id="chkPlatosSitio" class="cateringCheck" value="Platos de sitio">
           Platos de sitio
@@ -372,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <input type="text" id="colorPlatosOtro" placeholder="Ej.: Vino tinto" />
           </div>
         </div>
-<br>
+
         <!-- Servilletas -->
         <label>
           <input type="checkbox" id="chkServilletas" class="cateringCheck" value="Servilletas">
@@ -395,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <input type="text" id="colorServilletasOtro" placeholder="Ej.: Marfil" />
           </div>
         </div>
-<br>
+
         <!-- Cantidad de mesas (si hay Platos de sitio o Servilletas) -->
         <div class="row hidden" id="mesasWrap">
           <div class="col">
@@ -403,11 +452,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <input type="number" id="cantidadMesas" min="1" placeholder="Ingresar Cantidad de mesas" />
           </div>
         </div>
-<br>
-        <!-- Otros servicios -->
-        <label><input type="checkbox" id="chkCopas" class="cateringCheck" value="Copas"> Copas</label>
-        <label><input type="checkbox" id="chkCubiertos" class="cateringCheck" value="Cubiertos dorados"> Cubiertos dorados</label>
 
+      
         <!-- Mozos -->
         <label>
           <input type="checkbox" id="chkMozos" class="cateringCheck" value="Mozos">
@@ -420,20 +466,10 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
 
-        <div class="row">
-          <div class="col">
-            <label>Cantidad de platos</label>
-            <input type="number" id="cantidadCatering" placeholder="Ingresa Cantidad de platos" min="1" required />
-          </div>
-          <div class="col" id="precioPlatoWrap">
-            <label>Precio por plato (S/.)</label>
-            <input type="number" id="precioPlato" min="0" step="0.01" placeholder="Precio por cada plato" />
-          </div>
-          <div class="col">
-            <label>Comida (describir)</label>
-            <input type="text" id="platosDescripcion" placeholder="Ej: pollo enrollado" required />
-          </div>
-        </div>
+         <!-- Otros servicios -->
+        <label><input type="checkbox" id="chkCopas" class="cateringCheck" value="Copas"> Copas</label>
+        <label><input type="checkbox" id="chkCubiertos" class="cateringCheck" value="Cubiertos dorados"> Cubiertos dorados</label>
+
       </div>
 
       <!-- Totales -->
