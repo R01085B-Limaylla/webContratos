@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="./recetas.css" rel="stylesheet" />
+  <link href="./style.css" rel="stylesheet" />
+  <link rel="icon" href="/img/logo.png" />
+  <div id="popups-root"></div>
+  <script defer src="./popups-loader.js"></script>
+  <title>Recetas Catering y Barman</title>
+  
+</head>
+<body>
+<header class="bar">
+    <div class="brand">
+      <img src="./img/logo.png" alt="La Marquesina" class="logo">
+      <a href="dashboard.html" class="home-btn" data-page="dashboard.html">
+    <i class="fa-solid fa-house"></i>
+    <span>Inicio</span>
+  </a>
+
+    </div>
+
+    <nav class="nav-panel">
+
+  
+  <a href="redactar.html" class="nav-btn" data-page="redactar.html">
+    <i class="fa-solid fa-file-pen"></i>
+    <span>Redactar</span>
+  </a>
+
+  <a href="ver.html" class="nav-btn" data-page="ver.html">
+    <i class="fa-solid fa-folder-open"></i>
+    <span>Ver Contratos</span>
+  </a>
+
+  <a href="mensajes.html" class="nav-btn" data-page="mensajes.html">
+    <i class="fa-solid fa-paper-plane"></i>
+    <span>Enviar Mensajes</span>
+  </a>
+
+  <a href="recetas.html" class="nav-btn" data-page="recetas.html">
+    <i class="fa-solid fa-utensils"></i>
+    <span>Recetas</span>
+  </a>
+
+  
+
+</nav>
+    <button class="logout-btn" onclick="openLogoutPopup()">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    <span>Cerrar sesión</span>
+  </button>
+
+ 
+  </header>
+
+
+<div class="radio-inputs">
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="menuPrincipal"
+      checked
+      onclick="mostrarSeccion('catering')">
+
+    <span class="radio-tile">
+
+      <span class="radio-icon">
+        <i class="fa-solid fa-utensils"></i>
+      </span>
+
+      <span class="radio-label">
+        Catering
+      </span>
+
+    </span>
+  </label>
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="menuPrincipal"
+      onclick="mostrarSeccion('barman')">
+
+    <span class="radio-tile">
+
+      <span class="radio-icon">
+        <i class="fa-solid fa-martini-glass-citrus"></i>
+      </span>
+
+      <span class="radio-label">
+        Barman
+      </span>
+
+    </span>
+  </label>
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="menuPrincipal"
+      onclick="mostrarSeccion('edicion')">
+
+    <span class="radio-tile">
+
+      <span class="radio-icon">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </span>
+
+      <span class="radio-label">
+        Edición
+      </span>
+
+    </span>
+  </label>
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="menuPrincipal"
+      onclick="mostrarSeccion('guardadas')">
+
+    <span class="radio-tile">
+
+      <span class="radio-icon">
+        <i class="fa-solid fa-book-open"></i>
+      </span>
+
+      <span class="radio-label">
+        Recetas
+      </span>
+
+    </span>
+  </label>
+
+</div>
+
+<h2 id="tituloCategoria">Comida / Catering</h2>
+
+<hr>
+
+<section id="seccionPreparar">
+  <h2>Preparar lista</h2>
+
+  <label>Contratos guardados:</label><br>
+  <select id="selectContrato">
+    <option value="">Seleccionar contrato</option>
+  </select>
+
+  <br><br>
+
+  <label>Fecha:</label><br>
+  <input type="date" id="fechaEvento">
+
+  <br><br>
+
+  <label>Título:</label><br>
+  <input list="listaTitulos" id="tituloEvento" placeholder="Ej: 100 platos de arroz verde y arroz blanco">
+  <datalist id="listaTitulos"></datalist>
+
+  <br><br>
+
+  <div id="boxCantidadGeneral">
+    <label>Cantidad total:</label><br>
+    <input type="number" id="cantidadExportar" value="100" min="1">
+  </div>
+
+  <br>
+
+  <input type="text" id="buscarExportar" placeholder="Buscar receta">
+  <div id="listaExportar"></div>
+
+  <br>
+
+  <button id="btnVerReceta">Ver receta</button>
+
+  <hr>
+
+  <h2>Lista calculada</h2>
+  <div id="listaCalculada"></div>
+
+  <br>
+
+  <button id="btnWhatsApp">Exportar seleccionados a WhatsApp</button>
+
+  <br><br>
+
+  <textarea id="resultadoExportacion" rows="14" cols="80"></textarea>
+</section>
+
+<section id="seccionEdicion" style="display:none;">
+  <h2>Modo edición</h2>
+<h3>Categoría</h3>
+
+<div class="radio-inputs radio-mini">
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="categoriaEdicion"
+      checked
+      onclick="cambiarCategoria('catering'); limpiarFormulario();">
+
+    <span class="radio-tile">
+      <span class="radio-icon">
+        <i class="fa-solid fa-utensils"></i>
+      </span>
+      <span class="radio-label">Catering</span>
+    </span>
+  </label>
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="categoriaEdicion"
+      onclick="cambiarCategoria('barman'); limpiarFormulario();">
+
+    <span class="radio-tile">
+      <span class="radio-icon">
+        <i class="fa-solid fa-martini-glass-citrus"></i>
+      </span>
+      <span class="radio-label">Barman</span>
+    </span>
+  </label>
+
+</div>
+  <input type="hidden" id="editId">
+
+  <label>Nombre receta:</label><br>
+  <input type="text" id="nombre" placeholder="Ej: Arroz verde / Mojito">
+
+  <br><br>
+
+  <label>Tipo:</label><br>
+  <select id="tipo">
+    <option value="entrada">Entrada</option>
+    <option value="fondo">Fondo</option>
+    <option value="guarnición">Guarnición</option>
+    <option value="bebida">Bebida</option>
+    <option value="cóctel">Cóctel</option>
+    <option value="jarabe">Jarabe</option>
+    <option value="garnish">Garnish</option>
+  </select>
+
+  <br><br>
+
+  <h3>Ingredientes</h3>
+  <div id="ingredientes"></div>
+  <button id="btnAgregarIngrediente">+ Ingrediente</button>
+
+  <br><br>
+
+  <label>Notas:</label><br>
+  <textarea id="notas" rows="4" cols="60"></textarea>
+
+  <br><br>
+
+  <label>Esta receta rinde para:</label><br>
+  <input type="number" id="rinde" placeholder="15" min="1">
+
+  <select id="unidadRinde">
+    <option value="platos">platos</option>
+    <option value="personas">personas</option>
+    <option value="vasos">vasos</option>
+    <option value="vasos acrílico 7 oz">vasos acrílico 7 oz</option>
+    <option value="vasos acrílico 10 oz">vasos acrílico 10 oz</option>
+    <option value="vasos de cristal">vasos de cristal</option>
+    <option value="copas">copas</option>
+    <option value="porciones">porciones</option>
+  </select>
+
+  <br><br>
+
+  <label>
+    <input type="checkbox" id="usarPrecio">
+    Agregar precio
+  </label>
+
+  <div id="boxPrecio" style="display:none;">
+    <br>
+    <label>Precio:</label><br>
+    <input type="number" id="precio" placeholder="Ej: 16" step="0.01">
+  </div>
+
+  <br><br>
+
+  <button id="btnGuardar">Guardar receta</button>
+  <button id="btnLimpiar">Limpiar</button>
+</section>
+
+<section id="seccionGuardadas" style="display:none;">
+  <h2>Recetas guardadas</h2>
+
+  <div class="radio-inputs radio-mini">
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="recetasGuardadas"
+      checked
+      onclick="cambiarCategoria('catering'); renderRecetas();">
+
+    <span class="radio-tile">
+
+      <span class="radio-icon">
+        <i class="fa-solid fa-utensils"></i>
+      </span>
+
+      <span class="radio-label">
+        Catering
+      </span>
+
+    </span>
+  </label>
+
+  <label>
+    <input
+      class="radio-input"
+      type="radio"
+      name="recetasGuardadas"
+      onclick="cambiarCategoria('barman'); renderRecetas();">
+
+    <span class="radio-tile">
+
+      <span class="radio-icon">
+        <i class="fa-solid fa-martini-glass-citrus"></i>
+      </span>
+
+      <span class="radio-label">
+        Barman
+      </span>
+
+    </span>
+  </label>
+
+</div>
+
+  <br><br>
+
+  <input type="text" id="buscarEditar" placeholder="Buscar receta guardada">
+
+  <div id="listaRecetas"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="recetas.js"></script>
+
+</body>
+
+<div id="appToast" class="toast hidden"></div>
+
+<div id="confirmPopup" class="popup-overlay hidden">
+  <div class="popup-box">
+    <h3 id="confirmTitle">Confirmar</h3>
+    <p id="confirmText">¿Estás seguro?</p>
+
+    <div class="popup-actions">
+      <button id="confirmYes" class="btn-danger">Sí, continuar</button>
+      <button id="confirmNo" class="btn-cancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+</html>

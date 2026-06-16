@@ -1,0 +1,350 @@
+/* ===== Inputs Premium Recetas ===== */
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+  background: #ffffff;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all .3s ease;
+  box-sizing: border-box;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):hover,
+select:hover,
+textarea:hover {
+  border-color: #d4af37;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  animation: rotateShadow 4s infinite linear;
+  border-color: #d4af37;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Para que no se estire demasiado en PC */
+section {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Ingredientes responsive */
+#ingredientes > div {
+  display: grid;
+  grid-template-columns: 120px 160px 1fr 45px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Barman cantidad por cóctel */
+.cantidadCoctel {
+  max-width: 130px;
+  margin-top: 8px;
+}
+
+/* Textarea exportación */
+#resultadoExportacion {
+  width: 100%;
+  min-height: 260px;
+}
+
+/* Responsive móvil */
+@media (max-width: 700px) {
+  body {
+    padding: 12px;
+  }
+
+  section {
+    max-width: 100%;
+  }
+
+  #ingredientes > div {
+    grid-template-columns: 1fr;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    width: 100%;
+  }
+
+  button {
+    margin-bottom: 8px;
+  }
+}
+
+/* Animación elegante */
+@keyframes rotateShadow {
+  0% {
+    box-shadow:
+      -2px -2px 0px 0px #d4af37,
+       2px  2px 0px 0px #4f8cff;
+  }
+
+  25% {
+    box-shadow:
+      -2px  2px 0px 0px #d4af37,
+       2px -2px 0px 0px #4f8cff;
+  }
+
+  50% {
+    box-shadow:
+       2px  2px 0px 0px #d4af37,
+      -2px -2px 0px 0px #4f8cff;
+  }
+
+  75% {
+    box-shadow:
+       2px -2px 0px 0px #d4af37,
+      -2px  2px 0px 0px #4f8cff;
+  }
+
+  100% {
+    box-shadow:
+      -2px -2px 0px 0px #d4af37,
+       2px  2px 0px 0px #4f8cff;
+  }
+}
+
+/* ===== Menú principal ===== */
+
+.radio-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.radio-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radio-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 110px;
+  min-height: 90px;
+
+  border-radius: 12px;
+  border: 2px solid #d1d5db;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+  box-shadow: 0 5px 12px rgba(0,0,0,.08);
+}
+
+.radio-tile:hover {
+  border-color: #d4af37;
+  transform: translateY(-3px);
+}
+
+.radio-icon {
+  font-size: 28px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.radio-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.radio-input:checked + .radio-tile {
+  border-color: #d4af37;
+  color: #d4af37;
+
+  box-shadow:
+    0 0 0 3px rgba(212,175,55,.15),
+    0 8px 20px rgba(0,0,0,.12);
+}
+
+.radio-input:checked + .radio-tile .radio-icon {
+  color: #d4af37;
+}
+
+.radio-input:checked + .radio-tile .radio-label {
+  color: #d4af37;
+}
+
+/* Responsive */
+
+@media (max-width: 600px) {
+
+  .radio-inputs {
+    gap: 8px;
+  }
+
+  .radio-tile {
+    width: calc(50% - 8px);
+    min-height: 85px;
+  }
+
+  .radio-icon {
+    font-size: 24px;
+  }
+
+}
+
+/* panel estilos */
+
+@media (max-width: 900px) {
+  .logout-btn {
+    width: auto !important;
+    min-width: 135px !important;
+    max-width: 160px !important;
+
+    height: 38px !important;
+    padding: 0 12px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    border: 1px solid rgba(220,38,38,.25) !important;
+    border-radius: 12px !important;
+
+    background: #fff1f2 !important;
+    color: #dc2626 !important;
+
+    font-size: 12px !important;
+    font-weight: 700 !important;
+
+    margin-left: auto !important;
+    margin-right: 0 !important;
+  }
+}
+
+#tituloCategoria{
+  text-align:center;
+  margin:20px 0 30px;
+  font-size:2rem;
+  font-weight:700;
+  color:#0f274b;
+}
+
+.radio-mini{
+  justify-content:flex-start;
+  margin-bottom:20px;
+}
+
+.radio-mini .radio-tile{
+  width:95px;
+  min-height:75px;
+}
+
+.radio-mini .radio-icon{
+  font-size:22px;
+}
+
+.radio-mini .radio-label{
+  font-size:12px;
+}
+
+.toast {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  background: #16a34a;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  z-index: 9999;
+  box-shadow: 0 8px 25px rgba(0,0,0,.2);
+  animation: toastIn .3s ease;
+}
+
+.toast.error {
+  background: #dc2626;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+.popup-box {
+  background: white;
+  width: min(90%, 380px);
+  padding: 24px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(0,0,0,.25);
+}
+
+.popup-box h3 {
+  margin-top: 0;
+  color: #111827;
+}
+
+.popup-box p {
+  color: #4b5563;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.btn-danger {
+  background: #dc2626;
+}
+
+.btn-cancel {
+  background: #6b7280;
+}
