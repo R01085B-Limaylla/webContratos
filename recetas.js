@@ -203,7 +203,10 @@ function agregarIngrediente(nombre = "", unidad = "kg", cantidad = "") {
   const div = document.createElement("div");
 
   div.innerHTML = `
-    <br>
+    
+
+    <input type="text" class="ingNombre" placeholder="Ingrediente" value="${nombre}">
+    
     <input type="number" class="ingCantidad" placeholder="Cantidad" step="0.01" value="${cantidad}">
 
     <select class="ingUnidad">
@@ -227,8 +230,8 @@ function agregarIngrediente(nombre = "", unidad = "kg", cantidad = "") {
       <option value="taza">taza</option>
     </select>
 
-    <input type="text" class="ingNombre" placeholder="Ingrediente" value="${nombre}">
-
+    
+<br>
     <button type="button" class="btnEliminarIngrediente">X</button>
   `;
 

@@ -438,3 +438,278 @@ section {
 .btn-cancel:hover {
   background: #c7c7c7;
 }
+
+#btnVerReceta {
+  border: none;
+
+  width: 180px;
+  height: 50px;
+
+  border-radius: 30px;
+
+  background: #1f2937;
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  transition: .25s ease;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+
+#btnVerReceta::before {
+  content: "🍳";
+  font-size: 18px;
+}
+
+#btnVerReceta:hover {
+  background: #d4af37;
+  color: #111827;
+  transform: translateY(-2px);
+}
+
+#btnVerReceta:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  #btnVerReceta {
+    width: 100%;
+    height: 48px;
+  }
+}
+
+#btnWhatsApp {
+  border: none;
+
+  width: 200px;
+  height: 50px;
+
+  border-radius: 30px;
+
+  background: #25D366;
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  transition: .25s ease;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
+}
+
+#btnWhatsApp::before {
+  content: "📤";
+  font-size: 18px;
+}
+
+#btnWhatsApp:hover {
+  background: #1fb856;
+  transform: translateY(-2px);
+}
+
+#btnWhatsApp:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  #btnWhatsApp {
+    width: 100%;
+    height: 48px;
+  }
+}
+
+#btnAgregarIngrediente {
+  border: none;
+  background: #16a34a;
+  color: white;
+
+  padding: 12px 18px;
+
+  border-radius: 12px;
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+#btnAgregarIngrediente::before {
+  content: "➕ ";
+}
+
+#btnAgregarIngrediente:hover {
+  background: #15803d;
+  transform: translateY(-2px);
+}
+
+.btnEliminarIngrediente {
+  border: none;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 10px;
+
+  background: #dc2626;
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+.btnEliminarIngrediente:hover {
+  background: #b91c1c;
+  transform: scale(1.05);
+}
+
+#btnGuardar {
+  border: none;
+
+  background: #2563eb;
+  color: white;
+
+  padding: 12px 20px;
+
+  border-radius: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+#btnGuardar::before {
+  content: "💾 ";
+}
+
+#btnGuardar:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+#btnLimpiar {
+  border: none;
+
+  background: #6b7280;
+  color: white;
+
+  padding: 12px 20px;
+
+  border-radius: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+#btnLimpiar::before {
+  content: "🧹 ";
+}
+
+#btnLimpiar:hover {
+  background: #4b5563;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+
+  #btnAgregarIngrediente,
+  #btnGuardar,
+  #btnLimpiar {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+}
+
+.btnEditar,
+.btnDuplicar,
+.btnEliminar {
+  border: none;
+
+  padding: 10px 14px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+  margin-right: 6px;
+  margin-top: 8px;
+}
+
+/* EDITAR */
+
+.btnEditar {
+  background: #2563eb;
+  color: white;
+}
+
+.btnEditar::before {
+  content: "✏️ ";
+}
+
+.btnEditar:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+/* DUPLICAR */
+
+.btnDuplicar {
+  background: #d4af37;
+  color: #111827;
+}
+
+.btnDuplicar::before {
+  content: "📄 ";
+}
+
+.btnDuplicar:hover {
+  background: #c89b11;
+  transform: translateY(-2px);
+}
+
+/* ELIMINAR */
+
+.btnEliminar {
+  background: #dc2626;
+  color: white;
+}
+
+.btnEliminar::before {
+  content: "🗑️ ";
+}
+
+.btnEliminar:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}

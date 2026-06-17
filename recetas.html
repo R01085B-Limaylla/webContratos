@@ -188,13 +188,13 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   <h2>Lista calculada</h2>
   <div id="listaCalculada"></div>
 
+  <button id="btnWhatsApp">Exportar a WhatsApp</button>
+
   <br>
 
-  <button id="btnWhatsApp">Exportar seleccionados a WhatsApp</button>
+  <textarea id="resultadoExportacion" rows="14" cols="80"></textarea>
 
   <br><br>
-
-  <textarea id="resultadoExportacion" rows="14" cols="80"></textarea>
 </section>
 
 <section id="seccionEdicion" style="display:none;">
@@ -242,6 +242,22 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
   <br><br>
 
+<label>Esta receta rinde para:</label><br>
+  <input type="number" id="rinde" placeholder="15" min="1">
+  <br><br>
+  <select id="unidadRinde">
+    <option value="platos">platos</option>
+    <option value="personas">personas</option>
+    <option value="vasos">vasos</option>
+    <option value="vasos acrílico 7 oz">vasos acrílico 7 oz</option>
+    <option value="vasos acrílico 10 oz">vasos acrílico 10 oz</option>
+    <option value="vasos de cristal">vasos de cristal</option>
+    <option value="copas">copas</option>
+    <option value="porciones">porciones</option>
+  </select>
+
+  <br><br>
+
   <label>Tipo:</label><br>
   <select id="tipo">
     <option value="entrada">Entrada</option>
@@ -257,7 +273,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
   <h3>Ingredientes</h3>
   <div id="ingredientes"></div>
-  <button id="btnAgregarIngrediente">+ Ingrediente</button>
+  <button id="btnAgregarIngrediente">Ingrediente</button>
 
   <br><br>
 
@@ -266,21 +282,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
   <br><br>
 
-  <label>Esta receta rinde para:</label><br>
-  <input type="number" id="rinde" placeholder="15" min="1">
-
-  <select id="unidadRinde">
-    <option value="platos">platos</option>
-    <option value="personas">personas</option>
-    <option value="vasos">vasos</option>
-    <option value="vasos acrílico 7 oz">vasos acrílico 7 oz</option>
-    <option value="vasos acrílico 10 oz">vasos acrílico 10 oz</option>
-    <option value="vasos de cristal">vasos de cristal</option>
-    <option value="copas">copas</option>
-    <option value="porciones">porciones</option>
-  </select>
-
-  <br><br>
+  
 
   <label>
     <input type="checkbox" id="usarPrecio">
@@ -297,6 +299,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
   <button id="btnGuardar">Guardar receta</button>
   <button id="btnLimpiar">Limpiar</button>
+
+  <br><br>
 </section>
 
 <section id="seccionGuardadas" style="display:none;">
