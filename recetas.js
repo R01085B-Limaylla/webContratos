@@ -275,6 +275,11 @@ function togglePrecio() {
 }
 
 async function guardarReceta() {
+   const btn = document.getElementById("btnGuardar");
+
+    btn.disabled = true;
+    btn.style.opacity = ".6";
+
   const idEdit = document.getElementById("editId").value;
 
   const nombre = document.getElementById("nombre").value.trim();
@@ -783,6 +788,11 @@ mostrarSeccion("guardadas");
 
 renderRecetas();
 renderExportar();
+
+const btn = document.getElementById("btnGuardar");
+
+btn.disabled = false;
+btn.style.opacity = "1";
   
 }
 
