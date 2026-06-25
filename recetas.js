@@ -27,11 +27,10 @@ function iniciar() {
   if (btnBarman) btnBarman.addEventListener("click", () => mostrarSeccion("barman"));
 
   if (btnAgregarIngrediente) {
-    btnAgregarIngrediente.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        agregarIngrediente("", "kg", "");
+  btnAgregarIngrediente.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    agregarIngrediente("", "kg", "");
     });
 }
   if (btnGuardar) btnGuardar.addEventListener("click", guardarReceta);
@@ -208,15 +207,35 @@ async function cargarRecetasSupabase() {
 
 function agregarIngrediente(nombre = "", unidad = "kg", cantidad = "") {
   const div = document.createElement("div");
+  div.className = "ingrediente-row";
+
+  const unique = Date.now() + Math.random();
 
   div.innerHTML = `
-    
+    <input 
+      type="text"
+      class="ingNombre"
+      name="ingNombre_${unique}"
+      placeholder="Ingrediente"
+      autocomplete="off"
+      value=""
+    >
 
-    <input type="text" class="ingNombre" placeholder="Ingrediente" value="${nombre}">
-    
-    <input type="number" class="ingCantidad" placeholder="Cantidad" step="0.01" value="${cantidad}">
+    <input 
+      type="number"
+      class="ingCantidad"
+      name="ingCantidad_${unique}"
+      placeholder="Cantidad"
+      step="0.01"
+      autocomplete="off"
+      value=""
+    >
 
-    <select class="ingUnidad">
+    <select 
+      class="ingUnidad"
+      name="ingUnidad_${unique}"
+      autocomplete="off"
+    >
       <option value="kg">kg</option>
       <option value="g">g</option>
       <option value="litro">litro</option>
@@ -237,15 +256,17 @@ function agregarIngrediente(nombre = "", unidad = "kg", cantidad = "") {
       <option value="taza">taza</option>
     </select>
 
-    
-<br>
     <button type="button" class="btnEliminarIngrediente">X</button>
   `;
 
   document.getElementById("ingredientes").appendChild(div);
-  div.querySelector(".ingUnidad").value = unidad;
 
-  div.querySelector(".btnEliminarIngrediente").addEventListener("click", () => {
+  div.querySelector(".ingNombre").value = nombre || "";
+  div.querySelector(".ingCantidad").value = cantidad || "";
+  div.querySelector(".ingUnidad").value = unidad || "kg";
+
+  div.querySelector(".btnEliminarIngrediente").addEventListener("click", function (e) {
+    e.preventDefault();
     div.remove();
   });
 }
