@@ -26,7 +26,14 @@ function iniciar() {
   if (btnCatering) btnCatering.addEventListener("click", () => mostrarSeccion("catering"));
   if (btnBarman) btnBarman.addEventListener("click", () => mostrarSeccion("barman"));
 
-  if (btnAgregarIngrediente) btnAgregarIngrediente.addEventListener("click", () => agregarIngrediente());
+  if (btnAgregarIngrediente) {
+    btnAgregarIngrediente.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        agregarIngrediente("", "kg", "");
+    });
+}
   if (btnGuardar) btnGuardar.addEventListener("click", guardarReceta);
   if (btnLimpiar) btnLimpiar.addEventListener("click", limpiarFormulario);
 
@@ -762,11 +769,20 @@ async function guardarRecetaSupabase(receta, idEdit) {
     return;
   }
 
-  mostrarToast("Receta guardada correctamente");
+  mostrarToast(
+    idEdit
+        ? "Receta actualizada correctamente"
+        : "Receta guardada correctamente"
+);
 
-  await cargarRecetasSupabase();
-  limpiarFormulario();
+await cargarRecetasSupabase();
 
+limpiarFormulario();
+
+mostrarSeccion("guardadas");
+
+renderRecetas();
+renderExportar();
   
 }
 
