@@ -312,9 +312,32 @@ async function guardarReceta() {
   const usarPrecio = document.getElementById("usarPrecio").checked;
   const precio = usarPrecio ? parseFloat(document.getElementById("precio").value) || 0 : 0;
 
-  if (!nombre) return alert("Escribe el nombre de la receta.");
-  if (ingredientes.length === 0) return alert("Agrega al menos un ingrediente.");
-  if (!rinde || rinde <= 0) return alert("Escribe cuánto rinde la receta.");
+  if (!nombre) {
+    mostrarToast("Escribe el nombre de la receta.", "error");
+
+    btn.disabled = false;
+    btn.style.opacity = "1";
+
+    return;
+}
+
+if (ingredientes.length === 0) {
+    mostrarToast("Agrega al menos un ingrediente.", "error");
+
+    btn.disabled = false;
+    btn.style.opacity = "1";
+
+    return;
+}
+
+if (!rinde || rinde <= 0) {
+    mostrarToast("Escribe cuánto rinde la receta.", "error");
+
+    btn.disabled = false;
+    btn.style.opacity = "1";
+
+    return;
+}
 
   const receta = {
     id: idEdit || Date.now().toString(),
@@ -791,9 +814,16 @@ async function guardarRecetaSupabase(receta, idEdit) {
 
   if (error) {
     console.error("Error guardando receta:", error);
+
     mostrarToast("Error guardando receta", "error");
+
+    const btn = document.getElementById("btnGuardar");
+
+    btn.disabled = false;
+    btn.style.opacity = "1";
+
     return;
-  }
+}
 
   mostrarToast(
     idEdit
@@ -897,4 +927,13 @@ function confirmarPopup(titulo, mensaje) {
       resolve(false);
     };
   });
+}
+
+function desbloquearGuardar() {
+  const btn = document.getElementById("btnGuardar");
+  if (!btn) return;
+
+  btn.disabled = false;
+  btn.style.opacity = "1";
+  btn.textContent = "Guardar receta";
 }
