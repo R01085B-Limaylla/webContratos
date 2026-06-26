@@ -620,6 +620,31 @@ function renderListaCalculada() {
   generarTextoFinal();
 }
 
+function generarDetalleBarman() {
+  const seleccionadas = obtenerSeleccionadas();
+
+  let texto = "";
+
+  seleccionadas.forEach(r => {
+    const input = document.querySelector(`.cantidadCoctel[data-id="${r.id}"]`);
+    const cantidad = parseFloat(input?.value);
+
+    if (!cantidad || cantidad <= 0) return;
+
+    const factor = cantidad / r.rinde;
+
+    texto += `*${r.nombre}*\n`;
+
+    r.ingredientes.forEach(i => {
+      texto += `${capitalizar(i.nombre)}: ${formatearCantidad(i.cantidad * factor)} ${i.unidad}\n`;
+    });
+
+    texto += "\n";
+  });
+
+  return texto;
+}
+
 function generarTextoFinal() {
   const fecha = document.getElementById("fechaEvento").value;
   const titulo = document.getElementById("tituloEvento").value.trim();
@@ -630,6 +655,9 @@ function generarTextoFinal() {
   if (titulo) texto += `${titulo}\n\n`;
   else texto += "\n";
 
+if (categoriaActual === "barman") {
+  texto += generarDetalleBarman();
+}
   texto += "Ingredientes:\n";
 
   const checks = document.querySelectorAll(".checkIngredienteFinal:checked");
@@ -936,4 +964,9 @@ function desbloquearGuardar() {
   btn.disabled = false;
   btn.style.opacity = "1";
   btn.textContent = "Guardar receta";
+}
+
+function capitalizar(texto) {
+  if (!texto) return "";
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
